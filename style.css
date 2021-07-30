@@ -2,6 +2,8 @@ h1 {text-align: center;}
 
 h1 {
     color:burlywood
+} 
+h1 {font-size: 60px;
 }
 body{
     background-color:grey;
@@ -22,3 +24,14 @@ body{
     grid-template-columns: 1fr 1fr;
     grid-column-gap: 20px;
 }
+a:visited { 
+    text-decoration: none; 
+    color: white; 
+   }
+a:hover { text-decoration: none; color:black; }
+a:focus { text-decoration: none; color:teal; }
+a:active { text-decoration: none; color:white; }
+body {
+    background-image: url("images/glass.png");
+    background-color: #cccccc;
+   }
