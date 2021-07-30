@@ -10,7 +10,12 @@ body{
 .photos img {
     width: 50%;
 }
-
+.center {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 50%;
+  }
 
 .photos {
     display: grid;
