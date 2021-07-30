@@ -1,4 +1,4 @@
 # my--example-website
 website
 
-itarin.online
+www.itarin.online
