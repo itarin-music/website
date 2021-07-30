@@ -35,3 +35,10 @@ body {
     background-image: url("images/glass.png");
     background-color: #cccccc;
    }
+   div, iframe {
+    width: 500px;
+    height: 200px;
+    margin: 0 auto;
+    background-color: #777;
+    Display:block;
+}
