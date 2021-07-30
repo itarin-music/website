@@ -1,0 +1,14 @@
+h1 {
+    color:burlywood
+}
+
+.photos img {
+    width: 50%;
+}
+
+
+.photos {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-column-gap: 20px;
+}
