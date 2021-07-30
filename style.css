@@ -26,7 +26,7 @@ body{
 }
 a:visited { 
     text-decoration: none; 
-    color: white; 
+    color: black; 
    }
 a:hover { text-decoration: none; color:black; }
 a:focus { text-decoration: none; color:black; }
@@ -42,4 +42,4 @@ body {
     margin: 0 auto;
     background-color: #777;
     Display:block;
-}
+    
