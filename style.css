@@ -24,14 +24,16 @@ body{
     grid-template-columns: 1fr 1fr;
     grid-column-gap: 20px;
 }
+a:link {text-decoration: none; color:white}
 a:visited { 
     text-decoration: none; 
     color: black; 
    }
-a:hover { text-decoration: none; color:black; }
+
+a:hover { text-decoration: none; color:white; }
 a:focus { text-decoration: none; color:black; }
 a:active { text-decoration: none; color:white; }
-a:visited {color:black;}
+
 body {
     background-image: url("images/glass.png");
     background-color: #cccccc;
@@ -42,4 +44,3 @@ body {
     margin: 0 auto;
     background-color: #777;
     Display:block;
-    
