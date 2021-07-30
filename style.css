@@ -31,6 +31,7 @@ a:visited {
 a:hover { text-decoration: none; color:black; }
 a:focus { text-decoration: none; color:black; }
 a:active { text-decoration: none; color:white; }
+a:visited {color:black;}
 body {
     background-image: url("images/glass.png");
     background-color: #cccccc;
