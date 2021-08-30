@@ -1,3 +1,10 @@
+html { 
+    background: url(images/websitebackground.png) no-repeat center center fixed; 
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+  }
 h2 {text-align: center;
     color:rgb(241, 143, 119);
     text-decoration: underline 1.5px white;
@@ -44,7 +51,7 @@ a:active {text-decoration: none;
     color:white;
     -webkit-text-stroke: 1px white}
 
-body {background-image: url("websitebackground.jpg");background-color: #26272e;}
+body {background-color:transparent;}
    div, iframe {
     width: 400px;
     height: 80px;
