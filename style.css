@@ -44,7 +44,7 @@ a:active {text-decoration: none;
     color:white;
     -webkit-text-stroke: 1px white}
 
-body {background-color: #26272e;}
+body {background-image: url("websitebackground.jpg");background-color: #26272e;}
    div, iframe {
     width: 400px;
     height: 80px;
@@ -61,3 +61,5 @@ h5 {color:rgb(241, 143, 119);
     -webkit-text-stroke: 1px white;
     font-size: 60px;
     font-family: Arial, Helvetica, sans-serif;}
+
+
