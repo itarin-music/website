@@ -10,7 +10,8 @@ h4 {text-align: center;
     -webkit-text-stroke: .5px white;
     font-size: 30px;
     font-family: Arial, Helvetica, sans-serif;}
-body {text-align: center;} 
+
+body {text-align: center;}
 
 h1 {color:rgb(241, 143, 119);
     -webkit-text-stroke: 1px white;
@@ -43,12 +44,11 @@ a:active {text-decoration: none;
     color:white;
     -webkit-text-stroke: 1px white}
 
-body {background-color: #30313a;}
+body {background-color: #26272e;}
    div, iframe {
     width: 400px;
     height: 80px;
     margin: 0 auto;
-    background-color: #777;
     Display:block; }
 
 h3 {color:rgb(241, 143, 119);
