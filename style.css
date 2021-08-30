@@ -46,7 +46,7 @@ a:active {text-decoration: none;
 body {background-color: #30313a;}
    div, iframe {
     width: 400px;
-    height: 200px;
+    height: 80px;
     margin: 0 auto;
     background-color: #777;
     Display:block; }
