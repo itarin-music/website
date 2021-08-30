@@ -1,25 +1,29 @@
-h1 {text-align: center; -webkit-text-stroke: 1px white)}
-body {text-align: center; 
-    -webkit-text-stroke: 1px white)} 
+h2 {text-align: center;
+    color:rgb(241, 143, 119);
+    text-decoration: underline 1.5px white;
+    -webkit-text-stroke: 1px white;
+    font-size: 60px;
+    font-family: Arial, Helvetica, sans-serif;}
+h4 {text-align: center;
+    color:rgb(241, 143, 119);
+    text-decoration: underline 1px white;
+    -webkit-text-stroke: .5px white;
+    font-size: 30px;
+    font-family: Arial, Helvetica, sans-serif;}
+body {text-align: center;} 
 
-h1 {
-    color:rgb(241, 143, 119)
-} 
-h1 {font-size: 60px;
-}
-body{
-    background-color:grey;
-}
+h1 {color:rgb(241, 143, 119);
+    -webkit-text-stroke: 1px white;
+    font-size: 60px;
+    text-align:center;
+    font-family: Arial, Helvetica, sans-serif;}
+body{background-color:grey;}
 
-.photos img {
-    width: 50%;
-}
-.center {
-    display: block;
+.photos img {width: 50%;}
+.center {display: block;
     margin-left: auto;
     margin-right: auto;
-    width: 50%;
-  }
+    width: 50%;}
 
 a:link {text-decoration: none; 
     color:rgb(241, 143, 119);
@@ -29,20 +33,31 @@ a:visited {
     color: rgb(241, 143, 119); 
     -webkit-text-stroke: 1px white;}
 
-a:hover { text-decoration: none; 
-    color:white;}
-a:focus { text-decoration: none; 
-    color:rgb(241, 143, 119);}
-a:active { text-decoration: none; 
-    color:white;}
+a:hover {text-decoration: none; 
+    color:white;
+    -webkit-text-stroke: 1px white}
+a:focus {text-decoration: none; 
+    color:rgb(241, 143, 119);
+    -webkit-text-stroke: 1px white}
+a:active {text-decoration: none; 
+    color:white;
+    -webkit-text-stroke: 1px white}
 
-body {
-    
-    background-color: #30313a;
-   }
+body {background-color: #30313a;}
    div, iframe {
     width: 400px;
     height: 200px;
     margin: 0 auto;
     background-color: #777;
     Display:block; }
+
+h3 {color:rgb(241, 143, 119);
+    -webkit-text-stroke: 1px white;
+    text-decoration: underline 1.5px white;
+    font-size: 60px;
+    font-family: Arial, Helvetica, sans-serif;}
+
+h5 {color:rgb(241, 143, 119);
+    -webkit-text-stroke: 1px white;
+    font-size: 60px;
+    font-family: Arial, Helvetica, sans-serif;}
