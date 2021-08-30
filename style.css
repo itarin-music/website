@@ -27,11 +27,11 @@ body{
 a:link {text-decoration: none; color:white}
 a:visited { 
     text-decoration: none; 
-    color: black; 
+    color: rgb(241, 143, 119); 
    }
 
 a:hover { text-decoration: none; color:white; }
-a:focus { text-decoration: none; color:black; }
+a:focus { text-decoration: none; color:rgb(241, 143, 119); }
 a:active { text-decoration: none; color:white; }
 
 body {
