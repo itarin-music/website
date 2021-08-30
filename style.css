@@ -10,13 +10,15 @@ h2 {text-align: center;
     text-decoration: underline 1.5px white;
     -webkit-text-stroke: 1px white;
     font-size: 60px;
-    font-family: Arial, Helvetica, sans-serif;}
+    font-family: Arial, Helvetica, sans-serif;
+    text-shadow: 2px 2px 4px #000000}
 h4 {text-align: center;
     color:rgb(241, 143, 119);
     text-decoration: underline 1px white;
     -webkit-text-stroke: .5px white;
     font-size: 30px;
-    font-family: Arial, Helvetica, sans-serif;}
+    font-family: Arial, Helvetica, sans-serif;
+    text-shadow: 2px 2px 4px #000000}
 
 body {text-align: center;}
 
@@ -24,7 +26,8 @@ h1 {color:rgb(241, 143, 119);
     -webkit-text-stroke: 1px white;
     font-size: 60px;
     text-align:center;
-    font-family: Arial, Helvetica, sans-serif;}
+    font-family: Arial, Helvetica, sans-serif;
+    text-shadow: 2px 2px 4px #000000}
 body{background-color:grey;}
 
 .photos img {width: 50%;}
@@ -56,17 +59,19 @@ body {background-color:transparent;}
     width: 400px;
     height: 80px;
     margin: 0 auto;
-    Display:block; }
+    Display:block; 
+    text-shadow: 2px 2px 4px #000000}
 
 h3 {color:rgb(241, 143, 119);
     -webkit-text-stroke: 1px white;
     text-decoration: underline 1.5px white;
     font-size: 60px;
-    font-family: Arial, Helvetica, sans-serif;}
+    font-family: Arial, Helvetica, sans-serif;
+    text-shadow: 2px 2px 4px #000000}
 
 h5 {color:rgb(241, 143, 119);
     -webkit-text-stroke: 1px white;
     font-size: 60px;
-    font-family: Arial, Helvetica, sans-serif;}
-
-
+    font-family: Arial, Helvetica, sans-serif;
+    text-shadow: 2px 2px 4px #000000;}
+    
