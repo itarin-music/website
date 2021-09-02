@@ -1,4 +1,4 @@
 This is a Brave Rewards publisher verification file.
 
 Domain: https://itarin.online/
-Token: 1938c1a52ccbb2486464f09811030ceaa680dbfd7020c9fe881e2adab8de153a
+Token: 10fc53879762dde754a12fb940ae976ea3ebe3bab2ca7b7bb7c0ba8029bda4d7
