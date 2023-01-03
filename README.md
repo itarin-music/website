@@ -1,4 +1,4 @@
 # website
 
 
-https://www.itarin.online
+https://itarin.online
