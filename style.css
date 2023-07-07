@@ -1,16 +1,17 @@
 html { 
     background: url(images/websitebackground.webp) no-repeat center center fixed; 
-    backdrop-filter: blur(3px) brightness(90%); 
-    -webkit-backdrop-filter: blur(3px) brightness(90%);
-    -o-backdrop-filter: blur(3px) brightness(90%);
-    -ms-backdrop-filter: blur(3px) brightness(90%);
-    -moz-backdrop-filter: blur(3px) brightness(90%);
     background-color: #0000000a;
     -webkit-background-size: cover;
     -moz-background-size: cover;
     -o-background-size: cover;
     background-size: cover;
-   }
+    backdrop-filter: blur(3px) brightness(90%); 
+    -webkit-backdrop-filter: blur(3px) brightness(90%);
+    -o-backdrop-filter: blur(3px) brightness(90%);
+    -ms-backdrop-filter: blur(3px) brightness(90%);
+    -moz-backdrop-filter: blur(3px) brightness(90%);}
+
+   
 
   @font-face{
    font-family:"Excelorate"; 
@@ -47,7 +48,7 @@ h1 {text-decoration: none;
     display: flex;
     flex-wrap:nowrap;
     justify-content: center;
-    align-items: center;}
+    align-items: center}
     
 a:link {text-decoration: none;
         margin-right:10px;
@@ -55,7 +56,8 @@ a:link {text-decoration: none;
         flex-wrap:nowrap;
         justify-content: center;
         align-items: center;
-        word-spacing: 5cm;}
+        word-spacing: 5cm;
+      }
     
 
 body {font-family: "Excelorate";
@@ -63,4 +65,5 @@ position: fixed;
 top: 50%;
 left: 50%;
 transform: translate(-50%, -50%);
-color: rgb(0, 0, 0);}
+color: rgb(0, 0, 0);
+}
