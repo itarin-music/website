@@ -1,11 +1,11 @@
 html { 
-    background: url(images/websitebackground.gif) no-repeat center center fixed; 
+    background: url(images/websitebackground.webp) no-repeat center center fixed; 
     backdrop-filter: blur(3px) brightness(90%); 
     -webkit-backdrop-filter: blur(3px) brightness(90%);
     -o-backdrop-filter: blur(3px) brightness(90%);
     -ms-backdrop-filter: blur(3px) brightness(90%);
     -moz-backdrop-filter: blur(3px) brightness(90%);
-    background-color: #000000;
+    background-color: #0000000a;
     -webkit-background-size: cover;
     -moz-background-size: cover;
     -o-background-size: cover;
