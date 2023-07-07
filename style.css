@@ -5,14 +5,20 @@ html {
     -moz-background-size: cover;
     -o-background-size: cover;
     background-size: cover;
-    backdrop-filter: blur(3px) ;}
+    backdrop-filter: blur(3px) brightness(80%) ;}
 
   @font-face{
    font-family:"Excelorate"; 
    src: url(fonts/Excelorate-Font.otf)
  }
-
-
+ .icon {
+    display: inline-block;
+    transition: transform 0.2s ease-in-out;
+  }
+  
+  .icon:hover {
+    transform: scale(1.1);
+  }
 
 h2 {font-family: "Excelorate", sans-serif;
     text-align: center;
@@ -21,6 +27,13 @@ h2 {font-family: "Excelorate", sans-serif;
     -webkit-text-stroke: 0px rgb(255, 255, 255);
     font-size: 45px;
     text-shadow: 2px 2px 4px #000000}
+    .glow {
+        transition: text-shadow 0.2s ease-in-out;
+      }
+      
+      .glow:hover {
+        text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+      }
 h1 {text-decoration: none;
     color:rgb(255, 255, 255);
     font-size: 45px;
@@ -30,6 +43,7 @@ h1 {text-decoration: none;
     flex-wrap:nowrap;
     justify-content: center;
     align-items: center;}
+    
 a:link {text-decoration: none;
         margin-right:10px;
         display: flex;
