@@ -5,7 +5,11 @@ html {
     -moz-background-size: cover;
     -o-background-size: cover;
     background-size: cover;
-    backdrop-filter: blur(3px) brightness(80%) ;}
+    backdrop-filter: blur(3px) brightness(90%); 
+    -webkit-backdrop-filter: blur(3px) brightness(90%);
+    -o-backdrop-filter: blur(3px) brightness(90%);
+    -ms-backdrop-filter: blur(3px) brightness(90%);
+    -moz-backdrop-filter: blur(3px) brightness(90%);}
 
   @font-face{
    font-family:"Excelorate"; 
