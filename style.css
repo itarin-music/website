@@ -17,6 +17,12 @@ body {
   justify-content: center;
   align-items: center;
   flex-direction: column;
+  font-family: "Excelorate";
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: rgb(0, 0, 0);
 }
 
 body::before {
@@ -30,8 +36,6 @@ body::before {
   background-color: rgba(0, 0, 0, 0.3); /* Adjust the alpha value as desired */
   z-index: -1;
 }
-
-/* Rest of your CSS code */
 
 @font-face {
  font-family: "Excelorate"; 
@@ -87,11 +91,25 @@ a:link {
   word-spacing: 5cm;
 }
 
-body {
-  font-family: "Excelorate";
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  color: rgb(0, 0, 0);
+@media (prefers-color-scheme: dark) {
+  /* Reset background color */
+  body {
+    background-color: initial !important;
+  }
+
+  /* Reset text color */
+  body,
+  p,
+  a,
+  span,
+  h1 {color: rgb(255, 255, 255);}
+  h2{color: rgb(255, 255, 255);}
+  h3
+  h4,
+  h5,
+  h6 {
+    color: initial !important;
+  }
+
+  /* Add specific styles for dark mode here if needed */
 }
