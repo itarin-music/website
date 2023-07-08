@@ -31,6 +31,45 @@
         body {
             font-family: 'Excelorate', sans-serif;
         }
+
+        .footer-container {
+  position: fixed;
+  bottom: 0;
+  left: 200;
+  width: 100%;
+  overflow: hidden;
+}
+
+.footer {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  overflow: hidden;
+  animation: scroll-left 20s linear infinite;
+  animation-delay: 0s
+  white-space: nowrap;
+}
+
+.footer a {
+  flex: 1;
+}
+
+.footer img {
+  height: 200px;
+  margin: 0px;
+  object-fit: contain;
+}
+
+@keyframes scroll-left {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+        }
     </style>
 </head>
 <body> 
@@ -60,6 +99,14 @@
                     <a class="fab fa-spotify" href="https://open.spotify.com/artist/6Vc7Y1CkrxACHNHLLHsQ9P?si=YJFnnaniT6KqTrTSa0Nt7g" target="_blank"></a>
                 </div>
             </h1>
+        </div>
+    </div>
+    <div class="footer-container">
+        <div class="footer">
+            <a href="https://open.spotify.com/album/6mpw9QtF4RhB5oXruijP14?si=wM0LiZA9SKGJ5QhjJ26IAQ"><img src="images/pretty lady.jpg" alt="Image 1"></a>
+            <a href="https://open.spotify.com/album/7pvAyJyMYowjFC5YPfJgqA?si=6cGJ91EXRPyp6db9bLZ4Bw"><img src="images/P3pto Dont talk Tshirt.png" alt="Image 2"></a>
+            <a href="coming soon!"><img src="images/example needed cover art.png" alt="Image 3"></a>
+            <!-- Add more images as needed -->
         </div>
     </div>
 </body>
