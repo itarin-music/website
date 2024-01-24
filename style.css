@@ -113,3 +113,25 @@ a:link {
 
   /* Add specific styles for dark mode here if needed */
 }
+
+footer {
+  text-decoration: none;
+  color: rgb(255, 255, 255);
+  font-size: 20px;
+  text-align: center;
+  text-shadow: 2px 2px 4px #000000;
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: center;
+  align-items: center;
+}
+
+a:link {
+  text-decoration: none;
+  margin-right: 10px;
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: center;
+  align-items: center;
+  word-spacing: 0cm;
+}
