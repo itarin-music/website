@@ -59,7 +59,14 @@ h2 {
   -webkit-text-stroke: 0px rgb(0, 0, 0);
   font-size: 45px;
   text-shadow: 2px 2px 4px #000000;
-}
+    /* Set the height or other necessary styles for your header */ 
+    height: 100px; 
+    background-image: url('images/logospin.gif'); 
+    background-size: cover; /* Adjust the image size to cover the header */ 
+    background-position: center; /* Center the image */ 
+    /* Additional properties for background if needed */ 
+  } 
+
 
 .glow {
   transition: text-shadow 0.2s ease-in-out;
