@@ -86,6 +86,11 @@ h1 {
   flex-wrap: nowrap;
   justify-content: center;
   align-items: center;
+  img {
+    width: 150px;
+    -webkit-filter: drop-shadow(2px 2px 4px #000);
+    filter: drop-shadow(2px 2px 4px #000);
+  }
 }
 
 a:link {
