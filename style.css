@@ -123,7 +123,28 @@ a:link {
     color: initial !important;
   }
 
-  /* Add specific styles for dark mode here if needed */
+  .social-icons {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center; /* Centers items horizontally */
+    gap: 15px; /* Adds space between icons */
+    max-width: 300px; /* Adjust based on your layout */
+    margin: auto;
+}
+
+.icon {
+    font-size: 3rem;
+    transition: transform 0.2s;
+}
+
+.icon a {
+    text-decoration: none;
+    color: white; /* Adjust to fit your design */
+}
+
+.icon:hover {
+    transform: scale(1.1);
+}
 }
 
 footer {
@@ -147,3 +168,4 @@ a:link {
   align-items: center;
   word-spacing: 0cm;
 }
+
