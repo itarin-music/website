@@ -59,13 +59,12 @@ h2 {
   -webkit-text-stroke: 0px rgb(0, 0, 0);
   font-size: 45px;
   text-shadow: 2px 2px 4px #000000;
-    /* Set the height or other necessary styles for your header */ 
-    height: 100px; 
-    background-image: url('images/logospin.gif'); 
-    background-size: cover; /* Adjust the image size to cover the header */ 
-    background-position: center; /* Center the image */ 
-    /* Additional properties for background if needed */ 
-  } 
+  height: 150px;
+  background-image: url('images/logospin.gif');
+  background-size: 300px 300px; /* Shrinks the gif */
+  background-repeat: no-repeat; /* Stops it from duplicating */
+  background-position: center; /* Keeps it centered */
+}
 
 
 .glow {
@@ -116,7 +115,6 @@ a:link {
   span,
   h1 {color: rgb(255, 255, 255);}
   h2{color: rgb(255, 255, 255);}
-  h3
   h4,
   h5,
   h6 {
@@ -168,4 +166,50 @@ a:link {
   align-items: center;
   word-spacing: 0cm;
 }
+h3 {
+  font-family: "Excelorate", sans-serif;
+  text-align: center;
+  color: rgb(255, 255, 255);
+  text-decoration: none;
+  -webkit-text-stroke: 0px rgb(0, 0, 0);
+  font-size: 45px;
+  text-shadow: 2px 2px 4px #000000;
+  height: 100px;
+  background-size: cover;
+  background-position: center;
+  white-space: nowrap; /* Prevents text from wrapping */
+  display: inline-block; /* Ensures text behaves as inline for scrolling */
+}
+
+/* Animation for scrolling text if it overflows */
+@media screen and (max-width: 100%) {
+  h3 {
+    animation: none; /* Default: no animation */
+  }
+
+  h3.overflowing {
+    animation: scrollText 10s linear infinite; /* Scroll only if overflowing */
+  }
+}
+
+/* Keyframes for scrolling animation */
+@keyframes scrollText {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+
+
+.glow {
+  transition: text-shadow 0.2s ease-in-out;
+}
+
+.glow:hover {
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+}
+
 
