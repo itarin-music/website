@@ -174,25 +174,16 @@ h3 {
   -webkit-text-stroke: 0px rgb(0, 0, 0);
   font-size: 45px;
   text-shadow: 2px 2px 4px #000000;
-  height: 100px;
+  height: 200px;
   background-size: cover;
   background-position: center;
   white-space: nowrap; /* Prevents text from wrapping */
   display: inline-block; /* Ensures text behaves as inline for scrolling */
+  overflow: hidden; /* Hide anything overflowing */
+  position: relative;
 }
 
-/* Animation for scrolling text if it overflows */
-@media screen and (max-width: 100%) {
-  h3 {
-    animation: none; /* Default: no animation */
-  }
-
-  h3.overflowing {
-    animation: scrollText 10s linear infinite; /* Scroll only if overflowing */
-  }
-}
-
-/* Keyframes for scrolling animation */
+/* Scrolling effect */
 @keyframes scrollText {
   0% {
     transform: translateX(100%);
@@ -202,8 +193,9 @@ h3 {
   }
 }
 
-
-
+h3.overflowing {
+  animation: scrollText 10s linear infinite; /* Scroll only if overflowing */
+}
 .glow {
   transition: text-shadow 0.2s ease-in-out;
 }
