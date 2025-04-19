@@ -1,21 +1,22 @@
-// Select all h3 elements
-const h3Elements = document.querySelectorAll('h3');
+window.addEventListener('DOMContentLoaded', () => {
+  const musicWrapper = document.querySelector('.music-scroll-wrapper');
+  const trackList = document.querySelector('.track-list');
 
-// Apply scrolling on overflow
-h3Elements.forEach(h3 => {
-  function checkOverflow() {
-    if (h3.scrollWidth > h3.clientWidth) {
-      // If the content is overflowing, add the class for scrolling
-      h3.classList.add('overflowing');
-    } else {
-      // If not overflowing, remove the scrolling class
-      h3.classList.remove('overflowing');
-    }
-  }
+  // Clone the track list and append it to the wrapper
+  const clone = trackList.cloneNode(true);
+  musicWrapper.appendChild(clone);
 
-  // Run the check initially
-  checkOverflow();
+  // Calculate the total width of the content (original + clone)
+  const trackWidth = trackList.offsetWidth;
+  const totalWidth = trackWidth * 2; // Original + clone
 
-  // Re-run the check when resizing the window
-  window.addEventListener('resize', checkOverflow);
+  // Set the wrapper width to fit both lists
+  musicWrapper.style.width = `${totalWidth}px`;
+
+  // Set the animation duration dynamically based on total width
+  const scrollSpeed = 50; // Pixels per second
+  const animationDuration = totalWidth / scrollSpeed;
+
+  // Apply the calculated duration to the animation
+  musicWrapper.style.animationDuration = `${animationDuration}s`;
 });
