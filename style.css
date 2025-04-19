@@ -61,7 +61,7 @@ h2 {
   text-shadow: 2px 2px 4px #000000;
   height: 150px;
   background-image: url('images/logospin.gif');
-  background-size: 300px 300px; /* Shrinks the gif */
+  background-size: 400px 400px; /* Shrinks the gif */
   background-repeat: no-repeat; /* Stops it from duplicating */
   background-position: center; /* Keeps it centered */
 }
@@ -205,3 +205,12 @@ h3.overflowing {
 }
 
 
+/* Hide scrollbars (modern + legacy browsers) */
+.no-scrollbar {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE 10+ */
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none; /* Safari and Chrome */
+}
