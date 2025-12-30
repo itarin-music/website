@@ -26,54 +26,51 @@
     
     <!-- Tailwind for hover/scroll effects -->
     <script src="https://cdn.tailwindcss.com"></script>
-
+    
     <style>
-        body {
-            font-family: 'Excelorate', sans-serif;
+        @keyframes scroll-left {
+            0% {
+                transform: translateX(0);
+            }
+            100% {
+                transform: translateX(-50%);
+            }
         }
 
-        /* Scroll Styles */
         .music-scroll-wrapper {
             display: flex;
             overflow: hidden;
+            width: 100%;
+            position: relative;
         }
 
         .track-list {
             display: flex;
             gap: 20px;
-            animation: scroll-right-to-left 20s linear infinite;
+            animation: scroll-left 40s linear infinite;
+            will-change: transform;
+        }
+
+        .track-list:hover {
+            animation-play-state: paused;
         }
 
         .track-container {
             width: 200px;
             height: 200px;
-            position: relative;
+            flex-shrink: 0;
+            transition: transform 0.3s ease;
+        }
+
+        .track-container:hover {
+            transform: scale(1.05);
         }
 
         .track-container img {
             width: 100%;
             height: 100%;
             object-fit: cover;
-        }
-
-        /* Keyframe animation for scroll */
-        @keyframes scroll-right-to-left {
-            0% {
-                transform: translateX(0);
-            }
-            100% {
-                transform: translateX(-100%);
-            }
-        }
-
-        /* Hide scrollbars (modern + legacy browsers) */
-        .no-scrollbar {
-            scrollbar-width: none; /* Firefox */
-            -ms-overflow-style: none; /* IE 10+ */
-        }
-
-        .no-scrollbar::-webkit-scrollbar {
-            display: none; /* Safari and Chrome */
+            border-radius: 12px;
         }
     </style>
 </head>
@@ -92,92 +89,53 @@
                     <div class="icon"><a href="https://open.spotify.com/artist/6Vc7Y1CkrxACHNHLLHsQ9P?si=YJFnnaniT6KqTrTSa0Nt7g" target="_blank"><i class="fab fa-spotify"></i></a></div>
                     <div class="icon"><a href="https://soundcloud.com/itarin" target="_blank"><i class="fab fa-soundcloud"></i></a></div>
                     <div class="icon"><a href="https://www.twitch.tv/itarinmp3" target="_blank"><i class="fab fa-twitch"></i></a></div>
+                </div>
             </h1>
         </div>
 
-        <!-- 💿 MUSIC SCROLL AREA START -->
-        <div class="mt-2 px-4">
-            <h3 class="text-3xl font-bold mb-4 text-white text-center"></h3>
+<!-- 💿 MUSIC SCROLL AREA START -->
+<div class="mt-2 px-4">
+    <h3 class="text-3xl font-bold mb-4 text-white text-center"></h3>
 
-            <div class="relative w-full overflow-x-hidden">
-                <div class="music-scroll-wrapper no-scrollbar">
-                    <div class="track-list">
-                        <a href="https://tunelink.to/goanddie" target="_blank" class="relative inline-block track-container">
-                            <img src="images/go and die cover.png" alt="Track 1" class="rounded-xl w-full h-full object-cover" />
-                            <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-60 rounded-xl transition duration-300 flex items-center justify-center">
-                                <span class="text-white text-center text-lg font-semibold opacity-0 group-hover:opacity-100 transition duration-300">go and die</span>
-                            </div>
-                        </a>
-
-                        <a href="http://itarin.tunelink.to/bruhbruhbruh" target="_blank" class="relative inline-block track-container">
-                            <img src="images/trailer park houses.png" alt="Track 2" class="rounded-xl w-full h-full object-cover" />
-                            <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-60 rounded-xl transition duration-300 flex items-center justify-center">
-                                <span class="text-white text-center text-lg font-semibold opacity-0 group-hover:opacity-100 transition duration-300">Built This Town</span>
-                            </div>
-                        </a>
-
-                        <a href="https://tunelink.to/lUvRX" target="_blank" class="relative inline-block track-container">
-                            <img src="images/Never Concentrate extended.png" alt="Album 1" class="rounded-xl w-full h-full object-cover" />
-                            <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-60 rounded-xl transition duration-300 flex items-center justify-center">
-                                <span class="text-white text-center text-lg font-semibold opacity-0 group-hover:opacity-100 transition duration-300">never concentrate</span>
-                            </div>
-                        </a>
-
-                        <a href="https://itarin.tunelink.to/ExampleNeeded" target="_blank" class="relative inline-block track-container">
-                            <img src="images/example needed cover art.png" alt="Album 2" class="rounded-xl w-full h-full object-cover" />
-                            <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-60 rounded-xl transition duration-300 flex items-center justify-center">
-                                <span class="text-white text-center text-lg font-semibold opacity-0 group-hover:opacity-100 transition duration-300">Example Needed</span>
-                            </div>
-                        </a>
-
-                        <a href="http://tunelink.to/F9STu" target="_blank" class="relative inline-block track-container">
-                            <img src="images/P3pto Dont talk.png" alt="Track 3" class="rounded-xl w-full h-full object-cover" />
-                            <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-60 rounded-xl transition duration-300 flex items-center justify-center">
-                                <span class="text-white text-center text-lg font-semibold opacity-0 group-hover:opacity-100 transition duration-300">P3pto / Don't Talk To Me</span>
-                            </div>
-                        </a>
-                      </div>
-                      <!-- Duplicate the track list -->
-                      <div class="track-list">
-                        <!-- Same content as above -->
-                        <a href="https://tunelink.to/goanddie" target="_blank" class="relative inline-block track-container">
-                          <img src="images/go and die cover.png" alt="Track 1" class="rounded-xl w-full h-full object-cover" />
-                          <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-60 rounded-xl transition duration-300 flex items-center justify-center">
-                              <span class="text-white text-center text-lg font-semibold opacity-0 group-hover:opacity-100 transition duration-300">go and die</span>
-                          </div>
-                      </a>
-
-                      <a href="http://itarin.tunelink.to/bruhbruhbruh" target="_blank" class="relative inline-block track-container">
-                          <img src="images/trailer park houses.png" alt="Track 2" class="rounded-xl w-full h-full object-cover" />
-                          <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-60 rounded-xl transition duration-300 flex items-center justify-center">
-                              <span class="text-white text-center text-lg font-semibold opacity-0 group-hover:opacity-100 transition duration-300">Built This Town</span>
-                          </div>
-                      </a>
-
-                      <a href="https://tunelink.to/lUvRX" target="_blank" class="relative inline-block track-container">
-                          <img src="images/Never Concentrate extended.png" alt="Album 1" class="rounded-xl w-full h-full object-cover" />
-                          <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-60 rounded-xl transition duration-300 flex items-center justify-center">
-                              <span class="text-white text-center text-lg font-semibold opacity-0 group-hover:opacity-100 transition duration-300">never concentrate</span>
-                          </div>
-                      </a>
-
-                      <a href="https://itarin.tunelink.to/ExampleNeeded" target="_blank" class="relative inline-block track-container">
-                          <img src="images/example needed cover art.png" alt="Album 2" class="rounded-xl w-full h-full object-cover" />
-                          <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-60 rounded-xl transition duration-300 flex items-center justify-center">
-                              <span class="text-white text-center text-lg font-semibold opacity-0 group-hover:opacity-100 transition duration-300">Example Needed</span>
-                          </div>
-                      </a>
-
-                      <a href="http://tunelink.to/F9STu" target="_blank" class="relative inline-block track-container">
-                          <img src="images/P3pto Dont talk.png" alt="Track 3" class="rounded-xl w-full h-full object-cover" />
-                          <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-60 rounded-xl transition duration-300 flex items-center justify-center">
-                              <span class="text-white text-center text-lg font-semibold opacity-0 group-hover:opacity-100 transition duration-300">P3pto / Don't Talk To Me</span>
-                          </div>
-                      </a>
-                    </div>
-                </div>
+    <div class="relative w-full overflow-x-hidden">
+        <div class="music-scroll-wrapper no-scrollbar">
+            <div class="track-list">
+                <!-- First set -->
+                <a href="https://tunelink.to/goanddie" target="_blank" class="relative inline-block track-container">
+                    <img src="images/go and die cover.png" alt="Track 1" class="rounded-xl w-full h-full object-cover" />
+                </a>
+                <a href="http://itarin.tunelink.to/bruhbruhbruh" target="_blank" class="relative inline-block track-container">
+                    <img src="images/trailer park houses.png" alt="Track 2" class="rounded-xl w-full h-full object-cover" />
+                </a>
+                <a href="https://tunelink.to/lUvRX" target="_blank" class="relative inline-block track-container">
+                    <img src="images/Never Concentrate extended.png" alt="Album 1" class="rounded-xl w-full h-full object-cover" />
+                </a>
+                <a href="https://itarin.tunelink.to/ExampleNeeded" target="_blank" class="relative inline-block track-container">
+                    <img src="images/example needed cover art.png" alt="Album 2" class="rounded-xl w-full h-full object-cover" />
+                </a>
+                <a href="http://tunelink.to/F9STu" target="_blank" class="relative inline-block track-container">
+                    <img src="images/P3pto Dont talk.png" alt="Track 3" class="rounded-xl w-full h-full object-cover" />
+                </a>
+                
+                <!-- Duplicate set for seamless loop -->
+                <a href="https://tunelink.to/goanddie" target="_blank" class="relative inline-block track-container">
+                    <img src="images/go and die cover.png" alt="Track 1" class="rounded-xl w-full h-full object-cover" />
+                </a>
+                <a href="http://itarin.tunelink.to/bruhbruhbruh" target="_blank" class="relative inline-block track-container">
+                    <img src="images/trailer park houses.png" alt="Track 2" class="rounded-xl w-full h-full object-cover" />
+                </a>
+                <a href="https://tunelink.to/lUvRX" target="_blank" class="relative inline-block track-container">
+                    <img src="images/Never Concentrate extended.png" alt="Album 1" class="rounded-xl w-full h-full object-cover" />
+                </a>
+                <a href="https://itarin.tunelink.to/ExampleNeeded" target="_blank" class="relative inline-block track-container">
+                    <img src="images/example needed cover art.png" alt="Album 2" class="rounded-xl w-full h-full object-cover" />
+                </a>
+                <a href="http://tunelink.to/F9STu" target="_blank" class="relative inline-block track-container">
+                    <img src="images/P3pto Dont talk.png" alt="Track 3" class="rounded-xl w-full h-full object-cover" />
+                </a>
             </div>
         </div>
-        <!-- 💿 MUSIC SCROLL AREA END -->
-
     </div>
+</div>
+</body>
+</html>
