@@ -34,7 +34,10 @@
     <!-- Above-the-fold assets -->
     <link rel="preload" href="fonts/Excelorate.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="images/logospin.gif" as="image">
-    <link rel="stylesheet" href="style.css">
+    <!-- Bump ?v= whenever style.css or marquee.js changes. GitHub Pages caches
+         assets for 10 minutes, so without this a returning visitor can get new
+         HTML with an old stylesheet. -->
+    <link rel="stylesheet" href="style.css?v=2">
 </head>
 
 <body>
@@ -60,6 +63,17 @@
                     <path d="M8.3 15.3c2.2-.55 4.5-.3 6.4.8"/>
                 </svg>
                 <span class="sr-only">Spotify</span>
+            </a>
+
+            <!-- Storefront-neutral: Apple redirects each visitor to their own region. -->
+            <a href="https://music.apple.com/artist/1544516484" target="_blank" rel="noopener">
+                <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                    <rect x="2.6" y="2.6" width="18.8" height="18.8" rx="5.2"/>
+                    <path d="M10.6 15.6V9.1l6.1-1.25v6.4"/>
+                    <ellipse cx="9" cy="15.75" rx="1.75" ry="1.5" fill="currentColor" stroke="none"/>
+                    <ellipse cx="15.1" cy="14.5" rx="1.75" ry="1.5" fill="currentColor" stroke="none"/>
+                </svg>
+                <span class="sr-only">Apple Music</span>
             </a>
 
             <a href="https://soundcloud.com/itarin" target="_blank" rel="noopener">
@@ -182,6 +196,6 @@
         gtag('config', 'G-QHN65GKBTW');
     </script>
     <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
-    <script src="marquee.js" defer></script>
+    <script src="marquee.js?v=2" defer></script>
 </body>
 </html>
