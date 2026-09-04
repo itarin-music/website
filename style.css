@@ -199,16 +199,31 @@ footer p { margin: 0; }
 }
 
 /* Marquee -----------------------------------------------------------------
-   Two identical racks sit side by side inside .marquee__track. Translating the
-   track by exactly -50% lands the second rack where the first one started, so
-   the loop is seamless. Spacing lives on .card (margin-right), NOT on a flex
-   gap, so that -50% stays exact. */
+   Base state (no JS, or reduced motion): a plain horizontal scroller holding
+   one rack. marquee.js upgrades it by wrapping the rack in .marquee__track,
+   cloning enough copies to cover the viewport, and driving it from rAF.
+   Spacing lives on .card (margin-right) rather than a flex gap so the script
+   can compute one rack's width as simply card-width x count. */
 
 .marquee {
   width: 100%;
-  overflow: hidden;
-  /* Vertical breathing room so the hover lift + glow aren't clipped. */
   padding-block: 14px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  scroll-snap-type: x proximity;
+}
+
+.marquee::-webkit-scrollbar { display: none; }
+
+/* Once the script is driving it, the belt is transform-positioned and must not
+   scroll natively as well. */
+.marquee.is-live {
+  overflow: hidden;
+  scroll-snap-type: none;
+  cursor: grab;
+  touch-action: pan-y;                 /* horizontal drags move the belt, vertical still scrolls the page */
   -webkit-mask-image: linear-gradient(90deg,
             transparent 0, #000 var(--fade),
             #000 calc(100% - var(--fade)), transparent 100%);
@@ -217,19 +232,13 @@ footer p { margin: 0; }
             #000 calc(100% - var(--fade)), transparent 100%);
 }
 
+.marquee.is-grabbing { cursor: grabbing; }
+.marquee.is-grabbing .card a { transform: none; }
+
 .marquee__track {
   display: flex;
   width: max-content;
-  animation: marquee 46s linear infinite;
   will-change: transform;
-}
-
-.marquee:hover .marquee__track,
-.marquee:focus-within .marquee__track { animation-play-state: paused; }
-
-@keyframes marquee {
-  from { transform: translateX(0); }
-  to   { transform: translateX(-50%); }
 }
 
 .rack {
@@ -243,6 +252,7 @@ footer p { margin: 0; }
   width: var(--card);
   margin-right: var(--gap);
   flex: 0 0 auto;
+  scroll-snap-align: center;
 }
 
 .card a {
@@ -264,6 +274,9 @@ footer p { margin: 0; }
   border: 1px solid rgba(255, 255, 255, 0.09);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.55);
   transition: box-shadow 0.28s ease, border-color 0.28s ease;
+  -webkit-user-select: none;
+          user-select: none;
+  -webkit-user-drag: none;
 }
 
 .card__title,
@@ -273,6 +286,8 @@ footer p { margin: 0; }
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  -webkit-user-select: none;
+          user-select: none;
 }
 
 .card__title {
@@ -300,9 +315,6 @@ footer p { margin: 0; }
   box-shadow: 0 16px 40px rgba(0, 0, 0, 0.65),
               0 0 26px rgba(127, 214, 238, 0.2);
 }
-
-.card a:hover .card__title,
-.card a:focus-visible .card__title { color: var(--ink); }
 
 /* --- Focus + skip link ---------------------------------------------------- */
 
@@ -369,22 +381,14 @@ footer p { margin: 0; }
     background-image: url("images/bg-static.webp");
   }
 
-  /* Stop the conveyor; let people scroll the rack themselves instead. */
-  .marquee__track { animation: none; }
-
+  /* marquee.js bails out entirely here, so the rack stays a plain scroller.
+     Centre it when it fits; `safe` keeps the left edge reachable when it
+     doesn't, and browsers without `safe` fall back to flex-start. */
   .marquee {
     display: flex;
     justify-content: safe center;
-    overflow-x: auto;
-    scrollbar-width: none;
-    -webkit-mask-image: none;
-            mask-image: none;
     padding-inline: 1rem;
   }
-
-  .marquee::-webkit-scrollbar { display: none; }
-
-  .marquee__track > .rack[aria-hidden="true"] { display: none; }
 
   *,
   *::before,

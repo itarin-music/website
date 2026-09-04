@@ -37,20 +37,37 @@ loads about 850 KB.
 
 1. Put the master art in `images/`.
 2. Generate `<slug>-400.webp`, `<slug>-800.webp` and `<slug>-400.jpg` from it.
-3. Add an `<li class="card">` to **both** racks in `index.html`.
+3. Add one `<li class="card">` to the single `<ul class="rack">` in `index.html`.
 
-The second rack is a duplicate of the first — that is what makes the marquee
-loop seamlessly. It is marked `aria-hidden="true"` and its links carry
-`tabindex="-1"` so screen readers and keyboard users only meet each release
-once. **If the two racks ever differ, the loop will visibly jump.**
+That is the whole edit — there is only one rack in the markup.
 
 ## How the marquee works
 
-Both racks sit side by side in `.marquee__track`, which animates to
-`translateX(-50%)`. That lands rack two exactly where rack one started. The
-spacing between covers is `margin-right` on `.card`, *not* a flex `gap` — a gap
-would be added once between the two racks and throw the 50% off.
+`marquee.js` is a progressive enhancement. The HTML ships one rack of covers
+inside `.marquee`, which CSS styles as an ordinary horizontal scroller. If the
+script runs, it wraps that rack in a `.marquee__track`, clones it enough times
+to cover the viewport plus one full rack, and drives the position from
+`requestAnimationFrame`.
 
-It pauses on hover and on keyboard focus. Under
-`prefers-reduced-motion: reduce` the animation stops entirely, the duplicate
-rack is hidden, and the row becomes a normal horizontal scroller.
+Position is kept modulo one rack's width, so the wrap is exact — frames at
+`offset` and `offset + rackWidth` are pixel-identical at every viewport width.
+(The earlier CSS-animation version hardcoded two racks and left a visible gap
+at the loop point on any screen wider than one rack.)
+
+Spacing between covers is `margin-right` on `.card`, *not* a flex `gap`, so one
+rack's width is exactly `(card width + margin) x card count`.
+
+Behaviour:
+
+- pauses on hover, resumes when the pointer leaves
+- click and drag to move it; release with speed to throw it, and it coasts to a
+  stop before auto-scroll resumes
+- a drag never opens the release underneath it; a click does
+- keyboard focus pauses it (`:focus-visible` only, so clicking a cover doesn't
+  stop it permanently)
+- under `prefers-reduced-motion: reduce` the script bails out entirely and the
+  rack stays a plain, manually scrollable row
+- with JavaScript off, likewise
+
+`document.querySelector('.marquee').marquee` exposes `offset`, `rackWidth`,
+`pause()` and `resume()` if you need to poke at it in the console.
