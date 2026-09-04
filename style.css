@@ -1,178 +1,405 @@
-html {
-  background: url(images/websitebackground.webp) no-repeat center center fixed;
-  background-color: #000000;
-  -webkit-background-size: cover;
-  -moz-background-size: cover;
-  -o-background-size: cover;
-  background-size: cover;
-  position: relative;
-}
-
-body {
-  height: 200%;
-  width: 200%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  font-family: "Excelorate";
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  color: rgb(0, 0, 0);
-}
-
-body::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 200%;
-  height: 200%;
-  backdrop-filter: blur(3px) brightness(90%);
-  background-color: rgba(0, 0, 0, 0.3);
-  z-index: -1;
-}
+/* ==========================================================================
+   itarin.online
+   ========================================================================== */
 
 @font-face {
- font-family: "Excelorate"; 
- src: url(fonts/Excelorate-Font.otf);
+  font-family: "Excelorate";
+  src: url("fonts/Excelorate.woff2") format("woff2"),
+       url("fonts/Excelorate-Font.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
 }
 
-.icon {
-  display: inline-block;
-  transition: transform 0.2s ease-in-out;
+:root {
+  --ink:        #eef2f7;
+  --ink-dim:    rgba(238, 242, 247, 0.62);
+  --ink-faint:  rgba(238, 242, 247, 0.38);
+  --accent:     #7fd6ee;
+  --void:       #05070a;
+
+  --gap:        20px;   /* space between cover cards - marquee math depends on it */
+  --card:       200px;  /* cover size on desktop */
+  --fade:       clamp(56px, 12vw, 130px);  /* marquee edge dissolve */
+
+  --display: "Excelorate", "Arial Narrow", sans-serif;
+  --body: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+          "Helvetica Neue", Arial, sans-serif;
 }
 
-.icon:hover {
-  transform: scale(1.1);
-}
+*,
+*::before,
+*::after { box-sizing: border-box; }
 
-h2 {
-  font-family: "Excelorate", sans-serif;
-  text-align: center;
-  color: rgb(255, 255, 255);
-  text-decoration: none;
-  -webkit-text-stroke: 0px rgb(0, 0, 0);
-  font-size: 45px;
-  text-shadow: 2px 2px 4px #000000;
-  height: 150px;
-  background-image: url('images/logospin.gif');
-  background-size: 400px 400px;
-  background-repeat: no-repeat;
-  background-position: center;
-}
+html { -webkit-text-size-adjust: 100%; }
 
-.glow {
-  transition: text-shadow 0.2s ease-in-out;
-}
-
-.glow:hover {
-  text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
-}
-
-h1 {
-  text-decoration: none;
-  color: rgb(255, 255, 255);
-  font-size: 45px;
-  text-align: center;
-  text-shadow: 2px 2px 4px #000000;
+body {
+  margin: 0;
+  min-height: 100vh;
+  min-height: 100svh;
   display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: center;
+  flex-direction: column;
+  background-color: var(--void);
+  color: var(--ink);
+  font-family: var(--body);
+  font-size: 16px;
+  line-height: 1.45;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
 }
 
-h1 img {
-  width: 150px;
-  -webkit-filter: drop-shadow(2px 2px 4px #000);
-  filter: drop-shadow(2px 2px 4px #000);
+/* --- Background ----------------------------------------------------------
+   Animated rain loop, blurred and dimmed, with a vignette scrim on top.
+   Scaled slightly past the viewport so the blur doesn't bleed at the edges. */
+
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  background: var(--void) url("images/bg.webp") center / cover no-repeat;
+  filter: blur(6px) brightness(0.34) saturate(1.15);
+  transform: scale(1.08);
+  pointer-events: none;
 }
 
-a:link {
-  text-decoration: none;
-  margin-right: 10px;
+.backdrop::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(120% 78% at 50% 46%,
+      rgba(5, 7, 10, 0) 0%,
+      rgba(5, 7, 10, 0.35) 55%,
+      rgba(5, 7, 10, 0.9) 100%),
+    linear-gradient(180deg,
+      rgba(5, 7, 10, 0.55) 0%,
+      rgba(5, 7, 10, 0.1) 32%,
+      rgba(5, 7, 10, 0.1) 62%,
+      rgba(5, 7, 10, 0.75) 100%);
+}
+
+/* --- Layout --------------------------------------------------------------- */
+
+main {
+  flex: 1;
   display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
-  word-spacing: 5cm;
-}
-
-@media (prefers-color-scheme: dark) {
-  body {
-    background-color: initial !important;
-  }
-
-  body,
-  p,
-  a,
-  span,
-  h1,
-  h2,
-  h4,
-  h5,
-  h6 {
-    color: rgb(255, 255, 255);
-  }
-
-  .social-icons {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 15px;
-    max-width: 300px;
-    margin: auto;
-  }
-
-  .icon {
-    font-size: 3rem;
-    transition: transform 0.2s;
-  }
-
-  .icon a {
-    text-decoration: none;
-    color: white;
-  }
-
-  .icon:hover {
-    transform: scale(1.1);
-  }
+  justify-content: center;
+  gap: clamp(1.4rem, 4.5vh, 2.9rem);
+  padding: clamp(1.75rem, 5vh, 3rem) 0;
+  width: 100%;
 }
 
 footer {
-  text-decoration: none;
-  color: rgb(255, 255, 255);
-  font-size: 20px;
+  padding: 1rem 1.25rem 1.5rem;
   text-align: center;
-  text-shadow: 2px 2px 4px #000000;
+  font-size: 0.75rem;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+footer p { margin: 0; }
+
+/* --- Wordmark ------------------------------------------------------------- */
+
+.mark {
+  margin: 0;
+  line-height: 0;
+}
+
+.mark img {
+  display: block;
+  width: clamp(250px, 56vw, 440px);
+  height: auto;
+  filter: drop-shadow(0 4px 26px rgba(0, 0, 0, 0.8))
+          drop-shadow(0 0 40px rgba(127, 214, 238, 0.14));
+}
+
+/* --- Social row ----------------------------------------------------------- */
+
+.social {
   display: flex;
-  flex-wrap: nowrap;
+  flex-wrap: wrap;
   justify-content: center;
-  align-items: center;
+  gap: clamp(0.75rem, 3vw, 1.4rem);
 }
 
-h3 {
-  font-family: "Excelorate", sans-serif;
-  text-align: center;
-  color: rgb(255, 255, 255);
+.social a {
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  color: var(--ink);
   text-decoration: none;
-  -webkit-text-stroke: 0px rgb(0, 0, 0);
-  font-size: 45px;
-  text-shadow: 2px 2px 4px #000000;
-  background-size: cover;
-  background-position: center;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  transition: transform 0.22s ease, color 0.22s ease,
+              background-color 0.22s ease, border-color 0.22s ease,
+              box-shadow 0.22s ease;
 }
 
-/* Hide scrollbars (modern + legacy browsers) */
-.no-scrollbar {
-  scrollbar-width: none;
-  -ms-overflow-style: none;
+.social svg {
+  width: 21px;
+  height: 21px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
-.no-scrollbar::-webkit-scrollbar {
-  display: none;
+.social a:hover,
+.social a:focus-visible {
+  transform: translateY(-3px);
+  color: var(--accent);
+  background: rgba(127, 214, 238, 0.12);
+  border-color: rgba(127, 214, 238, 0.45);
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.45),
+              0 0 18px rgba(127, 214, 238, 0.22);
+}
+
+/* --- Releases ------------------------------------------------------------- */
+
+.releases {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.15rem;
+}
+
+.section-label {
+  margin: 0;
+  font-family: var(--display);
+  font-size: clamp(0.95rem, 2.4vw, 1.15rem);
+  font-weight: 400;
+  letter-spacing: 0.22em;
+  text-transform: lowercase;
+  color: var(--ink-dim);
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+}
+
+.section-label::before,
+.section-label::after {
+  content: "";
+  width: clamp(26px, 7vw, 64px);
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(238, 242, 247, 0.35));
+}
+
+.section-label::after {
+  background: linear-gradient(90deg, rgba(238, 242, 247, 0.35), transparent);
+}
+
+/* Marquee -----------------------------------------------------------------
+   Two identical racks sit side by side inside .marquee__track. Translating the
+   track by exactly -50% lands the second rack where the first one started, so
+   the loop is seamless. Spacing lives on .card (margin-right), NOT on a flex
+   gap, so that -50% stays exact. */
+
+.marquee {
+  width: 100%;
+  overflow: hidden;
+  /* Vertical breathing room so the hover lift + glow aren't clipped. */
+  padding-block: 14px;
+  -webkit-mask-image: linear-gradient(90deg,
+            transparent 0, #000 var(--fade),
+            #000 calc(100% - var(--fade)), transparent 100%);
+          mask-image: linear-gradient(90deg,
+            transparent 0, #000 var(--fade),
+            #000 calc(100% - var(--fade)), transparent 100%);
+}
+
+.marquee__track {
+  display: flex;
+  width: max-content;
+  animation: marquee 46s linear infinite;
+  will-change: transform;
+}
+
+.marquee:hover .marquee__track,
+.marquee:focus-within .marquee__track { animation-play-state: paused; }
+
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+.rack {
+  display: flex;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.card {
+  width: var(--card);
+  margin-right: var(--gap);
+  flex: 0 0 auto;
+}
+
+.card a {
+  display: block;
+  color: var(--ink);
+  text-decoration: none;
+  border-radius: 14px;
+  transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.card img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.55);
+  transition: box-shadow 0.28s ease, border-color 0.28s ease;
+}
+
+.card__title,
+.card__meta {
+  display: block;
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.card__title {
+  margin-top: 0.7rem;
+  font-size: 0.85rem;
+  letter-spacing: 0.02em;
+  color: var(--ink-dim);
+  transition: color 0.22s ease;
+}
+
+.card__meta {
+  margin-top: 0.12rem;
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+.card a:hover,
+.card a:focus-visible { transform: translateY(-6px) scale(1.03); }
+
+.card a:hover img,
+.card a:focus-visible img {
+  border-color: rgba(127, 214, 238, 0.5);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.65),
+              0 0 26px rgba(127, 214, 238, 0.2);
+}
+
+.card a:hover .card__title,
+.card a:focus-visible .card__title { color: var(--ink); }
+
+/* --- Focus + skip link ---------------------------------------------------- */
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+}
+
+.skip-link {
+  position: absolute;
+  left: 50%;
+  top: 0.75rem;
+  transform: translate(-50%, -220%);
+  z-index: 10;
+  padding: 0.55rem 1rem;
+  border-radius: 999px;
+  background: var(--void);
+  border: 1px solid var(--accent);
+  color: var(--ink);
+  font-size: 0.8rem;
+  text-decoration: none;
+  transition: transform 0.2s ease;
+}
+
+.skip-link:focus { transform: translate(-50%, 0); }
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* --- Small screens -------------------------------------------------------- */
+
+@media (max-width: 600px) {
+  :root {
+    --card: 150px;
+    --gap: 14px;
+  }
+
+  .mark img { width: min(74vw, 300px); }
+  .social a { width: 42px; height: 42px; }
+  .social svg { width: 19px; height: 19px; }
+  .card__title { font-size: 0.78rem; }
+}
+
+/* Short landscape windows: tighten so everything still fits without scrolling */
+@media (max-height: 560px) and (min-width: 601px) {
+  :root { --card: 140px; }
+  .mark img { width: clamp(150px, 22vw, 200px); }
+  main { gap: 1.1rem; }
+}
+
+/* --- Motion preferences --------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .backdrop {
+    background-image: url("images/bg-static.webp");
+  }
+
+  /* Stop the conveyor; let people scroll the rack themselves instead. */
+  .marquee__track { animation: none; }
+
+  .marquee {
+    display: flex;
+    justify-content: safe center;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -webkit-mask-image: none;
+            mask-image: none;
+    padding-inline: 1rem;
+  }
+
+  .marquee::-webkit-scrollbar { display: none; }
+
+  .marquee__track > .rack[aria-hidden="true"] { display: none; }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* --- Light-mode safety net -----------------------------------------------
+   The page is dark by design in every colour scheme; this just stops a
+   forced-light UA from washing anything out. */
+
+@media (prefers-color-scheme: light) {
+  body { background-color: var(--void); color: var(--ink); }
 }

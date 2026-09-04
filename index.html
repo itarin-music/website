@@ -1,7 +1,205 @@
 <!DOCTYPE html>
 <html lang="en">
-<head> 
-    <!-- Google tag (gtag.js) -->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>itarin — official site</title>
+    <meta name="description" content="Official site of itarin. Releases, links, and where to listen.">
+    <meta name="theme-color" content="#05070a">
+    <link rel="canonical" href="https://itarin.online/">
+
+    <!-- Social previews -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="itarin">
+    <meta property="og:title" content="itarin">
+    <meta property="og:description" content="Releases, links, and where to listen.">
+    <meta property="og:url" content="https://itarin.online/">
+    <meta property="og:image" content="https://itarin.online/images/og.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="itarin">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="itarin">
+    <meta name="twitter:description" content="Releases, links, and where to listen.">
+    <meta name="twitter:image" content="https://itarin.online/images/og.jpg">
+
+    <!-- Icons -->
+    <link rel="icon" href="/favicon/favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png">
+    <link rel="manifest" href="/site.webmanifest">
+
+    <!-- Above-the-fold assets -->
+    <link rel="preload" href="fonts/Excelorate.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="images/logospin.gif" as="image">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="backdrop" aria-hidden="true"></div>
+
+    <a class="skip-link" href="#releases">Skip to releases</a>
+
+    <main>
+        <h1 class="mark">
+            <picture>
+                <source media="(prefers-reduced-motion: reduce)" srcset="images/logo-static.webp">
+                <img src="images/logospin.gif" alt="itarin" width="234" height="66"
+                     fetchpriority="high" decoding="async">
+            </picture>
+        </h1>
+
+        <nav class="social" aria-label="itarin on other platforms">
+            <a href="https://open.spotify.com/artist/6Vc7Y1CkrxACHNHLLHsQ9P" target="_blank" rel="noopener">
+                <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                    <circle cx="12" cy="12" r="9.4"/>
+                    <path d="M7.1 9.1c3.3-.95 6.9-.6 9.8 1.05"/>
+                    <path d="M7.7 12.3c2.7-.75 5.7-.45 8.1.9"/>
+                    <path d="M8.3 15.3c2.2-.55 4.5-.3 6.4.8"/>
+                </svg>
+                <span class="sr-only">Spotify</span>
+            </a>
+
+            <a href="https://soundcloud.com/itarin" target="_blank" rel="noopener">
+                <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                    <path d="M2.8 14v-2.6M5.4 15.2v-5M8 15.2V8.6M10.6 15.2V7.2"/>
+                    <path d="M13.2 15.2V7.6c2.6-1 5.4.8 5.7 3.6h.6a2 2 0 0 1 0 4z"/>
+                </svg>
+                <span class="sr-only">SoundCloud</span>
+            </a>
+
+            <a href="https://www.instagram.com/itarin.png/" target="_blank" rel="noopener">
+                <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                    <rect x="2.9" y="2.9" width="18.2" height="18.2" rx="5.3"/>
+                    <circle cx="12" cy="12" r="4.1"/>
+                    <circle cx="17.3" cy="6.7" r="1.15" fill="currentColor" stroke="none"/>
+                </svg>
+                <span class="sr-only">Instagram</span>
+            </a>
+
+            <a href="https://www.twitch.tv/itarinmp3" target="_blank" rel="noopener">
+                <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                    <path d="M4.2 2.9h15.6v10.4l-3.9 3.9h-3.2l-2.6 2.6H7.5v-2.6H4.2z"/>
+                    <path d="M10.4 7.1v4.3M14.9 7.1v4.3"/>
+                </svg>
+                <span class="sr-only">Twitch</span>
+            </a>
+
+            <a href="mailto:itarin@itarin.online">
+                <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                    <rect x="2.6" y="4.6" width="18.8" height="14.8" rx="2.6"/>
+                    <path d="M3.6 6.6 12 12.9l8.4-6.3"/>
+                </svg>
+                <span class="sr-only">Email</span>
+            </a>
+        </nav>
+
+        <section class="releases" id="releases" aria-labelledby="releases-heading">
+            <h2 class="section-label" id="releases-heading">releases</h2>
+
+            <div class="marquee">
+                <div class="marquee__track">
+                    <ul class="rack">
+                        <li class="card">
+                            <a href="https://tunelink.to/goanddie" target="_blank" rel="noopener">
+                                <img src="images/go-and-die-400.webp"
+                                     srcset="images/go-and-die-400.webp 400w, images/go-and-die-800.webp 800w"
+                                     sizes="(max-width: 600px) 150px, 200px"
+                                     alt="Go and Die — cover art" width="400" height="400" decoding="async">
+                                <span class="card__title">Go and Die</span>
+                            </a>
+                        </li>
+                        <li class="card">
+                            <a href="https://itarin.tunelink.to/bruhbruhbruh" target="_blank" rel="noopener">
+                                <img src="images/trailer-park-houses-400.webp"
+                                     srcset="images/trailer-park-houses-400.webp 400w, images/trailer-park-houses-800.webp 800w"
+                                     sizes="(max-width: 600px) 150px, 200px"
+                                     alt="Built This Town — cover art" width="400" height="400" decoding="async">
+                                <span class="card__title">Built This Town</span>
+                                <span class="card__meta">itarin &times; Sovkie</span>
+                            </a>
+                        </li>
+                        <li class="card">
+                            <a href="https://tunelink.to/lUvRX" target="_blank" rel="noopener">
+                                <img src="images/never-concentrate-400.webp"
+                                     srcset="images/never-concentrate-400.webp 400w, images/never-concentrate-800.webp 800w"
+                                     sizes="(max-width: 600px) 150px, 200px"
+                                     alt="Never Concentrate (Extended) — cover art" width="400" height="400" decoding="async">
+                                <span class="card__title">Never Concentrate</span>
+                                <span class="card__meta">Extended</span>
+                            </a>
+                        </li>
+                        <li class="card">
+                            <a href="https://itarin.tunelink.to/ExampleNeeded" target="_blank" rel="noopener">
+                                <img src="images/example-needed-400.webp"
+                                     srcset="images/example-needed-400.webp 400w, images/example-needed-800.webp 800w"
+                                     sizes="(max-width: 600px) 150px, 200px"
+                                     alt="Example Needed — cover art" width="400" height="400" decoding="async">
+                                <span class="card__title">Example Needed</span>
+                                <span class="card__meta">itarin &amp; Sovkie</span>
+                            </a>
+                        </li>
+                        <li class="card">
+                            <a href="https://tunelink.to/F9STu" target="_blank" rel="noopener">
+                                <img src="images/dont-talk-400.webp"
+                                     srcset="images/dont-talk-400.webp 400w, images/dont-talk-800.webp 800w"
+                                     sizes="(max-width: 600px) 150px, 200px"
+                                     alt="P3pto // Don&apos;t Talk to M3 — cover art" width="400" height="400" decoding="async">
+                                <span class="card__title">Don&rsquo;t Talk to M3</span>
+                                <span class="card__meta">P3pto</span>
+                            </a>
+                        </li>
+                    </ul>
+
+                    <!-- Duplicate rack: makes the loop seamless. Hidden from assistive tech. -->
+                    <ul class="rack" aria-hidden="true">
+                        <li class="card">
+                            <a href="https://tunelink.to/goanddie" target="_blank" rel="noopener" tabindex="-1">
+                                <img src="images/go-and-die-400.webp" srcset="images/go-and-die-400.webp 400w, images/go-and-die-800.webp 800w" sizes="(max-width: 600px) 150px, 200px" alt="" width="400" height="400" decoding="async">
+                                <span class="card__title">Go and Die</span>
+                            </a>
+                        </li>
+                        <li class="card">
+                            <a href="https://itarin.tunelink.to/bruhbruhbruh" target="_blank" rel="noopener" tabindex="-1">
+                                <img src="images/trailer-park-houses-400.webp" srcset="images/trailer-park-houses-400.webp 400w, images/trailer-park-houses-800.webp 800w" sizes="(max-width: 600px) 150px, 200px" alt="" width="400" height="400" decoding="async">
+                                <span class="card__title">Built This Town</span>
+                                <span class="card__meta">itarin &times; Sovkie</span>
+                            </a>
+                        </li>
+                        <li class="card">
+                            <a href="https://tunelink.to/lUvRX" target="_blank" rel="noopener" tabindex="-1">
+                                <img src="images/never-concentrate-400.webp" srcset="images/never-concentrate-400.webp 400w, images/never-concentrate-800.webp 800w" sizes="(max-width: 600px) 150px, 200px" alt="" width="400" height="400" decoding="async">
+                                <span class="card__title">Never Concentrate</span>
+                                <span class="card__meta">Extended</span>
+                            </a>
+                        </li>
+                        <li class="card">
+                            <a href="https://itarin.tunelink.to/ExampleNeeded" target="_blank" rel="noopener" tabindex="-1">
+                                <img src="images/example-needed-400.webp" srcset="images/example-needed-400.webp 400w, images/example-needed-800.webp 800w" sizes="(max-width: 600px) 150px, 200px" alt="" width="400" height="400" decoding="async">
+                                <span class="card__title">Example Needed</span>
+                                <span class="card__meta">itarin &amp; Sovkie</span>
+                            </a>
+                        </li>
+                        <li class="card">
+                            <a href="https://tunelink.to/F9STu" target="_blank" rel="noopener" tabindex="-1">
+                                <img src="images/dont-talk-400.webp" srcset="images/dont-talk-400.webp 400w, images/dont-talk-800.webp 800w" sizes="(max-width: 600px) 150px, 200px" alt="" width="400" height="400" decoding="async">
+                                <span class="card__title">Don&rsquo;t Talk to M3</span>
+                                <span class="card__meta">P3pto</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; <span id="year">2026</span> itarin</p>
+    </footer>
+
+    <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-QHN65GKBTW"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
@@ -9,133 +207,6 @@
         gtag('js', new Date());
         gtag('config', 'G-QHN65GKBTW');
     </script>
-    <link rel="icon" href="/images/logo.png">
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>itarin - official site</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="favicon/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="favicon/favicon-16x16.png">
-    <link rel="manifest" href="favicon/site.webmanifest">
-    <link rel="stylesheet" href="assets/css/main.css?version=1.3">
-    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" crossorigin="anonymous">
-    <link rel="stylesheet" type="text/css" href="styles.css">
-    
-    <!-- Tailwind for hover/scroll effects -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    
-    <style>
-        @keyframes scroll-left {
-            0% {
-                transform: translateX(0);
-            }
-            100% {
-                transform: translateX(-50%);
-            }
-        }
-
-        .music-scroll-wrapper {
-            display: flex;
-            overflow: hidden;
-            width: 100%;
-            position: relative;
-        }
-
-        .track-list {
-            display: flex;
-            gap: 20px;
-            animation: scroll-left 40s linear infinite;
-            will-change: transform;
-        }
-
-        .track-list:hover {
-            animation-play-state: paused;
-        }
-
-        .track-container {
-            width: 200px;
-            height: 200px;
-            flex-shrink: 0;
-            transition: transform 0.3s ease;
-        }
-
-        .track-container:hover {
-            transform: scale(1.05);
-        }
-
-        .track-container img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            border-radius: 12px;
-        }
-    </style>
-</head>
-<body class="bg-black text-white"> 
-    <div class="background-overlay"></div>
-    <div class="content">
-        <div class="sticky">
-            <h2> 
-                <link rel="icon" href="logospin.gif" type="image/gif" />
-            </h2>
-            <link rel="stylesheet" type="text/css" href="style.css">
-            <h1> 
-                <div class="social-icons">
-                    <div class="icon"><a href="https://www.instagram.com/itarin.png/" target="_blank"><i class="fab fa-instagram"></i></a></div>
-                    <div class="icon"><a href="mailto:itarin@itarin.online" target="_blank"><i class="fas fa-envelope"></i></a></div>
-                    <div class="icon"><a href="https://open.spotify.com/artist/6Vc7Y1CkrxACHNHLLHsQ9P?si=YJFnnaniT6KqTrTSa0Nt7g" target="_blank"><i class="fab fa-spotify"></i></a></div>
-                    <div class="icon"><a href="https://soundcloud.com/itarin" target="_blank"><i class="fab fa-soundcloud"></i></a></div>
-                    <div class="icon"><a href="https://www.twitch.tv/itarinmp3" target="_blank"><i class="fab fa-twitch"></i></a></div>
-                </div>
-            </h1>
-        </div>
-
-<!-- 💿 MUSIC SCROLL AREA START -->
-<div class="mt-2 px-4">
-    <h3 class="text-3xl font-bold mb-4 text-white text-center"></h3>
-
-    <div class="relative w-full overflow-x-hidden">
-        <div class="music-scroll-wrapper no-scrollbar">
-            <div class="track-list">
-                <!-- First set -->
-                <a href="https://tunelink.to/goanddie" target="_blank" class="relative inline-block track-container">
-                    <img src="images/go and die cover.png" alt="Track 1" class="rounded-xl w-full h-full object-cover" />
-                </a>
-                <a href="http://itarin.tunelink.to/bruhbruhbruh" target="_blank" class="relative inline-block track-container">
-                    <img src="images/trailer park houses.png" alt="Track 2" class="rounded-xl w-full h-full object-cover" />
-                </a>
-                <a href="https://tunelink.to/lUvRX" target="_blank" class="relative inline-block track-container">
-                    <img src="images/Never Concentrate extended.png" alt="Album 1" class="rounded-xl w-full h-full object-cover" />
-                </a>
-                <a href="https://itarin.tunelink.to/ExampleNeeded" target="_blank" class="relative inline-block track-container">
-                    <img src="images/example needed cover art.png" alt="Album 2" class="rounded-xl w-full h-full object-cover" />
-                </a>
-                <a href="http://tunelink.to/F9STu" target="_blank" class="relative inline-block track-container">
-                    <img src="images/P3pto Dont talk.png" alt="Track 3" class="rounded-xl w-full h-full object-cover" />
-                </a>
-                
-                <!-- Duplicate set for seamless loop -->
-                <a href="https://tunelink.to/goanddie" target="_blank" class="relative inline-block track-container">
-                    <img src="images/go and die cover.png" alt="Track 1" class="rounded-xl w-full h-full object-cover" />
-                </a>
-                <a href="http://itarin.tunelink.to/bruhbruhbruh" target="_blank" class="relative inline-block track-container">
-                    <img src="images/trailer park houses.png" alt="Track 2" class="rounded-xl w-full h-full object-cover" />
-                </a>
-                <a href="https://tunelink.to/lUvRX" target="_blank" class="relative inline-block track-container">
-                    <img src="images/Never Concentrate extended.png" alt="Album 1" class="rounded-xl w-full h-full object-cover" />
-                </a>
-                <a href="https://itarin.tunelink.to/ExampleNeeded" target="_blank" class="relative inline-block track-container">
-                    <img src="images/example needed cover art.png" alt="Album 2" class="rounded-xl w-full h-full object-cover" />
-                </a>
-                <a href="http://tunelink.to/F9STu" target="_blank" class="relative inline-block track-container">
-                    <img src="images/P3pto Dont talk.png" alt="Track 3" class="rounded-xl w-full h-full object-cover" />
-                </a>
-            </div>
-        </div>
-    </div>
-</div>
+    <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
 </body>
 </html>
