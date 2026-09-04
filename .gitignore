@@ -6,6 +6,7 @@ desktop.ini
 .vscode/
 .idea/
 
+
 # Never nest a clone inside the repo
 /website/
 /itarin-music/
