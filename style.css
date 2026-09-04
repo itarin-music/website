@@ -109,12 +109,14 @@ footer p { margin: 0; }
   line-height: 0;
 }
 
+/* The spinning wordmark is only 234px wide natively, so the display size is
+   kept close to it - the bigger it is drawn, the more the upscaling shows. */
 .mark img {
   display: block;
-  width: clamp(250px, 56vw, 440px);
+  width: clamp(230px, 34vw, 300px);
   height: auto;
-  filter: drop-shadow(0 4px 26px rgba(0, 0, 0, 0.8))
-          drop-shadow(0 0 40px rgba(127, 214, 238, 0.14));
+  filter: drop-shadow(0 3px 20px rgba(0, 0, 0, 0.8))
+          drop-shadow(0 0 30px rgba(127, 214, 238, 0.13));
 }
 
 /* --- Social row ----------------------------------------------------------- */
@@ -379,7 +381,7 @@ footer p { margin: 0; }
     --gap: 14px;
   }
 
-  .mark img { width: min(74vw, 300px); }
+  .mark img { width: min(66vw, 260px); }
   .social a { width: 42px; height: 42px; }
   .social svg { width: 19px; height: 19px; }
   .card__title { font-size: 0.78rem; }
