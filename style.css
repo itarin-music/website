@@ -741,3 +741,32 @@ footer p { margin: 0; }
 .cd--pair > a:not(.cd__buy):focus-visible .cd__disc {
   translate: -34% -50%;
 }
+
+/* --- shop: align every caption row across the three cards -----------------
+   Titles and format lines wrap to different numbers of lines per card, so
+   prices ended up at different heights. Subgrid hands each card the same five
+   rows (art, title, format, price, button) off the parent grid, so every row
+   is as tall as its tallest card and the text lines up across all three.
+   Browsers without subgrid keep the old flex layout. */
+
+@supports (grid-template-rows: subgrid) {
+  .shop__grid {
+    grid-template-rows: repeat(5, auto);
+    row-gap: 0;
+  }
+
+  .cd {
+    display: grid;
+    grid-row: span 5;
+    grid-template-rows: subgrid;
+  }
+
+  /* the link wraps art + title + format + price, so it spans the first four */
+  .cd > a:not(.cd__buy) {
+    display: grid;
+    grid-row: span 4;
+    grid-template-rows: subgrid;
+  }
+
+  .cd__buy { align-self: end; }
+}
