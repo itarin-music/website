@@ -283,7 +283,8 @@ footer p { margin: 0; }
    feature credit. Images stay top-aligned, so a taller caption on one card
    doesn't shift the others. */
 .card__title,
-.card__meta {
+.card__meta,
+.card__date {
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
@@ -310,6 +311,17 @@ footer p { margin: 0; }
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--ink-faint);
+}
+
+.card__date {
+  -webkit-line-clamp: 1;
+  margin-top: 0.3rem;
+  font-size: 0.64rem;
+  line-height: 1.3;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(238, 242, 247, 0.28);
+  font-variant-numeric: tabular-nums;
 }
 
 .card a:hover,
