@@ -446,9 +446,10 @@ footer p { margin: 0; }
 
 .shop__grid {
   display: grid;
-  grid-template-columns: repeat(2, var(--card));
+  width: 100%;
+  grid-template-columns: repeat(3, var(--card));
   justify-content: center;
-  gap: clamp(1.75rem, 6vw, 4.5rem);
+  gap: clamp(1.25rem, 5vw, 3.5rem);
 }
 
 .cd {
@@ -652,17 +653,25 @@ footer p { margin: 0; }
 }
 
 @media (max-width: 600px) {
-  .shop { padding-inline: 1rem; }
-  .shop__grid { gap: 1.15rem; }
+  .shop { padding-inline: 0.85rem; }
+
+  /* three fixed columns won't fit a phone, so let them share the width */
+  .shop__grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.6rem;
+  }
 
   /* less overhang so the disc stays inside the page at this width */
   .cd__disc { translate: -34% -50%; }
 
-  .cd__title  { font-size: 0.78rem; }
-  .cd__format { font-size: 0.56rem; letter-spacing: 0.06em; }
-  .cd__price  { font-size: 0.8rem; }
-  .cd__price span { font-size: 0.62rem; }
-  .cd__buy { font-size: 0.6rem; letter-spacing: 0.06em; padding: 0.5rem 0.35rem; }
+  .cd > a:not(.cd__buy),
+  .cd > .cd__art { margin-bottom: 0.6rem; }
+
+  .cd__title  { font-size: 0.7rem; line-height: 1.25; }
+  .cd__format { font-size: 0.5rem; letter-spacing: 0.04em; margin-top: 0.22rem; }
+  .cd__price  { font-size: 0.72rem; margin-top: 0.38rem; }
+  .cd__price span { font-size: 0.56rem; }
+  .cd__buy { font-size: 0.55rem; letter-spacing: 0.04em; padding: 0.45rem 0.2rem; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -675,9 +684,60 @@ footer p { margin: 0; }
 @media (max-width: 360px) {
   .shop { padding-inline: 0.6rem; }
   .shop__grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 0.75rem;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.55rem;
   }
+
   /* pull the disc almost fully behind the sleeve at this width */
   .cd__disc { translate: -44% -50%; }
+}
+
+/* --- bundle card: both sleeves, fanned ------------------------------------
+   Offset far enough that each cover stays identifiable - the point of the card
+   is recognising both albums at a glance. */
+
+.cd__art--pair .cd__sleeve {
+  position: absolute;
+  width: 66%;
+  height: 66%;
+  transition: transform 0.42s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.42s ease;
+}
+
+.cd__sleeve--back {
+  top: 2%;
+  left: 0;
+  z-index: 1;
+  transform: rotate(-7deg);
+  filter: brightness(0.92);
+}
+
+.cd__sleeve--front {
+  bottom: 2%;
+  right: 0;
+  z-index: 2;
+  transform: rotate(5deg);
+}
+
+/* one disc tucked behind, top-right */
+.cd__art--pair .cd__disc {
+  width: 52%;
+  top: 26%;
+  left: 74%;
+  translate: -50% -50%;
+  z-index: 0;
+}
+
+.cd--pair > a:not(.cd__buy):hover .cd__sleeve--back,
+.cd--pair > a:not(.cd__buy):focus-visible .cd__sleeve--back {
+  transform: rotate(-11deg) translate(-6%, -4%);
+}
+
+.cd--pair > a:not(.cd__buy):hover .cd__sleeve--front,
+.cd--pair > a:not(.cd__buy):focus-visible .cd__sleeve--front {
+  transform: rotate(9deg) translate(5%, 3%);
+}
+
+.cd--pair > a:not(.cd__buy):hover .cd__disc,
+.cd--pair > a:not(.cd__buy):focus-visible .cd__disc {
+  translate: -34% -50%;
 }
