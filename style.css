@@ -1052,7 +1052,9 @@ body.is-playing { overflow: hidden; }
 }
 
 .invaders-game[hidden],
-.invaders-game__message[hidden] { display: none; }
+.invaders-game__overlay[hidden],
+.invaders-game__form[hidden],
+.invaders-game__actions[hidden] { display: none; }
 
 .invaders-game__canvas {
   position: absolute;
@@ -1165,25 +1167,132 @@ body.is-playing { overflow: hidden; }
   pointer-events: none;
 }
 
-.invaders-game__message {
+.invaders-game__overlay {
   position: absolute;
-  left: 50%;
-  top: 50%;
-  z-index: 2;
-  margin: 0;
-  padding: 1rem 1.35rem;
-  transform: translate(-50%, -50%);
+  inset: 0;
+  z-index: 4;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  background: rgba(3, 5, 9, 0.42);
+  cursor: auto;
+}
+
+.invaders-game__panel {
+  width: min(22rem, calc(100vw - 2rem));
+  padding: 1.15rem 1.25rem 1.2rem;
   border: 1px solid rgba(127, 214, 238, 0.42);
   color: var(--ink);
-  background: rgba(3, 5, 9, 0.88);
+  background: rgba(3, 5, 9, 0.92);
   box-shadow: 0 0 35px rgba(127, 214, 238, 0.14);
-  font-size: clamp(0.75rem, 2vw, 1rem);
-  line-height: 1.7;
-  letter-spacing: 0.1em;
   text-align: center;
   text-transform: uppercase;
-  white-space: pre-line;
-  pointer-events: none;
+}
+
+.invaders-game__banner {
+  margin: 0;
+  font-size: clamp(0.9rem, 2.4vw, 1.15rem);
+  letter-spacing: 0.14em;
+}
+
+.invaders-game__final {
+  margin: 0.35rem 0 0.85rem;
+  color: var(--ink-dim);
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+}
+
+.invaders-game__final strong {
+  color: var(--accent);
+  font-weight: 400;
+  font-variant-numeric: tabular-nums;
+}
+
+.invaders-game__board {
+  margin: 0 0 1rem;
+  padding: 0;
+  list-style: none;
+  min-height: 4.5rem;
+}
+
+.invaders-game__board li {
+  display: grid;
+  grid-template-columns: 1.5rem minmax(0, 1fr) auto;
+  gap: 0.55rem;
+  margin: 0.18rem 0;
+  color: var(--ink-dim);
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  text-align: left;
+}
+
+.invaders-game__board li.is-you { color: var(--accent); }
+
+.invaders-game__board span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.invaders-game__board em {
+  color: var(--ink-faint);
+  font-style: normal;
+  letter-spacing: 0.08em;
+}
+
+.invaders-game__form {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.invaders-game__form label {
+  color: var(--ink-faint);
+  font-size: 0.58rem;
+  letter-spacing: 0.08em;
+}
+
+.invaders-game__form input {
+  width: 100%;
+  padding: 0.55rem 0.65rem;
+  border: 1px solid rgba(127, 214, 238, 0.35);
+  border-radius: 0;
+  color: var(--ink);
+  background: rgba(5, 7, 10, 0.85);
+  font: 16px/1.2 ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace;
+  letter-spacing: 0.12em;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.invaders-game__form input:focus {
+  outline: 1px solid var(--accent);
+  border-color: var(--accent);
+}
+
+.invaders-game__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 0.15rem;
+}
+
+.invaders-game__actions button {
+  padding: 0.5rem 0.85rem;
+  border: 1px solid rgba(127, 214, 238, 0.4);
+  border-radius: 999px;
+  color: var(--ink);
+  background: rgba(5, 7, 10, 0.76);
+  font: 0.68rem/1 var(--body);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.invaders-game__actions button:hover,
+.invaders-game__actions button:focus-visible {
+  color: var(--accent);
+  background: rgba(127, 214, 238, 0.12);
 }
 
 @media (max-width: 600px) {
