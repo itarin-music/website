@@ -1099,7 +1099,7 @@ body.is-playing { overflow: hidden; }
   position: absolute;
   top: 1.25rem;
   right: 1.25rem;
-  z-index: 3;
+  z-index: 5;
   padding: 0.55rem 0.8rem;
   border: 1px solid rgba(127, 214, 238, 0.4);
   border-radius: 999px;

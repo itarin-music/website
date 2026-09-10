@@ -485,9 +485,18 @@
   var closeButton = game && game.querySelector(".invaders-game__close");
   var scoreNode = document.getElementById("invaders-score");
   var livesNode = document.getElementById("invaders-lives");
+  var overlay = document.getElementById("invaders-overlay");
   var messageNode = document.getElementById("invaders-message");
+  var finalScoreNode = document.getElementById("invaders-final-score");
+  var boardNode = document.getElementById("invaders-board");
+  var nameForm = document.getElementById("invaders-form");
+  var nameInput = document.getElementById("invaders-name");
+  var afterActions = document.getElementById("invaders-after");
+  var exitButton = document.getElementById("invaders-exit");
+  var againButton = document.getElementById("invaders-again");
+  var leaveButton = document.getElementById("invaders-leave");
   var mark = document.querySelector(".mark");
-  if (!game || !canvas || !closeButton || !mark) return;
+  if (!game || !canvas || !closeButton || !overlay || !nameForm || !mark) return;
 
   var context = canvas.getContext("2d");
   if (!context) return;
@@ -515,7 +524,12 @@
   var score = 0;
   var lives = 3;
   var wave = 1;
+  var elapsed = 0;
   var gameOver = false;
+  var scoreSaved = false;
+
+  var BOARD_KEY = "album-invaders-board";
+  var BOARD_SIZE = 8;
 
   /* --- soundtrack ------------------------------------------------------- */
 
