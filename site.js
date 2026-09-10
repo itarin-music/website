@@ -376,7 +376,8 @@
   var hoveredCard = null;
 
   function cardFrom(node) {
-    return node && node.closest ? node.closest(".card a") : null;
+    if (!node || !node.closest) return null;
+    return node.closest(".card a") || node.closest(".covers .card");
   }
 
   function artworkFor(card) {
@@ -388,7 +389,7 @@
   }
 
   function show(card) {
-    if (document.body.dataset.world && document.body.dataset.world !== "music") return;
+    if (document.body.dataset.world === "coding") return;
     var url = artworkFor(card);
     if (!url || (url === activeUrl && activeLayer)) return;
 

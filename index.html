@@ -37,7 +37,7 @@
     <!-- Bump ?v= whenever style.css or site.js changes. GitHub Pages caches
          assets for 10 minutes, so without this a returning visitor can get new
          HTML with an old stylesheet. -->
-    <link rel="stylesheet" href="style.css?v=11">
+    <link rel="stylesheet" href="style.css?v=13">
 </head>
 
 <body data-world="music">
@@ -267,8 +267,50 @@
             </ul>
         </section>
 
-        <section class="world world--visual" id="visual" hidden aria-labelledby="world-visual">
+        <section class="world" id="visual" hidden aria-labelledby="world-visual">
             <h2 class="sr-only" id="world-visual">Visual art</h2>
+
+            <section class="covers" aria-labelledby="covers-heading">
+                <h2 class="section-label" id="covers-heading">Cover Arts</h2>
+
+                <ul class="covers__grid">
+                    <li class="card">
+                        <img src="images/go-and-die-400.webp"
+                             srcset="images/go-and-die-400.webp 400w, images/go-and-die-800.webp 800w"
+                             sizes="(max-width: 600px) 150px, 200px"
+                             alt="Go and Die" width="400" height="400" decoding="async" draggable="false">
+                        <span class="card__title">Go and Die</span>
+                    </li>
+                    <li class="card">
+                        <img src="images/trailer-park-houses-400.webp"
+                             srcset="images/trailer-park-houses-400.webp 400w, images/trailer-park-houses-800.webp 800w"
+                             sizes="(max-width: 600px) 150px, 200px"
+                             alt="Built This Town" width="400" height="400" decoding="async" draggable="false">
+                        <span class="card__title">Built This Town</span>
+                    </li>
+                    <li class="card">
+                        <img src="images/never-concentrate-400.webp"
+                             srcset="images/never-concentrate-400.webp 400w, images/never-concentrate-800.webp 800w"
+                             sizes="(max-width: 600px) 150px, 200px"
+                             alt="Never Concentrate (Extended)" width="400" height="400" decoding="async" draggable="false">
+                        <span class="card__title">Never Concentrate (Extended)</span>
+                    </li>
+                    <li class="card">
+                        <img src="images/example-needed-400.webp"
+                             srcset="images/example-needed-400.webp 400w, images/example-needed-800.webp 800w"
+                             sizes="(max-width: 600px) 150px, 200px"
+                             alt="Example Needed" width="400" height="400" decoding="async" draggable="false">
+                        <span class="card__title">Example Needed</span>
+                    </li>
+                    <li class="card">
+                        <img src="images/dont-talk-400.webp"
+                             srcset="images/dont-talk-400.webp 400w, images/dont-talk-800.webp 800w"
+                             sizes="(max-width: 600px) 150px, 200px"
+                             alt="Don&rsquo;t Talk to M3 / P3pto" width="400" height="400" decoding="async" draggable="false">
+                        <span class="card__title">Don&rsquo;t Talk to M3 / P3pto</span>
+                    </li>
+                </ul>
+            </section>
         </section>
     </main>
 
@@ -308,6 +350,6 @@
         gtag('config', 'G-QHN65GKBTW');
     </script>
     <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
-    <script src="site.js?v=2" defer></script>
+    <script src="site.js?v=3" defer></script>
 </body>
 </html>
