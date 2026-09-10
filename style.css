@@ -101,25 +101,6 @@ body {
 
 .release-backdrops span.is-visible { opacity: 1; }
 
-/* Visual uses the original site painting more clearly, as the piece itself. */
-body[data-world="visual"] .backdrop {
-  filter: blur(2px) brightness(0.58) saturate(1.28);
-  transform: scale(1.03);
-}
-
-body[data-world="visual"] .backdrop::after {
-  background:
-    radial-gradient(120% 78% at 50% 46%,
-      rgba(5, 7, 10, 0) 0%,
-      rgba(5, 7, 10, 0.18) 58%,
-      rgba(5, 7, 10, 0.72) 100%),
-    linear-gradient(180deg,
-      rgba(5, 7, 10, 0.42) 0%,
-      rgba(5, 7, 10, 0.08) 34%,
-      rgba(5, 7, 10, 0.08) 68%,
-      rgba(5, 7, 10, 0.7) 100%);
-}
-
 body[data-world="coding"] .release-backdrops { display: none; }
 
 /* --- Layout --------------------------------------------------------------- */
@@ -1212,16 +1193,15 @@ body.is-playing { overflow: hidden; }
   margin: 0 0 1rem;
   padding: 0;
   list-style: none;
-  min-height: 4.5rem;
 }
 
 .invaders-game__board li {
   display: grid;
-  grid-template-columns: 1.5rem minmax(0, 1fr) auto;
-  gap: 0.55rem;
-  margin: 0.18rem 0;
+  grid-template-columns: 2rem minmax(0, 1fr) auto;
+  gap: 0.65rem;
+  margin: 0.22rem 0;
   color: var(--ink-dim);
-  font-size: 0.68rem;
+  font-size: 0.72rem;
   letter-spacing: 0.1em;
   text-align: left;
 }
@@ -1232,6 +1212,12 @@ body.is-playing { overflow: hidden; }
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.invaders-game__board li.is-empty,
+.invaders-game__board li.is-empty em {
+  display: block;
+  text-align: center;
 }
 
 .invaders-game__board em {

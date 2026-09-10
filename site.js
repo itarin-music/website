@@ -599,6 +599,74 @@
     return Math.max(min, Math.min(max, value));
   }
 
+  function overlayOpen() {
+    return overlay && !overlay.hidden;
+  }
+
+  function censorName(name) {
+    return name.split(" ").map(function (word) {
+      var text = word.toUpperCase();
+      if (text.length <= 2) return text;
+      return text.charAt(0) + "*".repeat(text.length - 2) + text.charAt(text.length - 1);
+    }).join(" ");
+  }
+
+  function loadBoard() {
+    try {
+      var data = JSON.parse(localStorage.getItem(BOARD_KEY) || "[]");
+      return Array.isArray(data) ? data : [];
+    } catch (error) {
+      return [];
+    }
+  }
+
+  function saveBoard(entries) {
+    try {
+      localStorage.setItem(BOARD_KEY, JSON.stringify(entries));
+    } catch (error) { /* private mode / quota */ }
+  }
+
+  function addScore(name, value) {
+    var entry = { name: censorName(name), score: value, at: Date.now() };
+    var entries = loadBoard().concat(entry);
+    entries.sort(function (a, b) {
+      return b.score - a.score || a.at - b.at;
+    });
+    entries = entries.slice(0, BOARD_SIZE);
+    saveBoard(entries);
+    return entry;
+  }
+
+  function renderBoard(highlightAt) {
+    var entries = loadBoard();
+    boardNode.replaceChildren();
+
+    if (!entries.length) {
+      var empty = document.createElement("li");
+      empty.className = "is-empty";
+      empty.innerHTML = "<em>no scores yet</em>";
+      boardNode.appendChild(empty);
+      return;
+    }
+
+    entries.forEach(function (entry, index) {
+      var row = document.createElement("li");
+      if (highlightAt && entry.at === highlightAt) row.className = "is-you";
+      row.innerHTML = "<b>" + String(index + 1).padStart(2, "0") + "</b>" +
+                      "<span></span><strong></strong>";
+      row.querySelector("span").textContent = entry.name;
+      row.querySelector("strong").textContent = String(entry.score).padStart(5, "0");
+      boardNode.appendChild(row);
+    });
+  }
+
+  function hideOverlay() {
+    overlay.hidden = true;
+    nameForm.hidden = false;
+    afterActions.hidden = true;
+    nameInput.value = "";
+  }
+
   function loadCovers() {
     var seen = Object.create(null);
     document.querySelectorAll(".rack:not([aria-hidden]) .card img").forEach(function (source) {
@@ -654,13 +722,15 @@
     score = 0;
     lives = 3;
     wave = 1;
+    elapsed = 0;
     bullets = [];
     enemyBullets = [];
     gameOver = false;
+    scoreSaved = false;
     ship.x = width / 2;
     ship.y = height - 58;
     ship.invulnerableUntil = 0;
-    messageNode.hidden = true;
+    hideOverlay();
     updateHud();
     spawnWave();
   }
@@ -673,10 +743,7 @@
   /* --- controls --------------------------------------------------------- */
 
   function fire(now) {
-    if (gameOver) {
-      resetGame();
-      return;
-    }
+    if (gameOver) return;
     if (now - shotAt < 170) return;
 
     shotAt = now;
@@ -712,6 +779,7 @@
     cancelAnimationFrame(frame);
     frame = 0;
     keys = Object.create(null);
+    hideOverlay();
     game.hidden = true;
     document.body.classList.remove("is-playing");
     stopSoundtrack();
@@ -730,6 +798,8 @@
       return;
     }
 
+    if (overlayOpen()) return;
+
     if (event.key === "ArrowLeft" || event.key === "ArrowRight" ||
         event.key === "a" || event.key === "A" || event.key === "d" || event.key === "D" ||
         event.code === "Space") {
@@ -738,7 +808,6 @@
     }
 
     if (event.code === "Space") fire(performance.now());
-    if (gameOver && event.key === "Enter") resetGame();
   });
 
   document.addEventListener("keyup", function (event) {
@@ -747,16 +816,40 @@
   });
 
   canvas.addEventListener("pointermove", function (event) {
-    if (!active) return;
+    if (!active || gameOver) return;
     ship.x = clamp(event.clientX, ship.width, width - ship.width);
   });
 
   canvas.addEventListener("pointerdown", function (event) {
-    if (!active) return;
+    if (!active || gameOver) return;
     ship.x = clamp(event.clientX, ship.width, width - ship.width);
     fire(performance.now());
   });
 
+  nameForm.addEventListener("submit", function (event) {
+    event.preventDefault();
+    if (!gameOver || scoreSaved) return;
+
+    var raw = nameInput.value.replace(/[^a-zA-Z0-9\s\-]/g, "").replace(/\s+/g, " ").trim();
+    if (!raw) {
+      nameInput.focus();
+      return;
+    }
+
+    scoreSaved = true;
+    var entry = addScore(raw, score);
+    renderBoard(entry.at);
+    nameForm.hidden = true;
+    afterActions.hidden = false;
+    againButton.focus();
+  });
+
+  exitButton.addEventListener("click", closeGame);
+  leaveButton.addEventListener("click", closeGame);
+  againButton.addEventListener("click", function () {
+    resetGame();
+    game.focus();
+  });
   closeButton.addEventListener("click", closeGame);
   window.addEventListener("resize", function () {
     if (active) {
@@ -776,15 +869,67 @@
 
   function endGame() {
     gameOver = true;
+    keys = Object.create(null);
     bullets = [];
     enemyBullets = [];
-    messageNode.textContent = "game over\nscore " + String(score).padStart(5, "0") +
-                              "\npress enter or click to restart";
-    messageNode.hidden = false;
+    scoreSaved = false;
+    messageNode.textContent = "game over";
+    finalScoreNode.textContent = String(score).padStart(5, "0");
+    nameForm.hidden = false;
+    afterActions.hidden = true;
+    nameInput.value = "";
+    renderBoard();
+    overlay.hidden = false;
+    nameInput.focus();
+  }
+
+  function shotDirections() {
+    return Math.min(9, 1 + Math.floor(elapsed / 14));
+  }
+
+  function enemySpeed() {
+    return 32 + wave * 8 + elapsed * 2.35;
+  }
+
+  function enemyBulletSpeed() {
+    return 290 + elapsed * 5.2 + wave * 8;
+  }
+
+  function fireInterval() {
+    return Math.max(0.26, 1.18 - elapsed * 0.012 - wave * 0.045) + Math.random() * 0.28;
+  }
+
+  function fireEnemyVolley(shooter) {
+    var count = shotDirections();
+    var speed = enemyBulletSpeed();
+    var originX = shooter.x;
+    var originY = shooter.y + shooter.height / 2;
+
+    if (count === 1) {
+      enemyBullets.push({ x: originX, y: originY, vx: 0, vy: speed, width: 5, height: 5 });
+      return;
+    }
+
+    var spread = Math.min(Math.PI * 0.92, 0.4 + (count - 1) * 0.155);
+    var start = Math.PI / 2 - spread / 2;
+    var step = spread / (count - 1);
+    for (var i = 0; i < count; i++) {
+      var angle = start + i * step;
+      enemyBullets.push({
+        x: originX,
+        y: originY,
+        vx: Math.cos(angle) * speed,
+        vy: Math.sin(angle) * speed,
+        width: 5,
+        height: 5
+      });
+    }
   }
 
   function update(dt, now) {
     if (gameOver) return;
+
+    elapsed += dt;
 
     var movement = 0;
     if (keys.arrowleft || keys.a) movement -= 1;
@@ -792,9 +937,15 @@
     ship.x = clamp(ship.x + movement * ship.speed * dt, ship.width, width - ship.width);
 
     bullets.forEach(function (bullet) { bullet.y -= 650 * dt; });
-    enemyBullets.forEach(function (bullet) { bullet.y += 330 * dt; });
+    enemyBullets.forEach(function (bullet) {
+      bullet.x += bullet.vx * dt;
+      bullet.y += bullet.vy * dt;
+    });
     bullets = bullets.filter(function (bullet) { return bullet.y > -20; });
-    enemyBullets = enemyBullets.filter(function (bullet) { return bullet.y < height + 20; });
+    enemyBullets = enemyBullets.filter(function (bullet) {
+      return bullet.y < height + 24 && bullet.y > -24 &&
+             bullet.x > -24 && bullet.x < width + 24;
+    });
 
     var left = Infinity;
     var right = -Infinity;
@@ -803,11 +954,12 @@
       right = Math.max(right, enemy.x + enemy.width / 2);
     });
 
-    var speed = 28 + wave * 7;
+    var speed = enemySpeed();
     var horizontal = direction * speed * dt;
+    var drop = 18 + Math.min(24, elapsed * 0.12);
     if (left + horizontal < 14 || right + horizontal > width - 14) {
       direction *= -1;
-      enemies.forEach(function (enemy) { enemy.y += 18; });
+      enemies.forEach(function (enemy) { enemy.y += drop; });
     } else {
       enemies.forEach(function (enemy) { enemy.x += horizontal; });
     }
@@ -825,14 +977,11 @@
 
     enemyShotIn -= dt;
     if (enemyShotIn <= 0 && enemies.length) {
-      var shooter = enemies[Math.floor(Math.random() * enemies.length)];
-      enemyBullets.push({
-        x: shooter.x,
-        y: shooter.y + shooter.height / 2,
-        width: 4,
-        height: 12
-      });
-      enemyShotIn = Math.max(0.38, 1.15 - wave * 0.06) + Math.random() * 0.45;
+      var volleys = elapsed >= 52 && enemies.length > 1 ? 2 : 1;
+      for (var shot = 0; shot < volleys; shot++) {
+        fireEnemyVolley(enemies[Math.floor(Math.random() * enemies.length)]);
+      }
+      enemyShotIn = fireInterval();
     }
 
     if (now >= ship.invulnerableUntil) {
