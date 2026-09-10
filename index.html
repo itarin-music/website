@@ -37,11 +37,12 @@
     <!-- Bump ?v= whenever style.css or marquee.js changes. GitHub Pages caches
          assets for 10 minutes, so without this a returning visitor can get new
          HTML with an old stylesheet. -->
-    <link rel="stylesheet" href="style.css?v=7">
+    <link rel="stylesheet" href="style.css?v=9">
 </head>
 
 <body>
     <div class="backdrop" aria-hidden="true"></div>
+    <div class="release-backdrops" aria-hidden="true"></div>
 
     <a class="skip-link" href="#releases">Skip to releases</a>
 
@@ -244,6 +245,29 @@
         <p>&copy; <span id="year">2026</span> itarin</p>
     </footer>
 
+    <section class="invaders-game" id="invaders-game" role="dialog" tabindex="-1"
+             aria-modal="true" aria-labelledby="invaders-title" hidden>
+        <canvas class="invaders-game__canvas" aria-label="Album Invaders game"></canvas>
+
+        <div class="invaders-game__hud">
+            <h2 id="invaders-title">album invaders</h2>
+            <p>score <strong id="invaders-score">00000</strong></p>
+            <p>ships <strong id="invaders-lives">3</strong></p>
+        </div>
+
+        <button class="invaders-game__close" type="button" aria-label="Close Album Invaders">Esc / close</button>
+
+        <div class="invaders-game__soundtrack">
+            <div id="invaders-player"></div>
+            <p>soundtrack &middot; volume 5%<br><span>press play if your browser blocks it</span></p>
+        </div>
+
+        <p class="invaders-game__controls">
+            move: A D / arrows / pointer &nbsp;&middot;&nbsp; fire: space / click
+        </p>
+        <p class="invaders-game__message" id="invaders-message" hidden></p>
+    </section>
+
     <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-QHN65GKBTW"></script>
     <script>
@@ -254,5 +278,7 @@
     </script>
     <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
     <script src="marquee.js?v=7" defer></script>
+    <script src="release-backdrop.js?v=2" defer></script>
+    <script src="album-invaders.js?v=1" defer></script>
 </body>
 </html>

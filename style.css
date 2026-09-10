@@ -78,6 +78,29 @@ body {
       rgba(5, 7, 10, 0.75) 100%);
 }
 
+/* Hovering a release washes its artwork into the page behind the content.
+   Two layers alternate so moving between covers produces a true crossfade. */
+.release-backdrops {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.release-backdrops span {
+  position: absolute;
+  inset: -8%;
+  opacity: 0;
+  background-position: center;
+  background-size: cover;
+  filter: blur(24px) brightness(0.28) saturate(1.45);
+  transform: scale(1.04);
+  transition: opacity 1s ease;
+  will-change: opacity;
+}
+
+.release-backdrops span.is-visible { opacity: 1; }
+
 /* --- Layout --------------------------------------------------------------- */
 
 main {
@@ -769,4 +792,176 @@ footer p { margin: 0; }
   }
 
   .cd__buy { align-self: end; }
+}
+
+/* ==========================================================================
+   Album Invaders easter egg
+   ========================================================================== */
+
+body.is-playing { overflow: hidden; }
+
+.invaders-game {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  overflow: hidden;
+  color: var(--ink);
+  background: #030509;
+  font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace;
+  cursor: crosshair;
+  isolation: isolate;
+}
+
+.invaders-game[hidden],
+.invaders-game__message[hidden] { display: none; }
+
+.invaders-game__canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.invaders-game__hud {
+  position: absolute;
+  top: 1.25rem;
+  left: 1.25rem;
+  z-index: 2;
+  pointer-events: none;
+  text-transform: uppercase;
+  text-shadow: 0 0 12px rgba(127, 214, 238, 0.5);
+}
+
+.invaders-game__hud h2 {
+  margin: 0 0 0.65rem;
+  font-family: var(--display);
+  font-size: clamp(1rem, 3vw, 1.5rem);
+  font-weight: 400;
+  letter-spacing: 0.15em;
+}
+
+.invaders-game__hud p {
+  margin: 0.15rem 0;
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  color: var(--ink-dim);
+}
+
+.invaders-game__hud strong {
+  color: var(--accent);
+  font-weight: 400;
+  font-variant-numeric: tabular-nums;
+}
+
+.invaders-game__close {
+  position: absolute;
+  top: 1.25rem;
+  right: 1.25rem;
+  z-index: 3;
+  padding: 0.55rem 0.8rem;
+  border: 1px solid rgba(127, 214, 238, 0.4);
+  border-radius: 999px;
+  color: var(--ink);
+  background: rgba(5, 7, 10, 0.76);
+  font: 0.68rem/1 var(--body);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.invaders-game__close:hover,
+.invaders-game__close:focus-visible {
+  color: var(--accent);
+  background: rgba(127, 214, 238, 0.12);
+}
+
+.invaders-game__soundtrack {
+  position: absolute;
+  right: 1.25rem;
+  bottom: 3.6rem;
+  z-index: 2;
+  width: 200px;
+  text-align: center;
+}
+
+.invaders-game__soundtrack iframe,
+#invaders-player {
+  display: block;
+  width: 200px;
+  height: 200px;
+  border: 1px solid rgba(127, 214, 238, 0.26);
+  background: #000;
+  box-shadow: 0 0 24px rgba(127, 214, 238, 0.1);
+}
+
+.invaders-game__soundtrack p {
+  margin: 0.45rem 0 0;
+  font-size: 0.58rem;
+  line-height: 1.45;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+.invaders-game__soundtrack span {
+  letter-spacing: 0.02em;
+  text-transform: none;
+}
+
+.invaders-game__controls {
+  position: absolute;
+  left: 50%;
+  bottom: 1.3rem;
+  z-index: 2;
+  width: max-content;
+  max-width: calc(100% - 2rem);
+  margin: 0;
+  transform: translateX(-50%);
+  color: var(--ink-faint);
+  font-size: clamp(0.55rem, 1.5vw, 0.68rem);
+  letter-spacing: 0.08em;
+  text-align: center;
+  text-transform: uppercase;
+  pointer-events: none;
+}
+
+.invaders-game__message {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 2;
+  margin: 0;
+  padding: 1rem 1.35rem;
+  transform: translate(-50%, -50%);
+  border: 1px solid rgba(127, 214, 238, 0.42);
+  color: var(--ink);
+  background: rgba(3, 5, 9, 0.88);
+  box-shadow: 0 0 35px rgba(127, 214, 238, 0.14);
+  font-size: clamp(0.75rem, 2vw, 1rem);
+  line-height: 1.7;
+  letter-spacing: 0.1em;
+  text-align: center;
+  text-transform: uppercase;
+  white-space: pre-line;
+  pointer-events: none;
+}
+
+@media (max-width: 600px) {
+  .invaders-game__soundtrack {
+    right: 0.75rem;
+    bottom: 3.2rem;
+    transform: scale(0.72);
+    transform-origin: right bottom;
+  }
+
+  .invaders-game__close {
+    top: 0.8rem;
+    right: 0.8rem;
+  }
+
+  .invaders-game__hud {
+    top: 0.9rem;
+    left: 0.9rem;
+  }
 }
