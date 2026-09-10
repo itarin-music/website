@@ -37,7 +37,7 @@
     <!-- Bump ?v= whenever style.css or site.js changes. GitHub Pages caches
          assets for 10 minutes, so without this a returning visitor can get new
          HTML with an old stylesheet. -->
-    <link rel="stylesheet" href="style.css?v=13">
+    <link rel="stylesheet" href="style.css?v=14">
 </head>
 
 <body data-world="music">
@@ -338,7 +338,27 @@
         <p class="invaders-game__controls">
             move: A D / arrows / pointer &nbsp;&middot;&nbsp; fire: space / click
         </p>
-        <p class="invaders-game__message" id="invaders-message" hidden></p>
+
+        <div class="invaders-game__overlay" id="invaders-overlay" hidden>
+            <div class="invaders-game__panel">
+                <p class="invaders-game__banner" id="invaders-message">game over</p>
+                <p class="invaders-game__final">score <strong id="invaders-final-score">00000</strong></p>
+                <ol class="invaders-game__board" id="invaders-board"></ol>
+                <form class="invaders-game__form" id="invaders-form" autocomplete="off">
+                    <label for="invaders-name">name · only first &amp; last letters are shown</label>
+                    <input id="invaders-name" name="name" type="text" maxlength="16"
+                           spellcheck="false" autocomplete="off" enterkeyhint="done">
+                    <div class="invaders-game__actions">
+                        <button type="submit">save</button>
+                        <button type="button" id="invaders-exit">exit</button>
+                    </div>
+                </form>
+                <div class="invaders-game__actions" id="invaders-after" hidden>
+                    <button type="button" id="invaders-again">play again</button>
+                    <button type="button" id="invaders-leave">exit</button>
+                </div>
+            </div>
+        </div>
     </section>
 
     <!-- Google Analytics -->
@@ -350,6 +370,6 @@
         gtag('config', 'G-QHN65GKBTW');
     </script>
     <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
-    <script src="site.js?v=3" defer></script>
+    <script src="site.js?v=4" defer></script>
 </body>
 </html>
