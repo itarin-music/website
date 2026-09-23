@@ -76,10 +76,24 @@
     }
   }
 
+  function viewportSize() {
+    if (window.visualViewport) {
+      return {
+        width: Math.max(1, Math.round(window.visualViewport.width)),
+        height: Math.max(1, Math.round(window.visualViewport.height))
+      };
+    }
+    return {
+      width: Math.max(1, window.innerWidth),
+      height: Math.max(1, window.innerHeight)
+    };
+  }
+
   function layout() {
+    var size = viewportSize();
     dpr = Math.min(window.devicePixelRatio || 1, 1.5);
-    width = Math.max(1, window.innerWidth);
-    height = Math.max(1, window.innerHeight);
+    width = size.width;
+    height = size.height;
     canvas.style.width = width + "px";
     canvas.style.height = height + "px";
     canvas.width = Math.round(width * dpr);
@@ -177,7 +191,7 @@
   function drawGlobe(now) {
     var globe = globeLayout();
     var glow = (dark ? 0.9 : 1) * (globe.phone ? 0.86 : 1);
-    var speed = globe.phone ? 2.6 : 6.4;
+    var speed = 2.6;
     var rot = reduce.matches ? 18 : now * speed;
     var i;
     var lat;
@@ -214,8 +228,6 @@
     ctx.strokeStyle = tint(accent, (dark ? 0.36 : 0.3) * glow);
     ctx.lineWidth = 1.2 * globe.stroke;
     ctx.stroke();
-
-    drawCityLabels(rot, globe, glow);
   }
 
   function drawCityLabels(rot, globe, glow) {
@@ -234,25 +246,27 @@
     for (i = 0; i < labels.length; i++) {
       var city = labels[i];
       var v = xyz(city.lat, city.lon, rot);
-      if (v.z < 0.06) continue;
-      var fade = Math.min(1, (v.z - 0.06) / 0.28);
+      if (v.z < 0.08) continue;
+      var fade = Math.min(1, Math.max(0, (v.z - 0.08) / 0.22));
       var s = screenOf(v, globe);
       var text = city.name;
       var tw = ctx.measureText(text).width;
-      var lx = s.x + pad;
-      var ly = s.y - 0.4;
-      if (lx + tw > Math.min(width - 8, edge)) lx = s.x - pad - tw;
+      var sx = Math.round(s.x);
+      var sy = Math.round(s.y);
+      var lx = sx + pad;
+      var ly = sy - 0.4;
+      if (lx + tw > Math.min(width - 8, edge)) lx = sx - pad - tw;
 
       ctx.beginPath();
-      ctx.arc(s.x, s.y, markR, 0, Math.PI * 2);
+      ctx.arc(sx, sy, markR, 0, Math.PI * 2);
       ctx.fillStyle = tint(accent, (dark ? 0.95 : 0.88) * glow * fade);
       ctx.fill();
 
       ctx.lineWidth = 2.6;
       ctx.strokeStyle = dark ? "rgba(12,14,20," + (0.7 * fade) + ")" : "rgba(228,224,212," + (0.86 * fade) + ")";
-      ctx.strokeText(text, lx, ly);
+      ctx.strokeText(text, Math.round(lx), Math.round(ly));
       ctx.fillStyle = tint(accent, (dark ? 0.94 : 0.82) * glow * fade);
-      ctx.fillText(text, lx, ly);
+      ctx.fillText(text, Math.round(lx), Math.round(ly));
     }
   }
 
@@ -302,26 +316,6 @@
     return out;
   }
 
-  function loadLabels(list) {
-    var out = [];
-    var i;
-    if (!Array.isArray(list)) return out;
-    for (i = 0; i < list.length; i++) {
-      var city = list[i];
-      if (!city || !city.name) continue;
-      var lat = +city.lat;
-      var lon = +city.lon;
-      if (!isFinite(lat) || !isFinite(lon)) continue;
-      out.push({
-        name: String(city.name),
-        lat: lat,
-        lon: lon,
-        pop: +city.pop || 0
-      });
-    }
-    return out;
-  }
-
   function loadMap() {
     fetch("data/world-cities.json?v=4")
       .then(function (res) { return res.ok ? res.json() : []; })
@@ -330,24 +324,26 @@
         if (reduce.matches) draw(0);
       })
       .catch(function () {});
+  }
 
-    fetch("data/world-labels.json?v=4")
-      .then(function (res) { return res.ok ? res.json() : []; })
-      .then(function (list) {
-        labels = loadLabels(list);
-        if (reduce.matches) draw(0);
-      })
-      .catch(function () {});
+  var resizeTimer = 0;
+  function refreshLayout() {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(function () {
+      layout();
+      if (reduce.matches) draw(0);
+    }, 80);
   }
 
   layout();
   syncColors();
   syncWorld();
   loadMap();
-  window.addEventListener("resize", function () {
-    layout();
-    if (reduce.matches) draw(0);
-  });
+  window.addEventListener("resize", refreshLayout);
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener("resize", refreshLayout);
+    window.visualViewport.addEventListener("scroll", refreshLayout);
+  }
   document.addEventListener("themechange", function () {
     syncColors();
     if (reduce.matches) draw(0);
