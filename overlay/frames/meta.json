@@ -1,0 +1,13 @@
+{
+  "clip": {
+    "dir": "F:\\Coding\\GitHub\\website\\obs\\frames\\full",
+    "total": 360,
+    "duration": 12
+  },
+  "loop": {
+    "dir": "F:\\Coding\\GitHub\\website\\obs\\frames\\loop",
+    "total": 290,
+    "duration": 9.67
+  },
+  "fps": 30
+}
