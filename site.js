@@ -26,6 +26,11 @@
 
   function clearPreview() {
     document.body.removeAttribute("data-preview");
+    var deck = document.querySelector(".deck");
+    if (deck) {
+      deck.style.zIndex = "";
+      deck.style.pointerEvents = "";
+    }
   }
 
   function showPreview(id) {
@@ -35,6 +40,11 @@
       return;
     }
     document.body.dataset.preview = id;
+    var deck = document.querySelector(".deck");
+    if (deck && document.body.dataset.world === "home" && window.matchMedia("(min-width: 721px)").matches) {
+      deck.style.zIndex = "2";
+      deck.style.pointerEvents = "none";
+    }
   }
 
   var currentWorld = null;
@@ -95,13 +105,8 @@
 
   function placeSocials(world) {
     var social = document.querySelector(".social");
-    var homeSlot = document.querySelector(".welcome__socials");
     var mode = document.querySelector(".mode");
     if (!social) return;
-    if (world === "home" && homeSlot) {
-      homeSlot.appendChild(social);
-      return;
-    }
     if (mode && mode.parentNode) {
       mode.insertAdjacentElement("afterend", social);
     }
@@ -1472,4 +1477,37 @@
   });
 
   loadCovers();
+})();
+
+/* --- Hover Japanese copy for the English reading ----------------------- */
+
+(function () {
+  "use strict";
+
+  function bindGloss(el) {
+    var ja = el.innerHTML;
+    var en = el.getAttribute("data-en");
+    if (!en) return;
+
+    function showEn() {
+      if (document.documentElement.classList.contains("is-assembling")) return;
+      el.innerHTML = en;
+      el.setAttribute("lang", "en");
+      el.classList.add("is-en");
+    }
+
+    function showJa() {
+      el.innerHTML = ja;
+      el.setAttribute("lang", "ja");
+      el.classList.remove("is-en");
+    }
+
+    el.addEventListener("pointerenter", function (event) {
+      if (event.pointerType && event.pointerType !== "mouse") return;
+      showEn();
+    });
+    el.addEventListener("pointerleave", showJa);
+  }
+
+  document.querySelectorAll("[data-en]").forEach(bindGloss);
 })();

@@ -89,14 +89,24 @@
   }
 
   function globeLayout() {
+    var phone = width < 720;
     var room = Math.min(width, height);
-    var radius = room * (width < 720 ? 0.32 : 0.36);
-    var cx = Math.min(width - radius - 28, width * (width < 720 ? 0.52 : 0.7));
-    var cy = height * 0.54;
+    var radius;
+    var cx;
+    var cy;
+    if (phone) {
+      radius = Math.max(width, height) * 0.78;
+      cx = width * 0.72;
+      cy = height * 0.58;
+      return { cx: cx, cy: cy, r: radius, phone: true, stroke: Math.max(1.15, radius / 300) };
+    }
+    radius = room * 0.36;
+    cx = Math.min(width - radius - 28, width * 0.7);
+    cy = height * 0.54;
     if (cx - radius < 8) cx = radius + 8;
     if (cy - radius < 8) cy = radius + 8;
     if (cy + radius > height - 8) cy = height - radius - 8;
-    return { cx: cx, cy: cy, r: radius };
+    return { cx: cx, cy: cy, r: radius, phone: false, stroke: 1 };
   }
 
   function xyz(lat, lon, rot) {
@@ -137,7 +147,7 @@
       }
     }
     ctx.strokeStyle = tint(accent, alpha);
-    ctx.lineWidth = lat === 0 ? 1.05 : 0.7;
+    ctx.lineWidth = (lat === 0 ? 1.05 : 0.7) * globe.stroke;
     ctx.stroke();
   }
 
@@ -160,14 +170,15 @@
       }
     }
     ctx.strokeStyle = tint(accent, alpha);
-    ctx.lineWidth = lon === 0 || lon === 180 || lon === -180 ? 1.05 : 0.7;
+    ctx.lineWidth = (lon === 0 || lon === 180 || lon === -180 ? 1.05 : 0.7) * globe.stroke;
     ctx.stroke();
   }
 
   function drawGlobe(now) {
     var globe = globeLayout();
-    var glow = dark ? 0.9 : 1;
-    var rot = reduce.matches ? 18 : now * 6.4;
+    var glow = (dark ? 0.9 : 1) * (globe.phone ? 0.86 : 1);
+    var speed = globe.phone ? 2.6 : 6.4;
+    var rot = reduce.matches ? 18 : now * speed;
     var i;
     var lat;
     var lon;
@@ -184,7 +195,7 @@
       strokeMeridian(lon, rot, globe, ((lon === 0 ? (dark ? 0.28 : 0.22) : (dark ? 0.14 : 0.11)) * glow));
     }
 
-    var cityR = 1.15;
+    var cityR = globe.phone ? Math.max(1.4, globe.r * 0.0038) : 1.15;
     ctx.fillStyle = tint(accent, (dark ? 0.78 : 0.64) * glow);
     ctx.beginPath();
     for (i = 0; i < cities.length; i += 2) {
@@ -201,14 +212,14 @@
     ctx.beginPath();
     ctx.arc(globe.cx, globe.cy, globe.r, 0, Math.PI * 2);
     ctx.strokeStyle = tint(accent, (dark ? 0.36 : 0.3) * glow);
-    ctx.lineWidth = 1.2;
+    ctx.lineWidth = 1.2 * globe.stroke;
     ctx.stroke();
 
     drawCityLabels(rot, globe, glow);
   }
 
   function drawCityLabels(rot, globe, glow) {
-    if (!labels.length) return;
+    if (!labels.length || globe.phone) return;
     var size = Math.max(8, Math.min(11, globe.r * 0.026));
     var markR = Math.max(1.8, globe.r * 0.006);
     var pad = markR + 4;

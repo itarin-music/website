@@ -13,25 +13,25 @@
 }
 
 :root {
-  --ink:         #16181f;
-  --ink-dim:     rgba(22, 24, 31, 0.58);
-  --ink-faint:   rgba(22, 24, 31, 0.34);
-  --accent:      #1f3db5;
-  --accent-lit:  #4d73f0;
-  --accent-deep: #152a80;
-  --paper:       #e4e0d4;
-  --paper-top:   #ebe6db;
-  --paper-bottom:#d8d2c4;
-  --deck:        #cfc9bb;
-  --paper-glow:  rgba(186, 168, 138, 0.22);
-  --paper-mist:  rgba(31, 61, 181, 0.04);
-  --surface:     #ece7dc;
-  --line:        rgba(22, 24, 31, 0.1);
-  --line-strong: rgba(22, 24, 31, 0.18);
-  --shadow:      rgba(28, 36, 58, 0.14);
-  --silver:      #8b93a6;
-  --cyan:        #2ec8e0;
-  --magenta:     #e85a9a;
+  --ink:         #171d2d;
+  --ink-dim:     rgba(23, 29, 45, 0.72);
+  --ink-faint:   rgba(23, 29, 45, 0.54);
+  --accent:      #1f4fe6;
+  --accent-lit:  #5179ff;
+  --accent-deep: #1639a0;
+  --paper:       #f1ecdf;
+  --paper-top:   #f8f4eb;
+  --paper-bottom:#e0d8ca;
+  --deck:        #d5cebe;
+  --paper-glow:  rgba(76, 104, 214, 0.16);
+  --paper-mist:  rgba(31, 61, 181, 0.07);
+  --surface:     #f7f3ed;
+  --line:        rgba(23, 29, 45, 0.12);
+  --line-strong: rgba(23, 29, 45, 0.2);
+  --shadow:      rgba(24, 34, 58, 0.16);
+  --silver:      #6f7a8f;
+  --cyan:        #1eb8d2;
+  --magenta:     #d94a8c;
   --gutter:      clamp(0.9rem, 3.4vw, 3rem);
   --rail:        9.25rem;
   --mark:        "VAIO CON DIOS", "Arial Narrow", "Helvetica Neue", sans-serif;
@@ -89,6 +89,10 @@ img { max-width: 100%; height: auto; display: block; }
   font-family: "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Yu Gothic",
                "Yu Gothic UI", Meiryo, sans-serif;
 }
+
+[data-en] { cursor: help; }
+
+[data-en].is-en { color: var(--accent); }
 
 .paper {
   position: fixed;
@@ -776,27 +780,6 @@ body[data-preview="visual"] .chapters a[data-world="visual"],
   width: min(clamp(14.5rem, 28vw, 20rem), 100%);
 }
 
-.welcome__socials {
-  margin-top: 1.45rem;
-}
-
-.welcome__socials .social {
-  justify-content: flex-start;
-  flex-wrap: wrap;
-  gap: 0.28rem;
-  margin-top: 0;
-}
-
-.welcome__socials .social a {
-  width: 32px;
-  height: 32px;
-}
-
-.welcome__socials .social svg {
-  width: 16px;
-  height: 16px;
-}
-
 /* --- Catalog plate: headline + product --------------------------------- */
 
 .plate {
@@ -1431,6 +1414,13 @@ body[data-world="home"] .deck {
   top: var(--deck-top, auto);
   z-index: 7;
   width: var(--deck-width, min(clamp(14.5rem, 28vw, 20rem), calc(100vw - 2rem)));
+}
+
+@media (min-width: 721px) {
+  body[data-world="home"][data-preview] .deck {
+    z-index: 2 !important;
+    pointer-events: none !important;
+  }
 }
 
 @media (min-width: 721px) {
