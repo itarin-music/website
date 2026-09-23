@@ -309,11 +309,11 @@
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     ctx.clearRect(0, 0, width, height);
 
-    if (elapsed < 2.6) {
+    if (elapsed < 2.72) {
       particles.forEach(function (p) {
         var t = easeOut((elapsed - 0.1 - p.delay) / 1.12);
         if (t <= 0) return;
-        var fade = easeInOut((elapsed - 0.68 - p.stagger) / 0.95);
+        var fade = easeInOut((elapsed - 0.68 - p.stagger) / 1.15);
         var x = bezier(p.x0, p.cx, p.x1, t) - originX;
         var y = bezier(p.y0, p.cy, p.y1, t) - originY;
         ctx.globalAlpha = Math.min(1, t * 1.45) * (1 - fade * 0.92);
@@ -328,7 +328,7 @@
     satellites.forEach(function (group) {
       var lock = easeOut((elapsed - 0.22 - group.stagger) / 1.2);
       var fire = easeOut((elapsed - group.stagger) / 0.42);
-      var fade = 1 - easeInOut((elapsed - 0.86 - group.stagger) / 0.7);
+      var fade = 1 - easeInOut((elapsed - 0.86 - group.stagger) / 1.3);
       if (fade <= 0.02) return;
       group.dots.forEach(function (dot, i) {
         dot.angle += 0.42 * 0.016;
@@ -363,7 +363,7 @@
 
     paintTheme(elapsed);
 
-    if (elapsed > 2.7) {
+    if (elapsed > 2.72) {
       finish();
       return;
     }

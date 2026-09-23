@@ -342,7 +342,6 @@
   window.addEventListener("resize", refreshLayout);
   if (window.visualViewport) {
     window.visualViewport.addEventListener("resize", refreshLayout);
-    window.visualViewport.addEventListener("scroll", refreshLayout);
   }
   document.addEventListener("themechange", function () {
     syncColors();

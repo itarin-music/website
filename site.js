@@ -138,6 +138,11 @@
       clearDeckPin();
       return;
     }
+    if (!document.body.dataset.preview) {
+      deckSlot.appendChild(deckNode);
+      clearDeckPin();
+      return;
+    }
     var width = deckSlot.getBoundingClientRect().width;
     deckNode.style.setProperty("--deck-width", width + "px");
     deckSlot.style.minHeight = deckNode.offsetHeight + "px";
@@ -148,6 +153,12 @@
   }
 
   function placeDeck() {
+    var home = document.body.dataset.world === "home";
+    if (home && !deckNarrow.matches && deckSlot && !document.body.dataset.preview) {
+      if (deckNode.parentNode !== deckSlot) deckSlot.appendChild(deckNode);
+      clearDeckPin();
+      return;
+    }
     pinDeck();
   }
 
