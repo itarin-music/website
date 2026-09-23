@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1280, height=640">
+    <title>itarin mark</title>
+    <style>
+        @font-face {
+            font-family: "VAIO CON DIOS";
+            src: url("../fonts/vaio-con-dios.woff2") format("woff2"),
+                 url("../fonts/vaio-con-dios.otf") format("opentype");
+            font-weight: 400;
+            font-style: normal;
+            font-display: block;
+        }
+        html, body {
+            margin: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: transparent;
+        }
+        .mark {
+            margin: 0;
+            width: 100%;
+            height: 100%;
+            line-height: 0;
+            position: relative;
+        }
+        .mark__text {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+        }
+        .itarin-canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+    <h1 class="mark">
+        <span class="mark__text">itarin</span>
+    </h1>
+    <script src="mark.js"></script>
+</body>
+</html>

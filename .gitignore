@@ -6,6 +6,10 @@ desktop.ini
 .vscode/
 .idea/
 
+# Overlay export scratch
+overlay/node_modules/
+overlay/frames/
+overlay/_t.webp
 
 # Never nest a clone inside the repo
 /website/

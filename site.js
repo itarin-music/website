@@ -5,50 +5,230 @@
 (function () {
   "use strict";
 
-  /* --- Worlds: music / coding / visual ---------------------------------- */
+  /* --- Worlds: home / music / coding / visual --------------------------- */
 
-  var WORLDS = ["music", "coding", "visual"];
+  var WORLDS = ["home", "music", "coding", "visual"];
   var nestedIds = { releases: true, "shop-heading": true };
-  var worldLinks = document.querySelectorAll(".worlds a");
+  var worldLinks = document.querySelectorAll(".chapters a");
+  var worldAnchors = document.querySelectorAll("a[data-world]");
   var panels = {};
   WORLDS.forEach(function (id) {
     panels[id] = document.getElementById(id);
   });
 
   function worldFromHash() {
-    var id = (location.hash || "#music").replace(/^#/, "");
+    var raw = location.hash || "";
+    var id = raw.replace(/^#/, "");
+    if (!id) return "home";
     if (nestedIds[id]) return "music";
-    return WORLDS.indexOf(id) >= 0 ? id : "music";
+    return WORLDS.indexOf(id) >= 0 ? id : "home";
   }
 
+  function clearPreview() {
+    document.body.removeAttribute("data-preview");
+  }
+
+  function showPreview(id) {
+    if (!id || WORLDS.indexOf(id) < 0) return;
+    if (document.body.dataset.world === id) {
+      clearPreview();
+      return;
+    }
+    document.body.dataset.preview = id;
+  }
+
+  var currentWorld = null;
+
   function showWorld(id) {
+    if (currentWorld === id) return;
+    currentWorld = id;
     WORLDS.forEach(function (world) {
       if (panels[world]) panels[world].hidden = world !== id;
     });
     document.body.dataset.world = id;
+    clearPreview();
     worldLinks.forEach(function (link) {
       var on = link.getAttribute("href") === "#" + id;
       if (on) link.setAttribute("aria-current", "page");
       else link.removeAttribute("aria-current");
     });
+    placeSocials(id);
+    placeDeck();
     document.dispatchEvent(new CustomEvent("worldchange", { detail: id }));
   }
 
-  worldLinks.forEach(function (link) {
+  worldAnchors.forEach(function (link) {
+    var id = (link.getAttribute("href") || "").replace(/^#/, "");
+    link.addEventListener("focus", function () { showPreview(id); });
+    link.addEventListener("blur", clearPreview);
     link.addEventListener("click", function (event) {
-      var id = (link.getAttribute("href") || "").replace(/^#/, "");
       if (WORLDS.indexOf(id) < 0) return;
       event.preventDefault();
-      if (location.hash !== "#" + id) {
+      if (document.body.dataset.world === id) {
+        clearPreview();
+        return;
+      }
+      if (id === "home") {
+        if (location.hash && location.hash !== "#home") {
+          history.pushState(null, "", "#home");
+        }
+      } else if (location.hash !== "#" + id) {
         history.pushState(null, "", "#" + id);
       }
       showWorld(id);
     });
   });
 
+  function bindPreviewHost(host) {
+    if (!host) return;
+    host.addEventListener("pointerover", function (event) {
+      if (event.pointerType && event.pointerType !== "mouse" && event.pointerType !== "pen") return;
+      var link = event.target.closest("a[data-world]");
+      if (!link || !host.contains(link)) return;
+      showPreview((link.getAttribute("href") || "").replace(/^#/, ""));
+    });
+    host.addEventListener("pointerleave", function (event) {
+      if (event.pointerType && event.pointerType !== "mouse" && event.pointerType !== "pen") return;
+      clearPreview();
+    });
+  }
+
+  function placeSocials(world) {
+    var social = document.querySelector(".social");
+    var homeSlot = document.querySelector(".welcome__socials");
+    var mode = document.querySelector(".mode");
+    if (!social) return;
+    if (world === "home" && homeSlot) {
+      homeSlot.appendChild(social);
+      return;
+    }
+    if (mode && mode.parentNode) {
+      mode.insertAdjacentElement("afterend", social);
+    }
+  }
+
+  var deckNode = document.querySelector(".deck");
+  var deckSlot = document.querySelector(".welcome__now");
+  var deckNarrow = window.matchMedia("(max-width: 720px)");
+
+  function parkDeck() {
+    if (!deckNode || deckNode.parentNode === document.body) return;
+    document.body.appendChild(deckNode);
+  }
+
+  function clearDeckPin() {
+    if (!deckNode) return;
+    deckNode.classList.remove("is-placed");
+    deckNode.style.removeProperty("--deck-left");
+    deckNode.style.removeProperty("--deck-top");
+    deckNode.style.removeProperty("--deck-width");
+    if (deckSlot) deckSlot.style.minHeight = "";
+  }
+
+  function pinDeck() {
+    if (!deckNode) return;
+    parkDeck();
+    var home = document.body.dataset.world === "home";
+    if (!home || deckNarrow.matches || !deckSlot) {
+      clearDeckPin();
+      return;
+    }
+    var width = deckSlot.getBoundingClientRect().width;
+    deckNode.style.setProperty("--deck-width", width + "px");
+    deckSlot.style.minHeight = deckNode.offsetHeight + "px";
+    var box = deckSlot.getBoundingClientRect();
+    deckNode.style.setProperty("--deck-left", box.left + "px");
+    deckNode.style.setProperty("--deck-top", box.top + "px");
+    deckNode.classList.add("is-placed");
+  }
+
+  function placeDeck() {
+    pinDeck();
+  }
+
+  bindPreviewHost(document.querySelector(".chapters"));
+
+  window.addEventListener("scroll", pinDeck, { passive: true });
+  window.addEventListener("resize", pinDeck);
+  deckNarrow.addEventListener("change", pinDeck);
+  if (typeof ResizeObserver === "function") {
+    var deckWatch = new ResizeObserver(pinDeck);
+    if (deckNode) deckWatch.observe(deckNode);
+    if (deckSlot) deckWatch.observe(deckSlot);
+  }
+
   window.addEventListener("hashchange", function () { showWorld(worldFromHash()); });
   window.addEventListener("popstate", function () { showWorld(worldFromHash()); });
+  if ("scrollRestoration" in history) history.scrollRestoration = "manual";
   showWorld(worldFromHash());
+  window.scrollTo(0, 0);
+
+  /* --- Theme ----------------------------------------------------------- */
+
+  var modeButton = document.querySelector(".mode");
+  var themeMeta = document.querySelector('meta[name="theme-color"]');
+  var themeMedia = window.matchMedia("(prefers-color-scheme: dark)");
+  var skipPreview = false;
+
+  function systemTheme() {
+    return themeMedia.matches ? "dark" : "light";
+  }
+
+  function storedTheme() {
+    try {
+      var saved = localStorage.getItem("itarin-theme-choice");
+      if (saved === "light" || saved === "dark") return saved;
+    } catch (err) {}
+    return null;
+  }
+
+  var followSystem = !storedTheme();
+  var committedTheme = storedTheme() || systemTheme();
+
+  function paintTheme(theme, persist) {
+    document.documentElement.dataset.theme = theme;
+    if (themeMeta) {
+      themeMeta.setAttribute("content", theme === "dark" ? "#0c0e14" : "#e4e0d4");
+    }
+    if (persist) {
+      committedTheme = theme;
+      followSystem = false;
+      try { localStorage.setItem("itarin-theme-choice", theme); } catch (err) {}
+    }
+    if (modeButton) {
+      var next = theme === "dark" ? "light" : "dark";
+      var modeVal = modeButton.querySelector(".mode__val");
+      if (modeVal) modeVal.textContent = next;
+      else modeButton.textContent = next;
+      modeButton.setAttribute("aria-label", "Switch to " + next + " mode");
+      modeButton.setAttribute("aria-pressed", theme === "dark" ? "true" : "false");
+    }
+    document.dispatchEvent(new CustomEvent("themechange", { detail: theme }));
+  }
+
+  paintTheme(committedTheme, false);
+  if (themeMedia.addEventListener) {
+    themeMedia.addEventListener("change", function () {
+      if (!followSystem) return;
+      committedTheme = systemTheme();
+      paintTheme(committedTheme, false);
+    });
+  }
+  if (modeButton) {
+    modeButton.addEventListener("pointerenter", function (event) {
+      if (event.pointerType !== "mouse" && event.pointerType !== "pen") return;
+      if (skipPreview) return;
+      paintTheme(committedTheme === "dark" ? "light" : "dark", false);
+    });
+    modeButton.addEventListener("pointerleave", function () {
+      skipPreview = false;
+      paintTheme(committedTheme, false);
+    });
+    modeButton.addEventListener("click", function () {
+      paintTheme(committedTheme === "dark" ? "light" : "dark", true);
+      skipPreview = true;
+    });
+  }
 
   /* --- GitHub projects -------------------------------------------------- */
 
@@ -101,6 +281,7 @@
         meta.appendChild(time);
       }
       link.appendChild(meta);
+      item.setAttribute("data-assemble", "");
       item.appendChild(link);
       reposList.appendChild(item);
     });
@@ -377,7 +558,10 @@
 
   function cardFrom(node) {
     if (!node || !node.closest) return null;
-    return node.closest(".card a") || node.closest(".covers .card");
+    return node.closest(".unit__object") ||
+           node.closest(".index__list a") ||
+           node.closest(".gallery .frame") ||
+           node.closest(".card a");
   }
 
   function artworkFor(card) {
@@ -394,7 +578,10 @@
     if (!url || (url === activeUrl && activeLayer)) return;
 
     var nextLayer = document.createElement("span");
-    var shade = "linear-gradient(rgba(5, 7, 10, 0.34), rgba(5, 7, 10, 0.7))";
+    var dark = document.documentElement.dataset.theme === "dark";
+    var shade = dark
+      ? "linear-gradient(rgba(12, 14, 20, 0.55), rgba(12, 14, 20, 0.9))"
+      : "linear-gradient(rgba(247, 248, 251, 0.55), rgba(247, 248, 251, 0.9))";
     nextLayer.style.backgroundImage = shade + ", url(\"" + url.replace(/"/g, "%22") + "\")";
     backdrop.appendChild(nextLayer);
 
@@ -468,6 +655,148 @@
     hoveredCard = null;
     hide();
   });
+})();
+
+/* --- Hover-to-play local song previews --------------------------------- */
+
+(function () {
+  "use strict";
+
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+  var VOLUME = 0.1;
+  var FADE_MS = 160;
+  var cache = Object.create(null);
+  var current = null;
+  var currentSrc = "";
+  var fadeTimer = 0;
+  var fadeFrom = 0;
+  var fadeTo = 0;
+  var fadeStart = 0;
+
+  function audioSrc(node) {
+    if (!node || !node.closest) return "";
+    var host = node.closest("[data-preview]");
+    if (!host || host === document.body || host === document.documentElement) return "";
+    var src = host.getAttribute("data-preview") || "";
+    if (!/\.(mp3|ogg|wav|m4a)(\?|#|$)/i.test(src)) return "";
+    return src;
+  }
+
+  function stopFade() {
+    if (fadeTimer) {
+      cancelAnimationFrame(fadeTimer);
+      fadeTimer = 0;
+    }
+  }
+
+  function fade(audio, to, then) {
+    stopFade();
+    fadeFrom = audio.volume;
+    fadeTo = to;
+    fadeStart = performance.now();
+    function tick(now) {
+      var t = Math.min(1, (now - fadeStart) / FADE_MS);
+      audio.volume = fadeFrom + (fadeTo - fadeFrom) * t;
+      if (t < 1) {
+        fadeTimer = requestAnimationFrame(tick);
+        return;
+      }
+      fadeTimer = 0;
+      if (then) then();
+    }
+    fadeTimer = requestAnimationFrame(tick);
+  }
+
+  function halt(audio) {
+    audio.pause();
+    try { audio.currentTime = 0; } catch (err) {}
+    audio.volume = 0;
+  }
+
+  function stop(fadeOut, keepHold) {
+    var audio = current;
+    current = null;
+    currentSrc = "";
+    if (!audio) {
+      if (!keepHold) document.dispatchEvent(new Event("catalogpreviewend"));
+      return;
+    }
+    if (fadeOut && !audio.paused) {
+      fade(audio, 0, function () {
+        halt(audio);
+        if (!keepHold) document.dispatchEvent(new Event("catalogpreviewend"));
+      });
+    } else {
+      stopFade();
+      halt(audio);
+      if (!keepHold) document.dispatchEvent(new Event("catalogpreviewend"));
+    }
+  }
+
+  function play(src) {
+    if (!src || document.body.classList.contains("is-playing")) {
+      stop(true);
+      return;
+    }
+    if (src === currentSrc && current && !current.paused) return;
+
+    stop(false, true);
+
+    var audio = cache[src];
+    if (!audio) {
+      audio = new Audio();
+      audio.preload = "auto";
+      audio.loop = true;
+      audio.src = src;
+      cache[src] = audio;
+    }
+
+    audio.volume = 0;
+    try { audio.currentTime = 0; } catch (err) {}
+    current = audio;
+    currentSrc = src;
+
+    document.dispatchEvent(new Event("catalogpreview"));
+
+    var started = audio.play();
+    if (started && started.then) {
+      started.then(function () {
+        if (current !== audio) return;
+        fade(audio, VOLUME);
+      }).catch(function () {
+        if (current === audio) {
+          current = null;
+          currentSrc = "";
+        }
+        document.dispatchEvent(new Event("catalogpreviewend"));
+      });
+    }
+  }
+
+  document.addEventListener("pointerover", function (event) {
+    if (event.pointerType && event.pointerType !== "mouse" && event.pointerType !== "pen") return;
+    if (document.body.classList.contains("is-playing")) return;
+    var src = audioSrc(event.target);
+    if (!src || src === audioSrc(event.relatedTarget)) return;
+    play(src);
+  });
+
+  document.addEventListener("pointerout", function (event) {
+    if (event.pointerType && event.pointerType !== "mouse" && event.pointerType !== "pen") return;
+    var src = audioSrc(event.target);
+    if (!src || src === audioSrc(event.relatedTarget)) return;
+    stop(true);
+  });
+
+  document.addEventListener("worldchange", function () { stop(false); });
+  document.addEventListener("visibilitychange", function () {
+    if (document.hidden) stop(false);
+  });
+
+  new MutationObserver(function () {
+    if (document.body.classList.contains("is-playing")) stop(false);
+  }).observe(document.body, { attributes: true, attributeFilter: ["class"] });
 })();
 
 /* ==========================================================================
@@ -669,7 +998,7 @@
 
   function loadCovers() {
     var seen = Object.create(null);
-    document.querySelectorAll(".rack:not([aria-hidden]) .card img").forEach(function (source) {
+    document.querySelectorAll(".unit img, .index__list img, .gallery .frame img").forEach(function (source) {
       var url = (source.currentSrc || source.src).replace("-400.webp", "-800.webp");
       if (seen[url]) return;
       seen[url] = true;
