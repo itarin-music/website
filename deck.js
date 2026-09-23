@@ -3,8 +3,7 @@
 
    Plays official YouTube embeds so listens can count as views.
    Volume starts at 5% on a power curve so quiet settings stay quiet.
-   Yields to hover previews
-   and Album Invaders. Tells the user when an ad is on instead of the song.
+  and Album Invaders. Tells the user when an ad is on instead of the song.
    ========================================================================== */
 
 (function () {
@@ -526,9 +525,6 @@
     }
     if (info.videoData && info.videoData.video_id) inspectAd();
   });
-
-  document.addEventListener("catalogpreview", hold);
-  document.addEventListener("catalogpreviewend", release);
 
   new MutationObserver(function () {
     if (document.body.classList.contains("is-playing")) hold();
