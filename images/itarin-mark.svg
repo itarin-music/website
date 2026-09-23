@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-40 -90 5711 1614"
+     role="img" aria-label="itarin">
+  <title>itarin</title>
+  <style>
+    .letter, .dot {
+      transform-box: fill-box;
+      transform-origin: center;
+    }
+    .letter {
+      fill: #eef2f7;
+      animation: rise 0.68s cubic-bezier(0.16, 1, 0.32, 1) both;
+      animation-delay: calc(var(--i) * 75ms);
+    }
+    .dot {
+      fill: #7fd6ee;
+      animation:
+        lock 0.55s cubic-bezier(0.18, 1.15, 0.32, 1) both,
+        glow 2.6s ease-in-out infinite;
+      animation-delay: calc(0.92s + var(--i) * 90ms), 1.45s;
+      filter: drop-shadow(0 0 420px #7fd6ee);
+    }
+    @keyframes rise {
+      from { transform: translateY(-42%); opacity: 0; }
+      to   { transform: translateY(0); opacity: 1; }
+    }
+    @keyframes lock {
+      0%   { transform: translateY(38%) scale(0.15); opacity: 0; }
+      72%  { transform: translateY(-6%) scale(1.12); opacity: 1; }
+      100% { transform: translateY(0) scale(1); opacity: 1; }
+    }
+    @keyframes glow {
+      0%, 100% { filter: drop-shadow(0 0 320px #7fd6ee); }
+      50%      { filter: drop-shadow(0 0 780px #7fd6ee); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .letter, .dot { animation: none; opacity: 1; transform: none; }
+      .dot { filter: drop-shadow(0 0 420px #7fd6ee); }
+    }
+  </style>
+  <defs>
+    <clipPath id="rise-clip">
+      <rect x="-40" y="-90" width="5711" height="1524"/>
+    </clipPath>
+  </defs>
+  <g clip-path="url(#rise-clip)">
+    <g transform="translate(0 1434) scale(1 -1)">
+      <g class="letter" style="--i:0"><path transform="translate(0 0)" d="M326 0H135V792Q135 942 257 1024L362 864Q326 841 326 784Z"/></g>
+      <g class="letter" style="--i:1"><path transform="translate(460 0)" d="M367 833Q217 833 135 955L295 1060Q318 1024 375 1024H749V833H558V240Q558 183 594 160L489 0Q367 82 367 232Z"/></g>
+      <g class="letter" style="--i:2"><path transform="translate(1344 0)" d="M967 529Q886 664 839 719Q745 833 647 833Q513 833 420 739Q324 646 324 512Q324 378 420 285Q513 189 647 189Q780 189 874 285Q967 378 967 512ZM647 1024Q817 1024 957 873Q1039 784 1168 561Q1277 374 1335 305Q1431 191 1529 191V0Q1357 0 1217 151Q1171 200 1110 291Q1073 215 1008 149Q858 0 647 0Q435 0 284 149Q135 301 135 512Q135 723 284 873Q435 1024 647 1024Z"/></g>
+      <g class="letter" style="--i:3"><path transform="translate(3008 0)" d="M135 0V784Q135 841 99 864L204 1024Q326 942 326 792V0ZM454 884Q454 942 494 982Q536 1024 594 1024Q652 1024 694 982Q734 942 734 884Q734 824 694 784Q652 742 594 742Q536 742 494 784Q454 824 454 884Z"/></g>
+      <g class="letter" style="--i:4"><path transform="translate(3877 0)" d="M326 0H135V792Q135 942 257 1024L362 864Q326 841 326 784Z"/></g>
+      <g class="letter" style="--i:5"><path transform="translate(4337 0)" d="M326 0H135V784Q135 841 99 864L204 1024Q280 973 308 896Q452 1024 647 1024Q859 1024 1010 875Q1159 723 1159 512V240Q1159 183 1195 160L1090 0Q968 82 968 232V550Q956 659 874 739Q781 835 647 835Q514 835 420 739Q327 646 327 512H326Z"/></g>
+    </g>
+  </g>
+  <g transform="translate(0 1434) scale(1 -1)">
+    <g class="dot" style="--i:0"><path transform="translate(0 0)" d="M330 1194Q288 1152 230 1152Q172 1152 130 1194Q90 1234 90 1294Q90 1352 130 1392Q172 1434 230 1434Q288 1434 330 1392Q370 1352 370 1294Q370 1234 330 1194Z"/></g>
+    <g class="dot" style="--i:1"><path transform="translate(3877 0)" d="M330 1194Q288 1152 230 1152Q172 1152 130 1194Q90 1234 90 1294Q90 1352 130 1392Q172 1434 230 1434Q288 1434 330 1392Q370 1352 370 1294Q370 1234 330 1194Z"/></g>
+  </g>
+</svg>

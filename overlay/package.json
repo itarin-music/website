@@ -1,0 +1,6 @@
+{
+  "name": "overlay",
+  "dependencies": {
+    "@napi-rs/canvas": "^1.0.9"
+  }
+}

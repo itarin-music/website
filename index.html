@@ -2,14 +2,34 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 
-    <title>itarin — official site</title>
+    <title>itarin — official catalog</title>
     <meta name="description" content="Official site of itarin. Music, coding projects, and visual art.">
-    <meta name="theme-color" content="#05070a">
+    <meta name="theme-color" content="#e4e0d4">
+    <script>
+        (function () {
+            var theme = null;
+            try { theme = localStorage.getItem("itarin-theme-choice"); } catch (err) {}
+            if (theme !== "light" && theme !== "dark") {
+                theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+            }
+            document.documentElement.dataset.theme = theme;
+            document.querySelector('meta[name="theme-color"]')
+                .setAttribute("content", theme === "dark" ? "#0c0e14" : "#e4e0d4");
+            document.documentElement.classList.add("is-assembling");
+            setTimeout(function () {
+                document.documentElement.classList.remove("is-assembling", "is-reassembling");
+                document.querySelectorAll("[data-assemble]").forEach(function (el) {
+                    el.style.opacity = "";
+                });
+                var gate = document.getElementById("gate");
+                if (gate) gate.classList.add("is-gone");
+            }, 6500);
+        })();
+    </script>
     <link rel="canonical" href="https://itarin.online/">
 
-    <!-- Social previews -->
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="itarin">
     <meta property="og:title" content="itarin">
@@ -24,50 +44,64 @@
     <meta name="twitter:description" content="Music, coding projects, and visual art.">
     <meta name="twitter:image" content="https://itarin.online/images/og.jpg">
 
-    <!-- Icons -->
     <link rel="icon" href="/favicon/favicon.ico" sizes="any">
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png">
     <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png">
     <link rel="manifest" href="/site.webmanifest">
 
-    <!-- Above-the-fold assets -->
-    <link rel="preload" href="fonts/Excelorate.woff2" as="font" type="font/woff2" crossorigin>
-    <link rel="preload" href="images/logospin.gif" as="image">
-    <!-- Bump ?v= whenever style.css or site.js changes. GitHub Pages caches
-         assets for 10 minutes, so without this a returning visitor can get new
-         HTML with an old stylesheet. -->
-    <link rel="stylesheet" href="style.css?v=17">
+    <link rel="preload" href="fonts/vaio-con-dios.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="stylesheet" href="style.css?v=91">
 </head>
 
-<body data-world="music">
-    <div class="backdrop" aria-hidden="true"></div>
+<body data-world="home">
+    <div class="paper" aria-hidden="true">
+        <span class="hud-scan"></span>
+        <span class="hud-grid"></span>
+    </div>
+    <div class="hud-frame" aria-hidden="true">
+        <i class="hud-frame__c hud-frame__c--tl"></i>
+        <i class="hud-frame__c hud-frame__c--tr"></i>
+        <i class="hud-frame__c hud-frame__c--bl"></i>
+        <i class="hud-frame__c hud-frame__c--br"></i>
+    </div>
     <div class="release-backdrops" aria-hidden="true"></div>
+    <div class="gate" id="gate" aria-hidden="true">
+        <div class="gate__card">
+            <p class="gate__tag">00 · connect</p>
+            <p class="gate__line">now entering</p>
+            <p class="gate__rule"></p>
+            <p class="gate__mark">itarin</p>
+        </div>
+    </div>
 
     <a class="skip-link" href="#content">Skip to content</a>
 
-    <header class="site-head">
-        <h1 class="mark">
-            <picture>
-                <source media="(prefers-reduced-motion: reduce)" srcset="images/logo-static.webp">
-                <img src="images/logospin.gif" alt="itarin" width="234" height="66"
-                     fetchpriority="high" decoding="async">
-            </picture>
-        </h1>
-    </header>
+    <header class="banner">
+        <div class="brand">
+            <p class="whisper" lang="ja" data-assemble>記憶より先に、音が来る。</p>
+            <h1 class="mark">
+                <a href="#home" data-world="home">
+                    <span class="mark__text">itarin</span>
+                </a>
+            </h1>
+        </div>
 
-    <nav class="worlds" aria-label="Site sections">
-        <a href="#music" aria-current="page">music</a>
-        <a href="#coding">coding</a>
-        <a href="#visual">visual</a>
-    </nav>
-
-    <main id="content">
-        <section class="world" id="music" aria-labelledby="world-music">
-            <h2 class="sr-only" id="world-music">Music</h2>
-
+        <div class="banner__meta">
+            <p class="stamp" data-assemble>
+                <time id="stamp-date" datetime="2026-09">2026.09</time>
+                personal media series
+            </p>
+            <p class="stamp stamp--ja" lang="ja" data-assemble>「イタリン」総合カタログ</p>
+            <div class="lcd" data-assemble>
+                <span class="lcd__bars" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+                <b>SIG</b>
+                <span id="lcd-time">00:00</span>
+                <em lang="ja">接続中</em>
+            </div>
+            <button class="mode" type="button" data-assemble>mode <span class="mode__val">dark</span></button>
             <nav class="social" aria-label="itarin on other platforms">
-                <a href="https://open.spotify.com/artist/6Vc7Y1CkrxACHNHLLHsQ9P" target="_blank" rel="noopener">
+                <a href="https://open.spotify.com/artist/6Vc7Y1CkrxACHNHLLHsQ9P" target="_blank" rel="noopener" data-assemble>
                     <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
                         <circle cx="12" cy="12" r="9.4"/>
                         <path d="M7.1 9.1c3.3-.95 6.9-.6 9.8 1.05"/>
@@ -76,9 +110,7 @@
                     </svg>
                     <span class="sr-only">Spotify</span>
                 </a>
-
-                <!-- Storefront-neutral: Apple redirects each visitor to their own region. -->
-                <a href="https://music.apple.com/artist/1544516484" target="_blank" rel="noopener">
+                <a href="https://music.apple.com/artist/1544516484" target="_blank" rel="noopener" data-assemble>
                     <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
                         <rect x="2.6" y="2.6" width="18.8" height="18.8" rx="5.2"/>
                         <path d="M10.6 15.6V9.1l6.1-1.25v6.4"/>
@@ -87,24 +119,21 @@
                     </svg>
                     <span class="sr-only">Apple Music</span>
                 </a>
-
-                <a href="https://soundcloud.com/itarin" target="_blank" rel="noopener">
+                <a href="https://soundcloud.com/itarin" target="_blank" rel="noopener" data-assemble>
                     <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
                         <path d="M2.8 14v-2.6M5.4 15.2v-5M8 15.2V8.6M10.6 15.2V7.2"/>
                         <path d="M13.2 15.2V7.6c2.6-1 5.4.8 5.7 3.6h.6a2 2 0 0 1 0 4z"/>
                     </svg>
                     <span class="sr-only">SoundCloud</span>
                 </a>
-
-                <a href="https://www.youtube.com/@itarin" target="_blank" rel="noopener">
+                <a href="https://www.youtube.com/@itarin" target="_blank" rel="noopener" data-assemble>
                     <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
                         <rect x="2" y="5.1" width="20" height="13.8" rx="4.3"/>
                         <path d="M10.15 9.05 15.2 12l-5.05 2.95z"/>
                     </svg>
                     <span class="sr-only">YouTube</span>
                 </a>
-
-                <a href="https://www.instagram.com/itarin.png/" target="_blank" rel="noopener">
+                <a href="https://www.instagram.com/itarin.png/" target="_blank" rel="noopener" data-assemble>
                     <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
                         <rect x="2.9" y="2.9" width="18.2" height="18.2" rx="5.3"/>
                         <circle cx="12" cy="12" r="4.1"/>
@@ -112,16 +141,14 @@
                     </svg>
                     <span class="sr-only">Instagram</span>
                 </a>
-
-                <a href="https://www.twitch.tv/itarinmp3" target="_blank" rel="noopener">
+                <a href="https://www.twitch.tv/itarinmp3" target="_blank" rel="noopener" data-assemble>
                     <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
                         <path d="M4.2 2.9h15.6v10.4l-3.9 3.9h-3.2l-2.6 2.6H7.5v-2.6H4.2z"/>
                         <path d="M10.4 7.1v4.3M14.9 7.1v4.3"/>
                     </svg>
                     <span class="sr-only">Twitch</span>
                 </a>
-
-                <a href="mailto:itarin@itarin.online">
+                <a href="mailto:itarin@itarin.online" data-assemble>
                     <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
                         <rect x="2.6" y="4.6" width="18.8" height="14.8" rx="2.6"/>
                         <path d="M3.6 6.6 12 12.9l8.4-6.3"/>
@@ -129,194 +156,328 @@
                     <span class="sr-only">Email</span>
                 </a>
             </nav>
+        </div>
+    </header>
 
-            <section class="releases" id="releases" aria-labelledby="releases-heading">
-                <h2 class="section-label" id="releases-heading">releases</h2>
+    <div class="folio">
+        <main id="content" class="leaf">
+            <section class="issue" id="home" aria-labelledby="world-home">
+                <h2 class="sr-only" id="world-home">Home</h2>
 
-                <div class="marquee">
-                    <ul class="rack">
-                        <li class="card">
-                            <a href="https://tunelink.to/goanddie" target="_blank" rel="noopener">
-                                <img src="images/go-and-die-400.webp"
-                                     srcset="images/go-and-die-400.webp 400w, images/go-and-die-800.webp 800w"
-                                     sizes="(max-width: 600px) 150px, 200px"
-                                     alt="Go and Die &mdash; cover art" width="400" height="400" decoding="async" draggable="false">
-                                <span class="card__title">Go and Die</span>
-                                <span class="card__meta">itarin &amp; Sovkie</span>
-                            <time class="card__date" datetime="2025-01-30">30 Jan 2025</time>
-                                </a>
-                        </li>
-                        <li class="card">
-                            <a href="https://itarin.tunelink.to/bruhbruhbruh" target="_blank" rel="noopener">
-                                <img src="images/trailer-park-houses-400.webp"
-                                     srcset="images/trailer-park-houses-400.webp 400w, images/trailer-park-houses-800.webp 800w"
-                                     sizes="(max-width: 600px) 150px, 200px"
-                                     alt="Built This Town &mdash; cover art" width="400" height="400" decoding="async" draggable="false">
-                                <span class="card__title">Built This Town</span>
-                                <span class="card__meta">itarin &amp; Sovkie</span>
-                            <time class="card__date" datetime="2024-09-20">20 Sep 2024</time>
-                                </a>
-                        </li>
-                        <li class="card">
-                            <a href="https://tunelink.to/lUvRX" target="_blank" rel="noopener">
-                                <img src="images/never-concentrate-400.webp"
-                                     srcset="images/never-concentrate-400.webp 400w, images/never-concentrate-800.webp 800w"
-                                     sizes="(max-width: 600px) 150px, 200px"
-                                     alt="Never Concentrate (Extended) &mdash; cover art" width="400" height="400" decoding="async" draggable="false">
-                                <span class="card__title">Never Concentrate (Extended)</span>
-                                <span class="card__meta">itarin</span>
-                            <time class="card__date" datetime="2024-08-15">15 Aug 2024</time>
-                                </a>
-                        </li>
-                        <li class="card">
-                            <a href="https://itarin.tunelink.to/ExampleNeeded" target="_blank" rel="noopener">
-                                <img src="images/example-needed-400.webp"
-                                     srcset="images/example-needed-400.webp 400w, images/example-needed-800.webp 800w"
-                                     sizes="(max-width: 600px) 150px, 200px"
-                                     alt="Example Needed &mdash; cover art" width="400" height="400" decoding="async" draggable="false">
-                                <span class="card__title">Example Needed</span>
-                                <span class="card__meta">itarin &amp; Sovkie</span>
-                            <time class="card__date" datetime="2024-02-02">02 Feb 2024</time>
-                                </a>
-                        </li>
-                        <li class="card">
-                            <a href="https://tunelink.to/F9STu" target="_blank" rel="noopener">
-                                <img src="images/dont-talk-400.webp"
-                                     srcset="images/dont-talk-400.webp 400w, images/dont-talk-800.webp 800w"
-                                     sizes="(max-width: 600px) 150px, 200px"
-                                     alt="P3pto // Don&apos;t Talk to M3 &mdash; cover art" width="400" height="400" decoding="async" draggable="false">
-                                <span class="card__title">Don&rsquo;t Talk to M3 / P3pto</span>
-                                <span class="card__meta">itarin &amp; Sovkie, Metallin</span>
-                            <time class="card__date" datetime="2023-04-13">13 Apr 2023</time>
-                                </a>
-                        </li>
-                    </ul>
+                <div class="welcome">
+                    <p class="unit__tag" data-assemble>boot 00 · ホーム</p>
+                    <p class="lead" lang="ja" data-assemble>ここで、<br>待っている。</p>
+                    <p class="spec" lang="ja" data-assemble>
+                        音とコードと色が、同じ部屋から届く。
+                    </p>
+                    <p class="spec spec--en" data-assemble>
+                        A personal catalog.<br>
+                        Music, code, and pictures from one room.
+                    </p>
+
+                    <div class="welcome__now" data-assemble></div>
+                    <div class="welcome__socials"></div>
                 </div>
             </section>
 
-            <section class="shop" aria-labelledby="shop-heading">
-                <h2 class="section-label" id="shop-heading">physical</h2>
+            <section class="issue" id="music" aria-labelledby="world-music" hidden>
+                <h2 class="sr-only" id="world-music">Music</h2>
 
-                <div class="shop__grid">
-                    <article class="cd">
-                        <a href="https://kunaki.com/sales.asp?PID=PX00RNHRV2&amp;pp=1" target="_blank" rel="noopener">
-                            <div class="cd__art">
-                                <span class="cd__disc" aria-hidden="true"
-                                      style="--disc-art: url('images/never-concentrate-800.webp')"></span>
-                                <img class="cd__sleeve" src="images/never-concentrate-400.webp"
-                                     srcset="images/never-concentrate-400.webp 400w, images/never-concentrate-800.webp 800w"
-                                     sizes="200px" alt="Never Concentrate (Extended) CD" width="400" height="400" draggable="false">
-                            </div>
-                            <h3 class="cd__title">Never Concentrate (Extended)</h3>
-                            <p class="cd__format">Compact Disc &middot; 16 tracks</p>
-                            <p class="cd__price">$10.00 <span>+ shipping</span></p>
+                <div class="plate">
+                    <article class="unit" data-preview="audio/go-and-die.mp3" data-assemble>
+                        <p class="unit__tag">file 01 · 最新作</p>
+                        <a class="unit__object" href="https://tunelink.to/goanddie" target="_blank" rel="noopener">
+                            <img src="images/go-and-die-800.webp"
+                                 srcset="images/go-and-die-400.webp 400w, images/go-and-die-800.webp 800w"
+                                 sizes="(max-width: 800px) 70vw, 320px"
+                                 alt="Go and Die — cover art" width="800" height="800" fetchpriority="high" decoding="async" draggable="false">
                         </a>
-                        <a class="cd__buy" href="https://kunaki.com/sales.asp?PID=PX00RNHRV2&amp;pp=1" target="_blank" rel="noopener">Buy</a>
+                        <h3 class="unit__title">Go and Die</h3>
+                        <p class="unit__meta">itarin &amp; Sovkie &middot; 30 Jan 2025</p>
                     </article>
 
-                    <article class="cd">
-                        <a href="https://kunaki.com/sales.asp?PID=PX00K3RF70&amp;pp=1" target="_blank" rel="noopener">
-                            <div class="cd__art">
-                                <span class="cd__disc" aria-hidden="true"
-                                      style="--disc-art: url('images/example-needed-800.webp')"></span>
-                                <img class="cd__sleeve" src="images/example-needed-400.webp"
-                                     srcset="images/example-needed-400.webp 400w, images/example-needed-800.webp 800w"
-                                     sizes="200px" alt="Example Needed + Singles CD" width="400" height="400" draggable="false">
-                            </div>
-                            <h3 class="cd__title">Example Needed + Singles</h3>
-                            <p class="cd__format">Compact Disc &middot; 7 tracks</p>
-                            <p class="cd__price">$7.00 <span>+ shipping</span></p>
-                        </a>
-                        <a class="cd__buy" href="https://kunaki.com/sales.asp?PID=PX00K3RF70&amp;pp=1" target="_blank" rel="noopener">Buy</a>
-                    </article>
-
-                    <article class="cd cd--pair">
-                        <a href="https://kunaki.com/msales.asp?PublisherId=227816&amp;pp=1" target="_blank" rel="noopener">
-                            <div class="cd__art cd__art--pair">
-                                <span class="cd__disc" aria-hidden="true"
-                                      style="--disc-art: url('images/never-concentrate-800.webp')"></span>
-                                <img class="cd__sleeve cd__sleeve--back" src="images/never-concentrate-400.webp"
-                                     alt="" width="400" height="400" draggable="false" aria-hidden="true">
-                                <img class="cd__sleeve cd__sleeve--front" src="images/example-needed-400.webp"
-                                     alt="Both CDs together" width="400" height="400" draggable="false">
-                            </div>
-                            <h3 class="cd__title">Both CDs</h3>
-                            <p class="cd__format">2 discs &middot; 23 tracks</p>
-                            <p class="cd__price">$17.00 <span>+ shipping</span></p>
-                        </a>
-                        <a class="cd__buy" href="https://kunaki.com/msales.asp?PublisherId=227816&amp;pp=1" target="_blank" rel="noopener">Buy</a>
-                    </article>
+                    <div class="copy">
+                        <p class="lead" lang="ja" data-assemble>ひとつの<br>新着を待つ。</p>
+                        <p class="spec" lang="ja" data-assemble>
+                            やさしい周波数から生まれた、音。<br>
+                            古い未来を、もう一度聴く。
+                        </p>
+                        <p class="spec spec--en" data-assemble>
+                            Stay connected.<br>
+                            A small catalog may not be a big idea.
+                            Add color, sound, and hi-speed feeling
+                            and it just might be.
+                        </p>
+                    </div>
                 </div>
 
-                <p class="shop__note">Pressed to order by Kunaki</p>
+                <section class="index" aria-labelledby="releases-heading">
+                    <h3 class="index__label" id="releases-heading" data-assemble>releases <span lang="ja">ディスコグラフィ</span></h3>
+                    <ol class="index__list" id="releases">
+                        <li>
+                            <a href="https://itarin.tunelink.to/bruhbruhbruh" target="_blank" rel="noopener"
+                               data-preview="audio/built-this-town.mp3" data-assemble>
+                                <span class="index__num">01</span>
+                                <img src="images/trailer-park-houses-400.webp" alt="" width="400" height="400" draggable="false">
+                                <span>
+                                    <strong>Built This Town</strong>
+                                    <em>itarin &amp; Sovkie</em>
+                                </span>
+                                <time datetime="2024-09-20">2024.09.20</time>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://tunelink.to/lUvRX" target="_blank" rel="noopener"
+                               data-preview="audio/never-concentrate.mp3" data-assemble>
+                                <span class="index__num">02</span>
+                                <img src="images/never-concentrate-400.webp" alt="" width="400" height="400" draggable="false">
+                                <span>
+                                    <strong>Never Concentrate (Extended)</strong>
+                                    <em>itarin</em>
+                                </span>
+                                <time datetime="2024-08-15">2024.08.15</time>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://itarin.tunelink.to/ExampleNeeded" target="_blank" rel="noopener"
+                               data-preview="audio/example-needed.mp3" data-assemble>
+                                <span class="index__num">03</span>
+                                <img src="images/example-needed-400.webp" alt="" width="400" height="400" draggable="false">
+                                <span>
+                                    <strong>Example Needed</strong>
+                                    <em>itarin &amp; Sovkie</em>
+                                </span>
+                                <time datetime="2024-02-02">2024.02.02</time>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://tunelink.to/F9STu" target="_blank" rel="noopener"
+                               data-preview="audio/dont-talk.mp3" data-assemble>
+                                <span class="index__num">04</span>
+                                <img src="images/dont-talk-400.webp" alt="" width="400" height="400" draggable="false">
+                                <span>
+                                    <strong>Don&rsquo;t Talk to M3 / P3pto</strong>
+                                    <em>itarin &amp; Sovkie, Metallin</em>
+                                </span>
+                                <time datetime="2023-04-13">2023.04.13</time>
+                            </a>
+                        </li>
+                    </ol>
+                </section>
+
+                <section class="press" aria-labelledby="shop-heading">
+                    <h3 class="index__label" id="shop-heading" data-assemble>physical <span lang="ja">フィジカル</span></h3>
+
+                    <div class="press__grid">
+                        <article class="disk" data-preview="audio/never-concentrate.mp3" data-assemble>
+                            <a href="https://kunaki.com/sales.asp?PID=PX00RNHRV2&amp;pp=1" target="_blank" rel="noopener">
+                                <div class="disk__art">
+                                    <span class="disk__platter" aria-hidden="true"
+                                          style="--disc-art: url('images/never-concentrate-800.webp')"></span>
+                                    <img class="disk__sleeve" src="images/never-concentrate-400.webp"
+                                         srcset="images/never-concentrate-400.webp 400w, images/never-concentrate-800.webp 800w"
+                                         sizes="200px" alt="Never Concentrate (Extended) CD" width="400" height="400" draggable="false">
+                                </div>
+                                <h3 class="disk__title">Never Concentrate (Extended)</h3>
+                                <p class="disk__format">Compact Disc &middot; 16 tracks</p>
+                                <p class="disk__price">$10.00 <span>+ shipping</span></p>
+                            </a>
+                            <a class="disk__buy" href="https://kunaki.com/sales.asp?PID=PX00RNHRV2&amp;pp=1" target="_blank" rel="noopener">Buy</a>
+                        </article>
+
+                        <article class="disk" data-preview="audio/example-needed.mp3" data-assemble>
+                            <a href="https://kunaki.com/sales.asp?PID=PX00K3RF70&amp;pp=1" target="_blank" rel="noopener">
+                                <div class="disk__art">
+                                    <span class="disk__platter" aria-hidden="true"
+                                          style="--disc-art: url('images/example-needed-800.webp')"></span>
+                                    <img class="disk__sleeve" src="images/example-needed-400.webp"
+                                         srcset="images/example-needed-400.webp 400w, images/example-needed-800.webp 800w"
+                                         sizes="200px" alt="Example Needed + Singles CD" width="400" height="400" draggable="false">
+                                </div>
+                                <h3 class="disk__title">Example Needed + Singles</h3>
+                                <p class="disk__format">Compact Disc &middot; 7 tracks</p>
+                                <p class="disk__price">$7.00 <span>+ shipping</span></p>
+                            </a>
+                            <a class="disk__buy" href="https://kunaki.com/sales.asp?PID=PX00K3RF70&amp;pp=1" target="_blank" rel="noopener">Buy</a>
+                        </article>
+
+                        <article class="disk disk--pair" data-assemble>
+                            <a href="https://kunaki.com/msales.asp?PublisherId=227816&amp;pp=1" target="_blank" rel="noopener">
+                                <div class="disk__art disk__art--pair">
+                                    <span class="disk__platter" aria-hidden="true"
+                                          style="--disc-art: url('images/never-concentrate-800.webp')"></span>
+                                    <img class="disk__sleeve disk__sleeve--back" src="images/never-concentrate-400.webp"
+                                         alt="" width="400" height="400" draggable="false" aria-hidden="true">
+                                    <img class="disk__sleeve disk__sleeve--front" src="images/example-needed-400.webp"
+                                         alt="Both CDs together" width="400" height="400" draggable="false">
+                                </div>
+                                <h3 class="disk__title">Both CDs</h3>
+                                <p class="disk__format">2 discs &middot; 23 tracks</p>
+                                <p class="disk__price">$17.00 <span>+ shipping</span></p>
+                            </a>
+                            <a class="disk__buy" href="https://kunaki.com/msales.asp?PublisherId=227816&amp;pp=1" target="_blank" rel="noopener">Buy</a>
+                        </article>
+                    </div>
+
+                    <p class="press__note" data-assemble>Pressed to order by Kunaki</p>
+                </section>
             </section>
-        </section>
 
-        <section class="world" id="coding" hidden aria-labelledby="world-coding">
-            <h2 class="sr-only" id="world-coding">Coding projects</h2>
+            <section class="issue" id="coding" hidden aria-labelledby="world-coding">
+                <h2 class="sr-only" id="world-coding">Coding projects</h2>
 
-            <a class="coding__profile" href="https://github.com/itarin-music" target="_blank" rel="noopener">
-                <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                    <path d="M12 2.4c-5.3 0-9.6 4.3-9.6 9.6 0 4.24 2.75 7.84 6.56 9.11.48.08.66-.21.66-.47 0-.23-.01-.99-.01-1.79-2.67.58-3.23-1.13-3.23-1.13-.44-1.11-1.07-1.4-1.07-1.4-.87-.6.07-.59.07-.59.97.07 1.48 1 1.48 1 .86 1.47 2.26 1.05 2.81.8.09-.62.34-1.05.61-1.29-2.13-.24-4.37-1.07-4.37-4.75 0-1.05.37-1.91 1-2.58-.1-.24-.43-1.23.09-2.56 0 0 .82-.26 2.69 1 .78-.22 1.62-.33 2.45-.33s1.67.11 2.45.33c1.87-1.26 2.69-1 2.69-1 .52 1.33.19 2.32.09 2.56.63.67 1 1.53 1 2.58 0 3.69-2.25 4.51-4.39 4.75.34.3.65.87.65 1.76 0 1.27-.01 2.29-.01 2.6 0 .26.18.56.67.46C18.85 19.83 21.6 16.23 21.6 12c0-5.3-4.3-9.6-9.6-9.6z"/>
-                </svg>
-                github.com/itarin-music
-            </a>
+                <div class="plate">
+                    <div class="copy">
+                        <p class="lead" lang="ja" data-assemble>部屋から、<br>接続する。</p>
+                        <p class="spec" lang="ja" data-assemble>
+                            コードは、届く前の信号。<br>
+                            公開されているソースを、カタログに。
+                        </p>
+                    </div>
 
-            <ul class="repos" id="repos">
-                <li class="repos__status">loading from github&hellip;</li>
-            </ul>
-        </section>
+                    <div class="source">
+                        <p class="unit__tag" data-assemble>source · ソース</p>
+                        <p class="source__name" data-assemble>itarin-music</p>
+                        <a class="source__profile" href="https://github.com/itarin-music" target="_blank" rel="noopener" data-assemble>
+                            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                                <path d="M12 2.4c-5.3 0-9.6 4.3-9.6 9.6 0 4.24 2.75 7.84 6.56 9.11.48.08.66-.21.66-.47 0-.23-.01-.99-.01-1.79-2.67.58-3.23-1.13-3.23-1.13-.44-1.11-1.07-1.4-1.07-1.4-.87-.6.07-.59.07-.59.97.07 1.48 1 1.48 1 .86 1.47 2.26 1.05 2.81.8.09-.62.34-1.05.61-1.29-2.13-.24-4.37-1.07-4.37-4.75 0-1.05.37-1.91 1-2.58-.1-.24-.43-1.23.09-2.56 0 0 .82-.26 2.69 1 .78-.22 1.62-.33 2.45-.33s1.67.11 2.45.33c1.87-1.26 2.69-1 2.69-1 .52 1.33.19 2.32.09 2.56.63.67 1 1.53 1 2.58 0 3.69-2.25 4.51-4.39 4.75.34.3.65.87.65 1.76 0 1.27-.01 2.29-.01 2.6 0 .26.18.56.67.46C18.85 19.83 21.6 16.23 21.6 12c0-5.3-4.3-9.6-9.6-9.6z"/>
+                            </svg>
+                            github.com/itarin-music
+                        </a>
+                    </div>
+                </div>
 
-        <section class="world" id="visual" hidden aria-labelledby="world-visual">
-            <h2 class="sr-only" id="world-visual">Visual art</h2>
-
-            <section class="covers" aria-labelledby="covers-heading">
-                <h2 class="section-label" id="covers-heading">Cover Arts</h2>
-
-                <ul class="covers__grid">
-                    <li class="card">
-                        <img src="images/go-and-die-400.webp"
-                             srcset="images/go-and-die-400.webp 400w, images/go-and-die-800.webp 800w"
-                             sizes="(max-width: 600px) 150px, 200px"
-                             alt="Go and Die" width="400" height="400" decoding="async" draggable="false">
-                        <span class="card__title">Go and Die</span>
-                    </li>
-                    <li class="card">
-                        <img src="images/trailer-park-houses-400.webp"
-                             srcset="images/trailer-park-houses-400.webp 400w, images/trailer-park-houses-800.webp 800w"
-                             sizes="(max-width: 600px) 150px, 200px"
-                             alt="Built This Town" width="400" height="400" decoding="async" draggable="false">
-                        <span class="card__title">Built This Town</span>
-                    </li>
-                    <li class="card">
-                        <img src="images/never-concentrate-400.webp"
-                             srcset="images/never-concentrate-400.webp 400w, images/never-concentrate-800.webp 800w"
-                             sizes="(max-width: 600px) 150px, 200px"
-                             alt="Never Concentrate (Extended)" width="400" height="400" decoding="async" draggable="false">
-                        <span class="card__title">Never Concentrate (Extended)</span>
-                    </li>
-                    <li class="card">
-                        <img src="images/example-needed-400.webp"
-                             srcset="images/example-needed-400.webp 400w, images/example-needed-800.webp 800w"
-                             sizes="(max-width: 600px) 150px, 200px"
-                             alt="Example Needed" width="400" height="400" decoding="async" draggable="false">
-                        <span class="card__title">Example Needed</span>
-                    </li>
-                    <li class="card">
-                        <img src="images/dont-talk-400.webp"
-                             srcset="images/dont-talk-400.webp 400w, images/dont-talk-800.webp 800w"
-                             sizes="(max-width: 600px) 150px, 200px"
-                             alt="Don&rsquo;t Talk to M3 / P3pto" width="400" height="400" decoding="async" draggable="false">
-                        <span class="card__title">Don&rsquo;t Talk to M3 / P3pto</span>
-                    </li>
+                <ul class="repos" id="repos">
+                    <li class="repos__status" data-assemble>loading from github&hellip;</li>
                 </ul>
             </section>
-        </section>
-    </main>
 
-    <footer>
-        <p>&copy; <span id="year">2026</span> itarin</p>
+            <section class="issue" id="visual" hidden aria-labelledby="world-visual">
+                <h2 class="sr-only" id="world-visual">Visual art</h2>
+
+                <div class="copy copy--wide">
+                    <p class="lead" lang="ja" data-assemble>色は、届く前に<br>残る。</p>
+                    <p class="spec" lang="ja" data-assemble>
+                        ジャケットは、音の部屋。<br>
+                        開く前から、もう聴こえている。
+                    </p>
+                </div>
+
+                <section class="gallery" aria-labelledby="covers-heading">
+                    <h3 class="index__label" id="covers-heading" data-assemble>cover arts <span lang="ja">ジャケット</span></h3>
+                    <ul class="gallery__grid">
+                        <li class="frame" data-preview="audio/go-and-die.mp3" data-assemble>
+                            <img src="images/go-and-die-400.webp"
+                                 srcset="images/go-and-die-400.webp 400w, images/go-and-die-800.webp 800w"
+                                 sizes="(max-width: 600px) 44vw, 220px"
+                                 alt="Go and Die" width="400" height="400" decoding="async" draggable="false">
+                            <span class="frame__title">Go and Die</span>
+                        </li>
+                        <li class="frame" data-preview="audio/built-this-town.mp3" data-assemble>
+                            <img src="images/trailer-park-houses-400.webp"
+                                 srcset="images/trailer-park-houses-400.webp 400w, images/trailer-park-houses-800.webp 800w"
+                                 sizes="(max-width: 600px) 44vw, 220px"
+                                 alt="Built This Town" width="400" height="400" decoding="async" draggable="false">
+                            <span class="frame__title">Built This Town</span>
+                        </li>
+                        <li class="frame" data-preview="audio/never-concentrate.mp3" data-assemble>
+                            <img src="images/never-concentrate-400.webp"
+                                 srcset="images/never-concentrate-400.webp 400w, images/never-concentrate-800.webp 800w"
+                                 sizes="(max-width: 600px) 44vw, 220px"
+                                 alt="Never Concentrate (Extended)" width="400" height="400" decoding="async" draggable="false">
+                            <span class="frame__title">Never Concentrate (Extended)</span>
+                        </li>
+                        <li class="frame" data-preview="audio/example-needed.mp3" data-assemble>
+                            <img src="images/example-needed-400.webp"
+                                 srcset="images/example-needed-400.webp 400w, images/example-needed-800.webp 800w"
+                                 sizes="(max-width: 600px) 44vw, 220px"
+                                 alt="Example Needed" width="400" height="400" decoding="async" draggable="false">
+                            <span class="frame__title">Example Needed</span>
+                        </li>
+                        <li class="frame" data-preview="audio/dont-talk.mp3" data-assemble>
+                            <img src="images/dont-talk-400.webp"
+                                 srcset="images/dont-talk-400.webp 400w, images/dont-talk-800.webp 800w"
+                                 sizes="(max-width: 600px) 44vw, 220px"
+                                 alt="Don&rsquo;t Talk to M3 / P3pto" width="400" height="400" decoding="async" draggable="false">
+                            <span class="frame__title">Don&rsquo;t Talk to M3 / P3pto</span>
+                        </li>
+                    </ul>
+                </section>
+            </section>
+        </main>
+
+        <aside class="rail" aria-label="Catalog navigation">
+            <p class="preview-flag" data-assemble>試読 · preview</p>
+            <nav class="chapters" aria-label="Site sections">
+                <a href="#home" data-world="home" aria-current="page" data-assemble>
+                    <span class="chapters__id">00</span>
+                    home
+                    <small lang="ja">ホーム</small>
+                </a>
+                <a href="#music" data-world="music" data-assemble>
+                    <span class="chapters__id">01</span>
+                    music
+                    <small lang="ja">音楽</small>
+                </a>
+                <a href="#coding" data-world="coding" data-assemble>
+                    <span class="chapters__id">02</span>
+                    coding
+                    <small lang="ja">開発</small>
+                </a>
+                <a href="#visual" data-world="visual" data-assemble>
+                    <span class="chapters__id">03</span>
+                    visual
+                    <small lang="ja">映像</small>
+                </a>
+            </nav>
+
+            <p class="rail__vert" lang="ja" data-assemble>パーソナルメディア</p>
+        </aside>
+    </div>
+
+    <footer class="colophon">
+        <div class="colophon__lock">
+            <p class="colophon__mark" data-assemble>itarin</p>
+            <p class="colophon__ja" lang="ja" data-assemble>信号は消えない。</p>
+        </div>
+        <div class="colophon__fine">
+            <p class="colophon__hint" data-assemble>select · enter <span lang="ja">決定</span></p>
+            <p data-assemble>&copy; <span id="year">2026</span> itarin</p>
+            <p lang="ja" data-assemble>本カタログに掲載しております作品および価格は予告なく変更される場合があります。送料は含まれておりません。</p>
+        </div>
     </footer>
+
+    <aside class="deck" aria-label="Shuffle player" data-assemble>
+        <div class="deck__stage">
+            <div id="deck-player"></div>
+            <p class="deck__ad" hidden aria-live="polite">ad playing · song follows</p>
+        </div>
+        <div class="deck__top">
+            <p class="deck__tag"><span class="deck__mode">now · </span><span class="deck__count">00/00</span></p>
+            <a class="deck__title" href="https://music.youtube.com/@itarin" target="_blank" rel="noopener">stand by</a>
+            <p class="deck__time"><span class="deck__now">0:00</span> / <span class="deck__end">0:00</span></p>
+        </div>
+        <div class="deck__row">
+            <div class="deck__keys">
+                <button class="deck__prev" type="button" aria-label="Previous">
+                    <svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2 2v8h1.35V2H2zm8.65.2L4.1 6l6.55 3.8V2.2z"/></svg>
+                </button>
+                <button class="deck__play" type="button" aria-pressed="false" aria-label="Play">
+                    <svg class="deck__ico-play" viewBox="0 0 12 12" aria-hidden="true"><path d="M3 1.8v8.4L10.4 6 3 1.8z"/></svg>
+                    <svg class="deck__ico-pause" viewBox="0 0 12 12" aria-hidden="true"><path d="M2.4 2h2.2v8H2.4V2zm5 0h2.2v8H7.4V2z"/></svg>
+                </button>
+                <button class="deck__next" type="button" aria-label="Next">
+                    <svg viewBox="0 0 12 12" aria-hidden="true"><path d="M8.7 2v8H10V2H8.7zM2 2.2L7.8 6 2 9.8V2.2z"/></svg>
+                </button>
+            </div>
+            <input class="deck__seek" type="range" min="0" max="1000" value="0" step="1" aria-label="Seek">
+            <label class="deck__gain">
+                <span>vol</span>
+                <span class="deck__vol-val">05</span>
+                <input class="deck__vol" type="range" min="0" max="100" value="5" step="1" aria-label="Volume">
+            </label>
+        </div>
+    </aside>
 
     <section class="invaders-game" id="invaders-game" role="dialog" tabindex="-1"
              aria-modal="true" aria-labelledby="invaders-title" hidden>
@@ -361,7 +522,6 @@
         </div>
     </section>
 
-    <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-QHN65GKBTW"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
@@ -369,7 +529,33 @@
         gtag('js', new Date());
         gtag('config', 'G-QHN65GKBTW');
     </script>
-    <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
-    <script src="site.js?v=4" defer></script>
+    <script>
+        (function () {
+            var now = new Date();
+            var year = String(now.getFullYear());
+            var month = String(now.getMonth() + 1).padStart(2, "0");
+            var stamp = document.getElementById("stamp-date");
+            if (stamp) {
+                stamp.dateTime = year + "-" + month;
+                stamp.textContent = year + "." + month;
+            }
+            var copy = document.getElementById("year");
+            if (copy) copy.textContent = year;
+            var lcd = document.getElementById("lcd-time");
+            function tickLcd() {
+                var t = new Date();
+                if (lcd) lcd.textContent =
+                    String(t.getHours()).padStart(2, "0") + ":" +
+                    String(t.getMinutes()).padStart(2, "0");
+            }
+            tickLcd();
+            setInterval(tickLcd, 15000);
+        })();
+    </script>
+    <script src="site.js?v=67" defer></script>
+    <script src="deck.js?v=12" defer></script>
+    <script src="itarin-mark.js?v=53" defer></script>
+    <script src="assemble.js?v=54" defer></script>
+    <script src="atmosphere.js?v=78" defer></script>
 </body>
 </html>
