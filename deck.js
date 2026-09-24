@@ -41,6 +41,7 @@
   var fails = 0;
   var player = null;
   var playerReady = false;
+  var lastPushedVolume = null;
   var adPlaying = false;
   var expectedId = "";
   var tick = 0;
@@ -72,14 +73,17 @@
   function pushVolume() {
     if (!playerReady || !player) return;
     var level = youtubeVolume(Number(vol.value));
+    if (level === lastPushedVolume) return;
     try {
       if (level <= 0) {
         player.setVolume(0);
         player.mute();
+        lastPushedVolume = level;
         return;
       }
       player.unMute();
       player.setVolume(level);
+      lastPushedVolume = level;
     } catch (err) {}
   }
 
@@ -401,6 +405,7 @@
     }
     player = null;
     playerReady = false;
+    lastPushedVolume = null;
     ensureMount();
     if (window.YT && window.YT.Player) createPlayer();
   }
