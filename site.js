@@ -672,12 +672,31 @@
   var VOLUME = 0.1;
   var FADE_MS = 160;
   var cache = Object.create(null);
+  var audioContext = null;
   var current = null;
   var currentSrc = "";
   var fadeTimer = 0;
   var fadeFrom = 0;
   var fadeTo = 0;
   var fadeStart = 0;
+
+  function protectPeaks(audio) {
+    var Context = window.AudioContext || window.webkitAudioContext;
+    if (!Context || audio._peakProtected) return;
+    try {
+      audioContext = audioContext || new Context();
+      var source = audioContext.createMediaElementSource(audio);
+      var compressor = audioContext.createDynamicsCompressor();
+      compressor.threshold.value = -18;
+      compressor.knee.value = 12;
+      compressor.ratio.value = 8;
+      compressor.attack.value = 0.003;
+      compressor.release.value = 0.25;
+      source.connect(compressor);
+      compressor.connect(audioContext.destination);
+      audio._peakProtected = true;
+    } catch (err) {}
+  }
 
   function audioSrc(node) {
     if (!node || !node.closest) return "";
@@ -754,6 +773,7 @@
       audio.preload = "auto";
       audio.loop = true;
       audio.src = src;
+      protectPeaks(audio);
       cache[src] = audio;
     }
 
@@ -768,6 +788,7 @@
     if (started && started.then) {
       started.then(function () {
         if (current !== audio) return;
+        if (audioContext && audioContext.state === "suspended") audioContext.resume();
         fade(audio, VOLUME);
       }).catch(function () {
         if (current === audio) {

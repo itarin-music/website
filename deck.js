@@ -27,7 +27,7 @@
   var volVal = root.querySelector(".deck__vol-val");
   if (!mount || !titleNode || !playBtn || !prevBtn || !nextBtn || !seek || !vol) return;
 
-  var DEFAULT_VOL = 5;
+  var DEFAULT_VOL = 3;
   var YT_PLAYING = 1;
   var YT_PAUSED = 2;
   var YT_ENDED = 0;
