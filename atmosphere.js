@@ -203,7 +203,7 @@
     ctx.clip();
 
     for (lat = -75; lat <= 75; lat += 15) {
-      strokeParallel(lat, rot, globe, ((lat === 0 ? (dark ? 0.28 : 0.22) : (dark ? 0.14 : 0.11)) * glow));
+      strokeParallel(lat, rot, globe, ((lat === 0 ? (dark ? 0.28 : 0.21) : (dark ? 0.14 : 0.11)) * glow));
     }
     for (lon = -180; lon < 180; lon += 15) {
       strokeMeridian(lon, rot, globe, ((lon === 0 ? (dark ? 0.28 : 0.22) : (dark ? 0.14 : 0.11)) * glow));
