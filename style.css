@@ -1284,16 +1284,6 @@ body[data-preview="visual"] .chapters a[data-world="visual"],
 
 .repo__lang { color: var(--accent); }
 
-.repos__status {
-  padding: 1.2rem 0;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  font-size: 0.7rem;
-  color: var(--ink-faint);
-}
-
-.repos__status a { color: var(--accent); }
-
 /* --- Visual ------------------------------------------------------------ */
 
 .gallery { max-width: 52rem; }
