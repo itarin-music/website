@@ -732,14 +732,6 @@ body[data-preview] .preview-flag {
   font-variant-numeric: tabular-nums;
 }
 
-.chapters a small {
-  margin-top: 0.22rem;
-  font-family: var(--body);
-  font-size: 0.62rem;
-  letter-spacing: 0.16em;
-  color: inherit;
-}
-
 .chapters a:hover,
 .chapters a:focus-visible {
   color: var(--accent);
@@ -763,14 +755,6 @@ body[data-preview="visual"] .chapters a[data-world="visual"],
 .chapters a[aria-current="page"]::after {
   opacity: 1;
   animation: hud-blink 0.95s steps(1) infinite;
-}
-
-.rail__vert {
-  margin: 1.4rem 0 0;
-  writing-mode: vertical-rl;
-  font-size: 0.68rem;
-  letter-spacing: 0.42em;
-  color: var(--ink-faint);
 }
 
 /* --- Home -------------------------------------------------------------- */
@@ -849,11 +833,6 @@ body[data-preview="visual"] .chapters a[data-world="visual"],
   padding: 0.16rem 0.42rem;
   border: 1px solid var(--line-strong);
   color: var(--accent);
-}
-
-.index__label span {
-  letter-spacing: 0.12em;
-  text-transform: none;
 }
 
 .unit__object {
@@ -1344,13 +1323,6 @@ body[data-preview="visual"] .chapters a[data-world="visual"],
   color: var(--accent);
 }
 
-.colophon__ja {
-  margin: 0;
-  font-size: 0.72rem;
-  letter-spacing: 0.08em;
-  color: var(--ink-dim);
-}
-
 .colophon__fine {
   max-width: 28rem;
   text-align: right;
@@ -1361,12 +1333,6 @@ body[data-preview="visual"] .chapters a[data-world="visual"],
 }
 
 .colophon__fine p { margin: 0 0 0.25rem; }
-
-.colophon__hint {
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--cyan);
-}
 
 /* --- Shuffle deck ------------------------------------------------------ */
 
@@ -1449,11 +1415,6 @@ body:not([data-world="home"]) .deck {
   background: var(--paper);
 }
 
-
-body.is-playing .deck {
-  visibility: hidden;
-  pointer-events: none;
-}
 
 .deck__stage {
   position: fixed;
@@ -1688,8 +1649,6 @@ body:not([data-world="home"]) .colophon { padding-bottom: 3.6rem; }
 
   .chapters__id { font-size: 0.62rem; }
 
-  .chapters a small { font-size: 0.7rem; }
-
   .chapters a[aria-current="page"] {
     padding-bottom: 0.15rem;
   }
@@ -1702,8 +1661,6 @@ body:not([data-world="home"]) .colophon { padding-bottom: 3.6rem; }
     width: 12px;
     height: 12px;
   }
-
-  .rail__vert { display: none; }
 
   .preview-flag { display: none; }
 
@@ -1812,8 +1769,6 @@ body:not([data-world="home"]) .colophon { padding-bottom: 3.6rem; }
   .chapters a { font-size: 1.05rem; }
 
   .chapters__id { font-size: 0.64rem; }
-
-  .chapters a small { font-size: 0.7rem; }
 
   .social {
     flex-wrap: nowrap;
@@ -1929,15 +1884,11 @@ body:not([data-world="home"]) .colophon { padding-bottom: 3.6rem; }
     align-items: flex-start;
   }
 
-  .colophon__ja { font-size: 0.82rem; }
-
   .colophon__fine {
     text-align: left;
     font-size: 0.7rem;
     line-height: 1.65;
   }
-
-  .colophon__hint { font-size: 0.7rem; }
 
   .repo__link { grid-template-columns: 1fr; }
 
@@ -2055,35 +2006,28 @@ body.is-playing { overflow: hidden; }
   background: rgba(127, 214, 238, 0.12);
 }
 
-.invaders-game__soundtrack {
-  position: absolute;
-  right: 1.25rem;
-  bottom: 3.6rem;
-  z-index: 2;
-  width: 200px;
-  text-align: center;
-}
-
-.invaders-game__soundtrack iframe,
-#invaders-player {
-  display: block;
-  width: 200px;
-  height: 200px;
-  border: 1px solid rgba(127, 214, 238, 0.26);
-  background: #000;
-}
-
-.invaders-game__soundtrack p {
-  margin: 0.45rem 0 0;
-  font-size: 0.58rem;
-  letter-spacing: 0.09em;
-  text-transform: uppercase;
-  color: var(--ink-faint);
-}
-
-.invaders-game__soundtrack span {
-  letter-spacing: 0.02em;
-  text-transform: none;
+/* The shuffle deck is the game's soundtrack. It docks centered along the
+   bottom, above the controls hint, in the game's own colors. The selector is
+   heavy on purpose so it beats every page and breakpoint rule for .deck. */
+html body.is-playing > .deck {
+  --ink: #eef2f7;
+  --ink-dim: rgba(238, 242, 247, 0.62);
+  --ink-faint: rgba(238, 242, 247, 0.38);
+  --accent: #7fd6ee;
+  --line-strong: rgba(127, 214, 238, 0.26);
+  --paper: rgba(5, 7, 10, 0.82);
+  position: fixed;
+  top: auto;
+  left: 0;
+  right: 0;
+  bottom: 3.2rem;
+  width: min(20rem, calc(100vw - 1.1rem));
+  margin: 0 auto;
+  z-index: 1001 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+  background: var(--paper);
+  cursor: auto;
 }
 
 .invaders-game__controls {

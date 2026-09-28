@@ -748,7 +748,8 @@
    Album Invaders easter egg
 
    Open by clicking the spinning logo five times quickly or typing "invaders".
-   The soundtrack uses the official YouTube player and is capped at 5%.
+   The soundtrack is the site's shuffle deck (deck.js), which stays on screen
+   under the play field while the game is open.
    ========================================================================== */
 
 (function () {
@@ -770,14 +771,12 @@
   var againButton = document.getElementById("invaders-again");
   var leaveButton = document.getElementById("invaders-leave");
   var mark = document.querySelector(".mark");
+  var deck = document.querySelector(".deck");
   if (!game || !canvas || !closeButton || !overlay || !nameForm || !mark) return;
 
   var context = canvas.getContext("2d");
   if (!context) return;
 
-  var VIDEO_ID = "RNnyArye0M0";
-  var VIDEO_START = 815;
-  var VOLUME = 5;
   var covers = [];
   var active = false;
   var frame = 0;
@@ -804,68 +803,6 @@
 
   var BOARD_KEY = "album-invaders-board";
   var BOARD_SIZE = 8;
-
-  /* --- soundtrack ------------------------------------------------------- */
-
-  var player = null;
-  var playerReady = false;
-  var wantsAudio = false;
-
-  function startSoundtrack(restart) {
-    wantsAudio = true;
-    if (!playerReady || !player) return;
-
-    // Set the quiet volume before unmuting so no default-volume audio leaks.
-    player.setVolume(VOLUME);
-    if (restart) player.seekTo(VIDEO_START, true);
-    player.unMute();
-    player.playVideo();
-  }
-
-  function stopSoundtrack() {
-    wantsAudio = false;
-    if (playerReady && player) player.pauseVideo();
-  }
-
-  function createPlayer() {
-    if (player || !window.YT || !window.YT.Player) return;
-
-    player = new window.YT.Player("invaders-player", {
-      width: 200,
-      height: 200,
-      videoId: VIDEO_ID,
-      playerVars: {
-        start: VIDEO_START,
-        autoplay: 0,
-        controls: 1,
-        playsinline: 1,
-        rel: 0
-      },
-      events: {
-        onReady: function (event) {
-          playerReady = true;
-          event.target.setVolume(VOLUME);
-          event.target.mute();
-          if (wantsAudio) startSoundtrack(true);
-        }
-      }
-    });
-  }
-
-  var previousYouTubeReady = window.onYouTubeIframeAPIReady;
-  window.onYouTubeIframeAPIReady = function () {
-    if (typeof previousYouTubeReady === "function") previousYouTubeReady();
-    createPlayer();
-  };
-
-  if (window.YT && window.YT.Player) {
-    createPlayer();
-  } else if (!document.querySelector('script[src="https://www.youtube.com/iframe_api"]')) {
-    var youtubeScript = document.createElement("script");
-    youtubeScript.src = "https://www.youtube.com/iframe_api";
-    youtubeScript.async = true;
-    document.head.appendChild(youtubeScript);
-  }
 
   /* --- setup ------------------------------------------------------------ */
 
@@ -954,6 +891,16 @@
     });
   }
 
+  // Keep the ship clear of the music deck docked along the bottom edge.
+  function shipLine() {
+    var line = height - 58;
+    if (deck && active) {
+      var box = deck.getBoundingClientRect();
+      if (box.height && box.top > height / 2) line = Math.min(line, box.top - 30);
+    }
+    return line;
+  }
+
   function resize() {
     width = window.innerWidth;
     height = window.innerHeight;
@@ -962,7 +909,7 @@
     canvas.height = Math.round(height * ratio);
     context.setTransform(ratio, 0, 0, ratio, 0, 0);
 
-    ship.y = height - 58;
+    ship.y = shipLine();
     ship.x = clamp(ship.x, ship.width, width - ship.width);
   }
 
@@ -1002,7 +949,7 @@
     gameOver = false;
     scoreSaved = false;
     ship.x = width / 2;
-    ship.y = height - 58;
+    ship.y = shipLine();
     ship.invulnerableUntil = 0;
     hideOverlay();
     updateHud();
@@ -1042,7 +989,6 @@
     var marquee = document.querySelector(".marquee");
     if (marquee && marquee.marquee) marquee.marquee.pause();
 
-    startSoundtrack(true);
     lastTime = 0;
     frame = requestAnimationFrame(tick);
   }
@@ -1056,7 +1002,6 @@
     hideOverlay();
     game.hidden = true;
     document.body.classList.remove("is-playing");
-    stopSoundtrack();
 
     var marquee = document.querySelector(".marquee");
     if (marquee && marquee.marquee) marquee.marquee.resume();
@@ -1125,6 +1070,19 @@
     game.focus();
   });
   closeButton.addEventListener("click", closeGame);
+
+  if (deck) {
+    if (typeof ResizeObserver === "function") {
+      new ResizeObserver(function () {
+        if (active) ship.y = shipLine();
+      }).observe(deck);
+    }
+    deck.addEventListener("click", function (event) {
+      if (!active || event.target.closest("a")) return;
+      game.focus({ preventScroll: true });
+    });
+  }
+
   window.addEventListener("resize", function () {
     if (active) {
       resize();

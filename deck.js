@@ -2,8 +2,9 @@
    Catalog shuffle deck
 
    Plays official YouTube embeds so listens can count as views.
-   Volume starts at 5% on a power curve so quiet settings stay quiet.
-  and Album Invaders. Tells the user when an ad is on instead of the song.
+   Volume starts at 3% on a power curve so quiet settings stay quiet.
+   Tells the user when an ad is on instead of the song.
+   Also the soundtrack for Album Invaders (see the bottom of this file).
    ========================================================================== */
 
 (function () {
@@ -31,13 +32,12 @@
   var YT_PLAYING = 1;
   var YT_PAUSED = 2;
   var YT_ENDED = 0;
+  var YT_BUFFERING = 3;
   var tracks = [];
   var order = [];
   var index = 0;
   var seeking = false;
   var userPaused = false;
-  var held = false;
-  var resumeAfterHold = false;
   var fails = 0;
   var player = null;
   var playerReady = false;
@@ -185,7 +185,7 @@
 
   function paintMeta() {
     var track = currentTrack();
-    if (modeNode) modeNode.textContent = adPlaying ? "ad" : "now";
+    if (modeNode) modeNode.textContent = adPlaying ? "ad · " : "now · ";
     titleNode.textContent = track ? track.title : "—";
     titleNode.href = youtubeUrl(track);
     titleNode.setAttribute(
@@ -253,18 +253,18 @@
       return;
     }
     try {
-      if (autoplay && !held) player.loadVideoById(track.youtube);
+      if (autoplay) player.loadVideoById(track.youtube);
       else player.cueVideoById(track.youtube);
     } catch (err) {
       return;
     }
     applyVolume(Number(vol.value));
-    if (autoplay && !held) pendingPlay = true;
+    if (autoplay) pendingPlay = true;
     checkIdMismatch(loadGen);
   }
 
   function start() {
-    if (held || !tracks.length) return;
+    if (!tracks.length) return;
     userPaused = false;
     pendingPlay = true;
     applyVolume(Number(vol.value));
@@ -308,25 +308,6 @@
     load(index > 0 ? index - 1 : order.length - 1, autoplay);
   }
 
-  function hold() {
-    if (held) return;
-    held = true;
-    resumeAfterHold = isPlaying() && !userPaused;
-    if (playerReady && player) {
-      try { player.pauseVideo(); } catch (err) {}
-    }
-    paintPlay();
-  }
-
-  function release() {
-    if (!held) return;
-    held = false;
-    if (resumeAfterHold && !userPaused && !document.body.classList.contains("is-playing")) {
-      start();
-    }
-    resumeAfterHold = false;
-  }
-
   function afterAssemble(fn) {
     if (!document.documentElement.classList.contains("is-assembling")) {
       fn();
@@ -350,15 +331,12 @@
       pendingPlay = false;
       setTicking(true);
       applyVolume(Number(vol.value));
-      if (held) {
-        try { player.pauseVideo(); } catch (err) {}
-      }
     } else if (state === YT_PAUSED) {
       setTicking(false);
       paintTime();
     } else if (state === YT_ENDED) {
       setTicking(false);
-      if (document.hidden || held) {
+      if (document.hidden) {
         paintTime();
         return;
       }
@@ -368,7 +346,7 @@
       }
       fails = 0;
       next(true);
-    } else if (state === 3) {
+    } else if (state === YT_BUFFERING) {
       inspectAd();
     }
   }
@@ -377,7 +355,7 @@
     fails += 1;
     setAd(false);
     if (fails >= tracks.length) {
-      titleNode.textContent = "signal lost";
+      titleNode.textContent = "playback unavailable";
       return;
     }
     next(!userPaused);
@@ -437,7 +415,7 @@
           applyVolume(Number(vol.value));
           paintMeta();
           paintTime();
-          if (pendingPlay && !held && !userPaused) start();
+          if (pendingPlay && !userPaused) start();
         },
         onStateChange: onPlayerState,
         onError: onPlayerError
@@ -468,15 +446,18 @@
   }
 
   playBtn.addEventListener("click", function () {
+    gameStartedDeck = false;
     if (isPlaying()) pause(true);
     else start();
   });
 
   prevBtn.addEventListener("click", function () {
+    gameStartedDeck = false;
     prev(true);
   });
 
   nextBtn.addEventListener("click", function () {
+    gameStartedDeck = false;
     next(true);
   });
 
@@ -531,9 +512,33 @@
     if (info.videoData && info.videoData.video_id) inspectAd();
   });
 
+  /* --- Album Invaders soundtrack ----------------------------------------
+     site.js adds body.is-playing while the game is open. Opening the game
+     starts the deck if it was idle; closing the game puts it back the way it
+     was, unless the player used the deck buttons in the meantime. */
+
+  var gameOpen = false;
+  var gameStartedDeck = false;
+  var userPausedBeforeGame = false;
+
   new MutationObserver(function () {
-    if (document.body.classList.contains("is-playing")) hold();
-    else release();
+    var open = document.body.classList.contains("is-playing");
+    if (open === gameOpen) return;
+    gameOpen = open;
+
+    if (open) {
+      var state = playerState();
+      userPausedBeforeGame = userPaused;
+      gameStartedDeck = state !== YT_PLAYING && state !== YT_BUFFERING;
+      if (gameStartedDeck) start();
+      return;
+    }
+
+    if (gameStartedDeck) {
+      pause(false);
+      userPaused = userPausedBeforeGame;
+    }
+    gameStartedDeck = false;
   }).observe(document.body, { attributes: true, attributeFilter: ["class"] });
 
   applyVolume(DEFAULT_VOL);
@@ -542,14 +547,14 @@
     .then(function (res) { return res.ok ? res.json() : []; })
     .then(function (list) {
       if (!Array.isArray(list) || !list.length) {
-        titleNode.textContent = "no signal";
+        titleNode.textContent = "playlist unavailable";
         return;
       }
       tracks = list.filter(function (item) {
         return item && item.title && item.youtube;
       });
       if (!tracks.length) {
-        titleNode.textContent = "no signal";
+        titleNode.textContent = "playlist unavailable";
         return;
       }
       shuffleOrder(-1);
@@ -561,6 +566,6 @@
       });
     })
     .catch(function () {
-      titleNode.textContent = "no signal";
+      titleNode.textContent = "playlist unavailable";
     });
 })();
