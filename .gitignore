@@ -14,3 +14,5 @@ overlay/_t.webp
 # Never nest a clone inside the repo
 /website/
 /itarin-music/
+Claude outputs/faint-compare-dark.png
+Claude outputs/faint-compare-light.png
