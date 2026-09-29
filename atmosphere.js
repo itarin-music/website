@@ -26,7 +26,7 @@
   var dpr = 1;
   var frame = 0;
   var last = 0;
-  var accent = { r: 47, g: 84, b: 199 };
+  var accent = { r: 217, g: 75, b: 123 };
   var silver = { r: 142, g: 151, b: 171 };
   var dark = false;
   var world = "home";

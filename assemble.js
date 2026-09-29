@@ -8,7 +8,7 @@
 (function () {
   "use strict";
 
-  var BLUE = "#1f3db5";
+  var ACCENT = "#d94b7b";
   var SILVER = "#8b93a6";
   var particles = [];
   var satellites = [];
@@ -50,7 +50,7 @@
 
   function syncColors() {
     var styles = getComputedStyle(document.documentElement);
-    BLUE = (styles.getPropertyValue("--accent") || BLUE).trim() || BLUE;
+    ACCENT = (styles.getPropertyValue("--accent") || ACCENT).trim() || ACCENT;
     SILVER = (styles.getPropertyValue("--silver") || SILVER).trim() || SILVER;
   }
 
@@ -257,7 +257,7 @@
           delay: stagger + (i / count) * 0.42,
           stagger: stagger,
           seed: seed,
-          color: dest.color || (seed > 0.78 ? BLUE : SILVER)
+          color: dest.color || (seed > 0.78 ? ACCENT : SILVER)
         });
       }
 
@@ -344,14 +344,14 @@
         if (trailPts.length > 18) trailPts.shift();
         trailPts.forEach(function (pt, n) {
           ctx.globalAlpha = (n / trailPts.length) * 0.34 * fade;
-          ctx.fillStyle = BLUE;
+          ctx.fillStyle = ACCENT;
           ctx.beginPath();
           ctx.arc(pt.x, pt.y, 1.05, 0, Math.PI * 2);
           ctx.fill();
         });
         ctx.globalAlpha = 0.94 * fade;
-        ctx.fillStyle = BLUE;
-        ctx.shadowColor = BLUE;
+        ctx.fillStyle = ACCENT;
+        ctx.shadowColor = ACCENT;
         ctx.shadowBlur = 8;
         ctx.beginPath();
         ctx.arc(x, y, 1.95, 0, Math.PI * 2);

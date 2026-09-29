@@ -1241,7 +1241,7 @@
   }
 
   function drawGrid() {
-    context.strokeStyle = "rgba(127, 214, 238, 0.035)";
+    context.strokeStyle = "rgba(247, 168, 204, 0.035)";
     context.lineWidth = 1;
     context.beginPath();
 
@@ -1264,7 +1264,7 @@
 
     enemies.forEach(function (enemy) {
       context.save();
-      context.shadowColor = "rgba(127, 214, 238, 0.42)";
+      context.shadowColor = "rgba(247, 168, 204, 0.42)";
       context.shadowBlur = 10;
       if (enemy.image.complete && enemy.image.naturalWidth) {
         context.drawImage(
@@ -1275,7 +1275,7 @@
           enemy.height
         );
       } else {
-        context.fillStyle = "#7fd6ee";
+        context.fillStyle = "#f7a8cc";
         context.fillRect(
           enemy.x - enemy.width / 2,
           enemy.y - enemy.height / 2,
@@ -1294,8 +1294,8 @@
     });
 
     context.save();
-    context.fillStyle = "#7fd6ee";
-    context.shadowColor = "#7fd6ee";
+    context.fillStyle = "#f7a8cc";
+    context.shadowColor = "#f7a8cc";
     context.shadowBlur = 12;
     bullets.forEach(function (bullet) {
       context.fillRect(
@@ -1320,10 +1320,10 @@
         Math.floor(performance.now() / 90) % 2 === 0)) {
       context.save();
       context.translate(ship.x, ship.y);
-      context.fillStyle = "#7fd6ee";
+      context.fillStyle = "#f7a8cc";
       context.strokeStyle = "#eef2f7";
       context.lineWidth = 1.5;
-      context.shadowColor = "#7fd6ee";
+      context.shadowColor = "#f7a8cc";
       context.shadowBlur = 15;
       context.beginPath();
       context.moveTo(0, -ship.height / 2);

@@ -16,21 +16,21 @@
   --ink:         #171d2d;
   --ink-dim:     rgba(23, 29, 45, 0.72);
   --ink-faint:   rgba(23, 29, 45, 0.54);
-  --accent:      #1f4fe6;
-  --accent-lit:  #5179ff;
-  --accent-deep: #1639a0;
+  --accent:      #d94b7b;
+  --accent-lit:  #f08bb0;
+  --accent-deep: #b3325f;
   --paper:       #f1ecdf;
   --paper-top:   #f8f4eb;
   --paper-bottom:#e0d8ca;
   --deck:        #d5cebe;
-  --paper-glow:  rgba(76, 104, 214, 0.16);
-  --paper-mist:  rgba(31, 61, 181, 0.07);
+  --paper-glow:  rgba(240, 150, 190, 0.18);
+  --paper-mist:  rgba(236, 120, 170, 0.08);
   --surface:     #f7f3ed;
   --line:        rgba(23, 29, 45, 0.12);
   --line-strong: rgba(23, 29, 45, 0.2);
   --shadow:      rgba(24, 34, 58, 0.16);
   --silver:      #6f7a8f;
-  --cyan:        #1eb8d2;
+  --pop:         #f07aa6;
   --magenta:     #d94a8c;
   --gutter:      clamp(0.9rem, 3.4vw, 3rem);
   --rail:        9.25rem;
@@ -44,21 +44,21 @@ html[data-theme="dark"] {
   --ink:         #e8ebf3;
   --ink-dim:     rgba(232, 235, 243, 0.6);
   --ink-faint:   rgba(232, 235, 243, 0.36);
-  --accent:      #7ea2ff;
-  --accent-lit:  #b4c7ff;
-  --accent-deep: #3d5fd0;
+  --accent:      #f7a8cc;
+  --accent-lit:  #fdd4e5;
+  --accent-deep: #d9709f;
   --paper:       #0c0e14;
   --paper-top:   #12151d;
   --paper-bottom:#08090d;
   --deck:        #05060a;
-  --paper-glow:  rgba(31, 61, 181, 0.1);
-  --paper-mist:  rgba(80, 110, 180, 0.04);
+  --paper-glow:  rgba(214, 92, 146, 0.1);
+  --paper-mist:  rgba(247, 168, 204, 0.04);
   --surface:     #161a24;
   --line:        rgba(232, 235, 243, 0.1);
   --line-strong: rgba(232, 235, 243, 0.2);
   --shadow:      rgba(0, 0, 0, 0.5);
   --silver:      #9aa3b8;
-  --cyan:        #5ce6f2;
+  --pop:         #ff86b4;
   --magenta:     #ff7ab6;
 }
 
@@ -146,7 +146,7 @@ img { max-width: 100%; height: auto; display: block; }
 html[data-theme="dark"] .paper {
   background:
     radial-gradient(ellipse 52% 40% at 18% 22%,
-      rgba(24, 36, 78, 0.35), transparent 68%),
+      rgba(72, 26, 52, 0.35), transparent 68%),
     radial-gradient(ellipse 42% 32% at 86% 8%, var(--paper-mist), transparent 64%),
     linear-gradient(180deg, var(--paper-top) 0%, var(--paper) 52%, var(--paper-bottom) 100%);
 }
@@ -180,16 +180,16 @@ html[data-theme="dark"] .hud-scan {
 
 .hud-grid {
   background-image:
-    linear-gradient(rgba(31, 61, 181, 0.05) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(31, 61, 181, 0.05) 1px, transparent 1px);
+    linear-gradient(rgba(217, 75, 123, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(217, 75, 123, 0.05) 1px, transparent 1px);
   background-size: 48px 48px;
   mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, #000 20%, transparent 75%);
 }
 
 html[data-theme="dark"] .hud-grid {
   background-image:
-    linear-gradient(rgba(126, 162, 255, 0.06) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(126, 162, 255, 0.06) 1px, transparent 1px);
+    linear-gradient(rgba(247, 168, 204, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(247, 168, 204, 0.06) 1px, transparent 1px);
 }
 
 .hud-frame {
@@ -668,7 +668,7 @@ body[data-preview="visual"] #visual {
   font-size: 0.58rem;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: var(--cyan);
+  color: var(--pop);
   opacity: 0;
   transition: opacity 0.25s ease;
 }
@@ -719,7 +719,7 @@ body[data-preview] .preview-flag {
   right: 0;
   top: 0.28em;
   font-size: 0.42em;
-  color: var(--cyan);
+  color: var(--pop);
   opacity: 0;
 }
 
@@ -736,7 +736,7 @@ body[data-preview] .preview-flag {
 .chapters a:focus-visible {
   color: var(--accent);
   transform: translateX(-3px);
-  text-shadow: 0 0 12px rgba(46, 200, 224, 0.28);
+  text-shadow: 0 0 12px rgba(240, 110, 160, 0.28);
 }
 
 .chapters a:hover::after,
@@ -913,7 +913,7 @@ body[data-preview="visual"] .chapters a[data-world="visual"],
 
 .index__list a:hover .index__num,
 .index__list a:focus-visible .index__num {
-  color: var(--cyan);
+  color: var(--pop);
 }
 
 .index__list img {
@@ -1466,7 +1466,7 @@ body:not([data-world="home"]) .deck {
   padding: 0.18rem 0.35rem;
   border: 1px solid var(--line-strong);
   background: rgba(12, 14, 20, 0.82);
-  color: var(--cyan);
+  color: var(--pop);
   font-family: ui-monospace, "Lucida Console", "Courier New", monospace;
   font-size: 0.5rem;
   letter-spacing: 0.14em;
@@ -1928,7 +1928,7 @@ body.is-playing { overflow: hidden; }
   --ink: #eef2f7;
   --ink-dim: rgba(238, 242, 247, 0.62);
   --ink-faint: rgba(238, 242, 247, 0.38);
-  --accent: #7fd6ee;
+  --accent: #f7a8cc;
   position: fixed;
   inset: 0;
   z-index: 1000;
@@ -1960,7 +1960,7 @@ body.is-playing { overflow: hidden; }
   z-index: 2;
   pointer-events: none;
   text-transform: uppercase;
-  text-shadow: 0 0 12px rgba(127, 214, 238, 0.5);
+  text-shadow: 0 0 12px rgba(247, 168, 204, 0.5);
 }
 
 .invaders-game__hud h2 {
@@ -1990,7 +1990,7 @@ body.is-playing { overflow: hidden; }
   right: 1.25rem;
   z-index: 5;
   padding: 0.55rem 0.8rem;
-  border: 1px solid rgba(127, 214, 238, 0.4);
+  border: 1px solid rgba(247, 168, 204, 0.4);
   border-radius: 999px;
   color: var(--ink);
   background: rgba(5, 7, 10, 0.76);
@@ -2003,7 +2003,7 @@ body.is-playing { overflow: hidden; }
 .invaders-game__close:hover,
 .invaders-game__close:focus-visible {
   color: var(--accent);
-  background: rgba(127, 214, 238, 0.12);
+  background: rgba(247, 168, 204, 0.12);
 }
 
 /* The shuffle deck is the game's soundtrack. It docks centered along the
@@ -2013,8 +2013,8 @@ html body.is-playing > .deck {
   --ink: #eef2f7;
   --ink-dim: rgba(238, 242, 247, 0.62);
   --ink-faint: rgba(238, 242, 247, 0.38);
-  --accent: #7fd6ee;
-  --line-strong: rgba(127, 214, 238, 0.26);
+  --accent: #f7a8cc;
+  --line-strong: rgba(247, 168, 204, 0.26);
   --paper: rgba(5, 7, 10, 0.82);
   position: fixed;
   top: auto;
@@ -2061,7 +2061,7 @@ html body.is-playing > .deck {
 .invaders-game__panel {
   width: min(22rem, calc(100vw - 2rem));
   padding: 1.15rem 1.25rem 1.2rem;
-  border: 1px solid rgba(127, 214, 238, 0.42);
+  border: 1px solid rgba(247, 168, 204, 0.42);
   color: var(--ink);
   background: rgba(3, 5, 9, 0.92);
   text-align: center;
@@ -2132,7 +2132,7 @@ html body.is-playing > .deck {
 .invaders-game__form input {
   width: 100%;
   padding: 0.55rem 0.65rem;
-  border: 1px solid rgba(127, 214, 238, 0.35);
+  border: 1px solid rgba(247, 168, 204, 0.35);
   color: var(--ink);
   background: rgba(5, 7, 10, 0.85);
   font: 16px/1.2 ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace;
@@ -2150,7 +2150,7 @@ html body.is-playing > .deck {
 
 .invaders-game__actions button {
   padding: 0.5rem 0.85rem;
-  border: 1px solid rgba(127, 214, 238, 0.4);
+  border: 1px solid rgba(247, 168, 204, 0.4);
   border-radius: 999px;
   color: var(--ink);
   background: rgba(5, 7, 10, 0.76);
@@ -2163,5 +2163,5 @@ html body.is-playing > .deck {
 .invaders-game__actions button:hover,
 .invaders-game__actions button:focus-visible {
   color: var(--accent);
-  background: rgba(127, 214, 238, 0.12);
+  background: rgba(247, 168, 204, 0.12);
 }

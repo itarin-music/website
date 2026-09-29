@@ -14,16 +14,16 @@
 
   var FONT = "VAIO CON DIOS";
   var WORD = "itarin";
-  var BLUE = "#1f3db5";
-  var BLUE_LIT = "#4d73f0";
-  var BLUE_DEEP = "#152a80";
+  var ACCENT = "#d94b7b";
+  var ACCENT_LIT = "#f08bb0";
+  var ACCENT_DEEP = "#b3325f";
   var SILVER = "#8b93a6";
 
   function syncColors() {
     var styles = getComputedStyle(document.documentElement);
-    BLUE = (styles.getPropertyValue("--accent") || BLUE).trim() || BLUE;
-    BLUE_LIT = (styles.getPropertyValue("--accent-lit") || BLUE_LIT).trim() || BLUE_LIT;
-    BLUE_DEEP = (styles.getPropertyValue("--accent-deep") || BLUE_DEEP).trim() || BLUE_DEEP;
+    ACCENT = (styles.getPropertyValue("--accent") || ACCENT).trim() || ACCENT;
+    ACCENT_LIT = (styles.getPropertyValue("--accent-lit") || ACCENT_LIT).trim() || ACCENT_LIT;
+    ACCENT_DEEP = (styles.getPropertyValue("--accent-deep") || ACCENT_DEEP).trim() || ACCENT_DEEP;
     SILVER = (styles.getPropertyValue("--silver") || SILVER).trim() || SILVER;
   }
 
@@ -170,12 +170,12 @@
 
     if (hover > 0.04) {
       var g = layer.createLinearGradient(0, 0, 0, height);
-      g.addColorStop(0, BLUE_LIT);
-      g.addColorStop(0.45, BLUE);
-      g.addColorStop(1, BLUE_DEEP);
+      g.addColorStop(0, ACCENT_LIT);
+      g.addColorStop(0.45, ACCENT);
+      g.addColorStop(1, ACCENT_DEEP);
       paintWord(layer, 0, g);
     } else {
-      paintWord(layer, 0, BLUE);
+      paintWord(layer, 0, ACCENT);
     }
 
     layer.globalCompositeOperation = "source-atop";
@@ -215,7 +215,7 @@
         var x = cx + bezier(p.x0, p.cx, p.x1, t);
         var y = cy + bezier(p.y0, p.cy, p.y1, t);
         ctx.globalAlpha = Math.min(1, t * 1.4) * (1 - wordIn * 0.94);
-        ctx.fillStyle = p.seed > 0.78 ? BLUE : SILVER;
+        ctx.fillStyle = p.seed > 0.78 ? ACCENT : SILVER;
         ctx.beginPath();
         ctx.arc(x, y, t < 0.18 ? 2.15 : 1.2, 0, Math.PI * 2);
         ctx.fill();
@@ -254,14 +254,14 @@
       if (trailPts.length > 18) trailPts.shift();
       trailPts.forEach(function (pt, n) {
         ctx.globalAlpha = (n / trailPts.length) * 0.34;
-        ctx.fillStyle = BLUE;
+        ctx.fillStyle = ACCENT;
         ctx.beginPath();
         ctx.arc(pt.x, pt.y, 1.05, 0, Math.PI * 2);
         ctx.fill();
       });
       ctx.globalAlpha = 0.94;
-      ctx.fillStyle = BLUE;
-      ctx.shadowColor = BLUE;
+      ctx.fillStyle = ACCENT;
+      ctx.shadowColor = ACCENT;
       ctx.shadowBlur = 8;
       ctx.beginPath();
       ctx.arc(x, y, 2, 0, Math.PI * 2);
