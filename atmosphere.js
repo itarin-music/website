@@ -3,6 +3,8 @@
 
    Home: a rotating globe with GeoNames cities over 25,000 people.
    Major capitals are labeled. Other pages: paper dust only.
+   Phones get a zoomed-in globe. A page can ask for that view at every size
+   with <div class="paper" data-globe="zoom"> (the redesign/ concept does).
    ========================================================================== */
 
 (function () {
@@ -10,6 +12,11 @@
 
   var paper = document.querySelector(".paper");
   if (!paper) return;
+
+  // Data files resolve next to this script, so pages in subfolders can
+  // load ../atmosphere.js and still find data/world-cities.json.
+  var SCRIPT_URL = document.currentScript ? document.currentScript.src : location.href;
+  var ALWAYS_ZOOM = paper.getAttribute("data-globe") === "zoom";
 
   var reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
 
@@ -103,7 +110,7 @@
   }
 
   function globeLayout() {
-    var phone = width < 720;
+    var phone = ALWAYS_ZOOM || width < 720;
     var room = Math.min(width, height);
     var radius;
     var cx;
@@ -112,7 +119,15 @@
       radius = Math.max(width, height) * 0.78;
       cx = width * 0.72;
       cy = height * 0.58;
-      return { cx: cx, cy: cy, r: radius, phone: true, stroke: Math.max(1.15, radius / 300) };
+      var stroke = Math.max(1.15, radius / 300);
+      var dot = Math.max(1.4, radius * 0.0038);
+      // Forced zoom on a wide screen: keep phone-sized lines and dots
+      // instead of scaling them up with the bigger radius.
+      if (ALWAYS_ZOOM && width >= 720) {
+        stroke = Math.min(stroke, 2.2);
+        dot = Math.min(dot, 2.5);
+      }
+      return { cx: cx, cy: cy, r: radius, phone: true, stroke: stroke, dot: dot };
     }
     radius = room * 0.36;
     cx = Math.min(width - radius - 28, width * 0.7);
@@ -209,7 +224,7 @@
       strokeMeridian(lon, rot, globe, ((lon === 0 ? (dark ? 0.28 : 0.22) : (dark ? 0.14 : 0.11)) * glow));
     }
 
-    var cityR = globe.phone ? Math.max(1.4, globe.r * 0.0038) : 1.15;
+    var cityR = globe.phone ? globe.dot : 1.15;
     ctx.fillStyle = tint(accent, (dark ? 0.78 : 0.64) * glow);
     ctx.beginPath();
     for (i = 0; i < cities.length; i += 2) {
@@ -317,7 +332,7 @@
   }
 
   function loadMap() {
-    fetch("data/world-cities.json?v=4")
+    fetch(new URL("data/world-cities.json?v=4", SCRIPT_URL).href)
       .then(function (res) { return res.ok ? res.json() : []; })
       .then(function (list) {
         cities = flattenPairs(list);

@@ -1,1411 +1,487 @@
 /* ==========================================================================
-   itarin.online
+   itarin primary site
+
+   Theme toggle, LCD clock, Japanese hover glosses, the release slideshow and
+   its disc changer, the music carousel, art grid, news tabs, the header that
+   pins after scrolling, the phone menu, and the footer strip.
+
+   The wordmark (itarin-mark.js) and shuffle deck (deck.js) are the
+   main site's own scripts.
    ========================================================================== */
 
 (function () {
   "use strict";
 
-  /* --- Worlds: home / music / coding / visual --------------------------- */
+  var RELEASES = [
+    { title: "Go and Die", with: "itarin & Sovkie", date: "2025.01.30",
+      url: "https://tunelink.to/goanddie", art: "go-and-die" },
+    { title: "Built This Town", with: "itarin & Sovkie", date: "2024.09.20",
+      url: "https://itarin.tunelink.to/bruhbruhbruh", art: "trailer-park-houses" },
+    { title: "Never Concentrate (Extended)", with: "itarin", date: "2024.08.15",
+      url: "https://tunelink.to/lUvRX", art: "never-concentrate" },
+    { title: "Example Needed", with: "itarin & Sovkie", date: "2024.02.02",
+      url: "https://itarin.tunelink.to/ExampleNeeded", art: "example-needed" },
+    { title: "Don’t Talk to M3 / P3pto", with: "itarin & Sovkie, Metallin", date: "2023.04.13",
+      url: "https://tunelink.to/F9STu", art: "dont-talk" }
+  ];
 
-  var WORLDS = ["home", "music", "coding", "visual"];
-  var nestedIds = { releases: true, "shop-heading": true };
-  var worldLinks = document.querySelectorAll(".chapters a");
-  var worldAnchors = document.querySelectorAll("a[data-world]");
-  var panels = {};
-  WORLDS.forEach(function (id) {
-    panels[id] = document.getElementById(id);
-  });
+  var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  function worldFromHash() {
-    var raw = location.hash || "";
-    var id = raw.replace(/^#/, "");
-    if (!id) return "home";
-    if (nestedIds[id]) return "music";
-    return WORLDS.indexOf(id) >= 0 ? id : "home";
+  function pad(n) {
+    return n < 10 ? "0" + n : String(n);
   }
 
-  function clearPreview() {
-    document.body.removeAttribute("data-preview");
-    var deck = document.querySelector(".deck");
-    if (deck) {
-      deck.style.zIndex = "";
-      deck.style.pointerEvents = "";
-    }
+  function img(name, size) {
+    return "images/" + name + "-" + size + ".webp";
   }
 
-  function showPreview(id) {
-    if (!id || WORLDS.indexOf(id) < 0) return;
-    if (document.body.dataset.world === id) {
-      clearPreview();
-      return;
+  function el(tag, className, attrs, text) {
+    var node = document.createElement(tag);
+    if (className) node.className = className;
+    if (attrs) {
+      Object.keys(attrs).forEach(function (key) { node.setAttribute(key, attrs[key]); });
     }
-    document.body.dataset.preview = id;
-    var deck = document.querySelector(".deck");
-    if (deck && document.body.dataset.world === "home" && window.matchMedia("(min-width: 721px)").matches) {
-      deck.style.zIndex = "2";
-      deck.style.pointerEvents = "none";
-    }
+    if (text) node.textContent = text;
+    return node;
   }
 
-  var currentWorld = null;
+  function outLink(url) {
+    return el("a", "", { href: url, target: "_blank", rel: "noopener" });
+  }
 
-  function showWorld(id) {
-    if (currentWorld === id) return;
-    currentWorld = id;
-    WORLDS.forEach(function (world) {
-      if (panels[world]) panels[world].hidden = world !== id;
+  function setFocusable(root, on) {
+    root.querySelectorAll("a, button").forEach(function (node) {
+      if (on) node.removeAttribute("tabindex");
+      else node.setAttribute("tabindex", "-1");
     });
-    document.body.dataset.world = id;
-    clearPreview();
-    worldLinks.forEach(function (link) {
-      var on = link.getAttribute("href") === "#" + id;
-      if (on) link.setAttribute("aria-current", "page");
-      else link.removeAttribute("aria-current");
-    });
-    placeSocials(id);
-    placeDeck();
-    document.dispatchEvent(new CustomEvent("worldchange", { detail: id }));
   }
 
-  worldAnchors.forEach(function (link) {
-    var id = (link.getAttribute("href") || "").replace(/^#/, "");
-    link.addEventListener("focus", function () { showPreview(id); });
-    link.addEventListener("blur", clearPreview);
-    link.addEventListener("click", function (event) {
-      if (WORLDS.indexOf(id) < 0) return;
-      event.preventDefault();
-      if (document.body.dataset.world === id) {
-        clearPreview();
-        return;
+  /* --- Theme (shares the main site's saved choice) -------------------------- */
+
+  (function theme() {
+    var KEY = "itarin-theme-choice";
+    var media = window.matchMedia("(prefers-color-scheme: dark)");
+    var meta = document.querySelector('meta[name="theme-color"]');
+    var buttons = document.querySelectorAll(".mode");
+
+    function stored() {
+      try {
+        var value = localStorage.getItem(KEY);
+        return value === "light" || value === "dark" ? value : null;
+      } catch (err) {
+        return null;
       }
-      if (id === "home") {
-        if (location.hash && location.hash !== "#home") {
-          history.pushState(null, "", "#home");
-        }
-      } else if (location.hash !== "#" + id) {
-        history.pushState(null, "", "#" + id);
+    }
+
+    function paint(value, persist) {
+      document.documentElement.dataset.theme = value;
+      if (meta) meta.setAttribute("content", value === "dark" ? "#0c0e14" : "#f1ecdf");
+      if (persist) {
+        try { localStorage.setItem(KEY, value); } catch (err) {}
       }
-      showWorld(id);
-    });
-  });
-
-  function bindPreviewHost(host) {
-    if (!host) return;
-    host.addEventListener("pointerover", function (event) {
-      if (event.pointerType && event.pointerType !== "mouse" && event.pointerType !== "pen") return;
-      var link = event.target.closest("a[data-world]");
-      if (!link || !host.contains(link)) return;
-      showPreview((link.getAttribute("href") || "").replace(/^#/, ""));
-    });
-    host.addEventListener("pointerleave", function (event) {
-      if (event.pointerType && event.pointerType !== "mouse" && event.pointerType !== "pen") return;
-      clearPreview();
-    });
-  }
-
-  function placeSocials(world) {
-    var social = document.querySelector(".social");
-    var mode = document.querySelector(".mode");
-    if (!social) return;
-    if (mode && mode.parentNode) {
-      mode.insertAdjacentElement("afterend", social);
-    }
-  }
-
-  var deckNode = document.querySelector(".deck");
-  var deckSlot = document.querySelector(".welcome__now");
-  var deckNarrow = window.matchMedia("(max-width: 720px)");
-
-  function parkDeck() {
-    if (!deckNode || deckNode.parentNode === document.body) return;
-    document.body.appendChild(deckNode);
-  }
-
-  function clearDeckPin() {
-    if (!deckNode) return;
-    deckNode.classList.remove("is-placed");
-    deckNode.style.removeProperty("--deck-left");
-    deckNode.style.removeProperty("--deck-top");
-    deckNode.style.removeProperty("--deck-width");
-    if (deckSlot) deckSlot.style.minHeight = "";
-  }
-
-  function pinDeck() {
-    if (!deckNode) return;
-    parkDeck();
-    var home = document.body.dataset.world === "home";
-    if (!home || deckNarrow.matches || !deckSlot) {
-      clearDeckPin();
-      return;
-    }
-    var width = deckSlot.getBoundingClientRect().width;
-    deckNode.style.setProperty("--deck-width", width + "px");
-    deckSlot.style.minHeight = deckNode.offsetHeight + "px";
-    var box = deckSlot.getBoundingClientRect();
-    deckNode.style.setProperty("--deck-left", box.left + "px");
-    deckNode.style.setProperty("--deck-top", box.top + "px");
-    deckNode.classList.add("is-placed");
-  }
-
-  function placeDeck() {
-    pinDeck();
-  }
-
-  bindPreviewHost(document.querySelector(".chapters"));
-
-  window.addEventListener("scroll", pinDeck, { passive: true });
-  window.addEventListener("resize", pinDeck);
-  deckNarrow.addEventListener("change", pinDeck);
-  if (typeof ResizeObserver === "function") {
-    var deckWatch = new ResizeObserver(pinDeck);
-    if (deckNode) deckWatch.observe(deckNode);
-    if (deckSlot) deckWatch.observe(deckSlot);
-  }
-
-  window.addEventListener("hashchange", function () { showWorld(worldFromHash()); });
-  window.addEventListener("popstate", function () { showWorld(worldFromHash()); });
-  if ("scrollRestoration" in history) history.scrollRestoration = "manual";
-  showWorld(worldFromHash());
-  window.scrollTo(0, 0);
-
-  /* --- Theme ----------------------------------------------------------- */
-
-  var modeButton = document.querySelector(".mode");
-  var themeMeta = document.querySelector('meta[name="theme-color"]');
-  var themeMedia = window.matchMedia("(prefers-color-scheme: dark)");
-  var skipPreview = false;
-
-  function systemTheme() {
-    return themeMedia.matches ? "dark" : "light";
-  }
-
-  function storedTheme() {
-    try {
-      var saved = localStorage.getItem("itarin-theme-choice");
-      if (saved === "light" || saved === "dark") return saved;
-    } catch (err) {}
-    return null;
-  }
-
-  var followSystem = !storedTheme();
-  var committedTheme = storedTheme() || systemTheme();
-
-  function paintTheme(theme, persist) {
-    document.documentElement.dataset.theme = theme;
-    if (themeMeta) {
-      themeMeta.setAttribute("content", theme === "dark" ? "#0c0e14" : "#e4e0d4");
-    }
-    if (persist) {
-      committedTheme = theme;
-      followSystem = false;
-      try { localStorage.setItem("itarin-theme-choice", theme); } catch (err) {}
-    }
-    if (modeButton) {
-      var next = theme === "dark" ? "light" : "dark";
-      var modeVal = modeButton.querySelector(".mode__val");
-      if (modeVal) modeVal.textContent = next;
-      else modeButton.textContent = next;
-      modeButton.setAttribute("aria-label", "Switch to " + next + " mode");
-      modeButton.setAttribute("aria-pressed", theme === "dark" ? "true" : "false");
-    }
-    document.dispatchEvent(new CustomEvent("themechange", { detail: theme }));
-  }
-
-  paintTheme(committedTheme, false);
-  if (themeMedia.addEventListener) {
-    themeMedia.addEventListener("change", function () {
-      if (!followSystem) return;
-      committedTheme = systemTheme();
-      paintTheme(committedTheme, false);
-    });
-  }
-  if (modeButton) {
-    modeButton.addEventListener("pointerenter", function (event) {
-      if (event.pointerType !== "mouse" && event.pointerType !== "pen") return;
-      if (skipPreview) return;
-      paintTheme(committedTheme === "dark" ? "light" : "dark", false);
-    });
-    modeButton.addEventListener("pointerleave", function () {
-      skipPreview = false;
-      paintTheme(committedTheme, false);
-    });
-    modeButton.addEventListener("click", function () {
-      paintTheme(committedTheme === "dark" ? "light" : "dark", true);
-      skipPreview = true;
-    });
-  }
-})();
-
-/* ==========================================================================
-   Release marquee
-
-   Progressive enhancement. Without this script the page still shows one rack
-   of covers as an ordinary horizontal scroller; this upgrades it to a looping
-   belt you can also grab and throw.
-
-   The loop is seamless because position is taken modulo one rack's width, and
-   enough clones are made to cover the viewport plus a full rack — the old
-   two-rack CSS version ran out of covers on screens wider than the rack and
-   left a gap at the loop point.
-   ========================================================================== */
-
-(function () {
-  "use strict";
-
-  var marquee = document.querySelector(".marquee");
-  var rack = marquee && marquee.querySelector(".rack");
-  if (!marquee || !rack) return;
-
-  var reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
-  if (reduce.matches) return;               // leave the CSS scroller alone
-
-  var SPEED = 26;         // px per second
-  var DRAG_SLOP = 6;      // px of movement before a press becomes a drag
-  var FRICTION = 0.94;    // per-frame decay of throw velocity
-  var RESUME_DELAY = 900; // ms of stillness after a throw before auto-scroll resumes
-
-  var track = document.createElement("div");
-  track.className = "marquee__track";
-  rack.parentNode.insertBefore(track, rack);
-  track.appendChild(rack);
-
-  var offset = 0;         // px scrolled, always within [0, rackWidth)
-  var rackWidth = 0;
-  var clones = [];
-  var velocity = 0;       // px/s, from a throw
-  var resumeAt = 0;
-  var hovering = false;
-  var pressing = false;
-  var dragging = false;
-  var pointerId = null;
-  var startX = 0;
-  var lastX = 0;
-  var lastT = 0;
-  var moved = 0;
-  var away = document.body.dataset.world && document.body.dataset.world !== "music";
-
-  function measure() {
-    // Width of one rack including the trailing gap on its last card.
-    var cards = rack.children;
-    if (!cards.length) return;
-    var styles = getComputedStyle(cards[0]);
-    var w = cards[0].getBoundingClientRect().width + parseFloat(styles.marginRight || 0);
-    rackWidth = w * cards.length;
-  }
-
-  function fill() {
-    clones.forEach(function (c) { c.remove(); });
-    clones = [];
-    measure();
-    if (!rackWidth) return;
-
-    // Cover the viewport plus one whole rack, so there is always content to
-    // the right no matter where in the cycle we are. +1 for safety.
-    var need = Math.ceil(marquee.clientWidth / rackWidth) + 1;
-    for (var i = 0; i < need; i++) {
-      var clone = rack.cloneNode(true);
-      clone.setAttribute("aria-hidden", "true");
-      clone.querySelectorAll("a").forEach(function (a) { a.tabIndex = -1; });
-      track.appendChild(clone);
-      clones.push(clone);
-    }
-    render();
-  }
-
-  function render() {
-    track.style.transform = "translate3d(" + (-offset).toFixed(2) + "px,0,0)";
-  }
-
-  function wrap(x) {
-    if (!rackWidth) return 0;
-    return ((x % rackWidth) + rackWidth) % rackWidth;
-  }
-
-  // Only a keyboard-driven focus should hold the belt still. Clicking a cover
-  // also focuses it, and that must not stop the belt for good.
-  function keyboardFocusInside() {
-    try {
-      return !!marquee.querySelector(":focus-visible");
-    } catch (err) {
-      return marquee.contains(document.activeElement);
-    }
-  }
-
-  var prev = 0;
-  function tick(now) {
-    var dt = prev ? Math.min((now - prev) / 1000, 0.05) : 0;
-    prev = now;
-
-    if (!away && !dragging && rackWidth) {
-      if (Math.abs(velocity) > 4) {
-        offset = wrap(offset + velocity * dt);
-        velocity *= Math.pow(FRICTION, dt * 60);
-      } else {
-        velocity = 0;
-        var idle = !hovering && !keyboardFocusInside() && now >= resumeAt;
-        if (idle) offset = wrap(offset + SPEED * dt);
-      }
-      render();
-    }
-    requestAnimationFrame(tick);
-  }
-
-  /* --- pointer: grab, drag, throw ---------------------------------------- */
-
-  // NB: the pointer is captured only once movement passes DRAG_SLOP. Capturing
-  // on pointerdown would retarget the subsequent click to .marquee, and covers
-  // would stop opening when clicked.
-  marquee.addEventListener("pointerdown", function (e) {
-    if (away) return;
-    if (e.pointerType === "mouse" && e.button !== 0) return;
-    pressing = true;
-    dragging = false;
-    moved = 0;
-    pointerId = e.pointerId;
-    startX = lastX = e.clientX;
-    lastT = e.timeStamp;
-    velocity = 0;
-  });
-
-  marquee.addEventListener("pointermove", function (e) {
-    if (!pressing || e.pointerId !== pointerId) return;
-
-    if (!dragging) {
-      if (Math.abs(e.clientX - startX) <= DRAG_SLOP) return;   // still just a press
-      dragging = true;
-      marquee.setPointerCapture(pointerId);
-      marquee.classList.add("is-grabbing");
-      lastX = startX;            // keep the drag 1:1 from where the press began
-    }
-
-    var dx = e.clientX - lastX;
-    var dt = (e.timeStamp - lastT) / 1000;
-    moved += Math.abs(dx);
-    offset = wrap(offset - dx);
-    render();
-    if (dt > 0) velocity = -dx / dt;   // px/s, matching offset's sign
-    lastX = e.clientX;
-    lastT = e.timeStamp;
-  });
-
-  function endDrag(e) {
-    if (!pressing || (e && e.pointerId !== pointerId)) return;
-    pressing = false;
-    if (!dragging) { pointerId = null; return; }   // a plain click - let it through
-    dragging = false;
-    marquee.classList.remove("is-grabbing");
-    if (pointerId !== null && marquee.hasPointerCapture(pointerId)) {
-      marquee.releasePointerCapture(pointerId);
-    }
-    pointerId = null;
-    // A stale velocity from a pause mid-drag shouldn't fling the belt.
-    if (e && e.timeStamp - lastT > 120) velocity = 0;
-    velocity = Math.max(-4000, Math.min(4000, velocity));
-    resumeAt = performance.now() + RESUME_DELAY;
-  }
-
-  marquee.addEventListener("pointerup", endDrag);
-  marquee.addEventListener("pointercancel", endDrag);
-
-  // Swallow the click that ends a drag, so throwing the belt doesn't open a link.
-  marquee.addEventListener("click", function (e) {
-    if (moved > DRAG_SLOP) {
-      e.preventDefault();
-      e.stopPropagation();
-      moved = 0;
-    }
-  }, true);
-
-  marquee.addEventListener("dragstart", function (e) { e.preventDefault(); });
-
-  /* --- pause conditions --------------------------------------------------- */
-
-  marquee.addEventListener("pointerenter", function (e) {
-    if (e.pointerType === "mouse") hovering = true;
-  });
-  marquee.addEventListener("pointerleave", function (e) {
-    if (e.pointerType === "mouse") hovering = false;
-  });
-  // Safety net: a pointer that leaves via a capture or a lost event.
-  marquee.addEventListener("mouseleave", function () { hovering = false; });
-
-  document.addEventListener("visibilitychange", function () {
-    prev = 0;                       // don't jump after the tab was hidden
-  });
-
-  window.addEventListener("resize", function () {
-    if (!away) fill();
-  });
-  reduce.addEventListener("change", function () { location.reload(); });
-
-  document.addEventListener("worldchange", function (event) {
-    away = event.detail !== "music";
-    if (!away) {
-      hovering = false;
-      fill();
-    }
-  });
-
-  // Small control surface, handy for debugging the loop in the console.
-  marquee.marquee = {
-    get offset() { return offset; },
-    set offset(v) { offset = wrap(v); render(); },
-    get rackWidth() { return rackWidth; },
-    pause: function () { hovering = true; },
-    resume: function () { hovering = false; }
-  };
-
-  marquee.classList.add("is-live");
-  if (!away) fill();
-  // Cover widths can shift once the font and images settle.
-  window.addEventListener("load", function () { if (!away) fill(); });
-  requestAnimationFrame(tick);
-})();
-
-/* ==========================================================================
-   Release artwork backdrop
-
-   Crossfades a release cover behind the page while its card is hovered or
-   keyboard-focused. Each change gets a fresh transparent layer, so even rapid
-   movement across the marquee cannot swap artwork on a still-visible layer.
-   ========================================================================== */
-
-(function () {
-  "use strict";
-
-  var backdrop = document.querySelector(".release-backdrops");
-  if (!backdrop) return;
-
-  var activeLayer = null;
-  var activeUrl = "";
-  var hoveredCard = null;
-
-  function cardFrom(node) {
-    if (!node || !node.closest) return null;
-    return node.closest(".unit__object") ||
-           node.closest(".index__list a") ||
-           node.closest(".gallery .frame") ||
-           node.closest(".card a");
-  }
-
-  function artworkFor(card) {
-    var image = card && card.querySelector("img");
-    if (!image) return "";
-
-    var source = image.currentSrc || image.src;
-    return source.replace("-400.webp", "-800.webp");
-  }
-
-  function show(card) {
-    if (document.body.dataset.world === "coding") return;
-    var url = artworkFor(card);
-    if (!url || (url === activeUrl && activeLayer)) return;
-
-    var nextLayer = document.createElement("span");
-    var dark = document.documentElement.dataset.theme === "dark";
-    var shade = dark
-      ? "linear-gradient(rgba(12, 14, 20, 0.55), rgba(12, 14, 20, 0.9))"
-      : "linear-gradient(rgba(247, 248, 251, 0.55), rgba(247, 248, 251, 0.9))";
-    nextLayer.style.backgroundImage = shade + ", url(\"" + url.replace(/"/g, "%22") + "\")";
-    backdrop.appendChild(nextLayer);
-
-    // Commit the initial opacity: 0 before asking the browser to fade it in.
-    nextLayer.getBoundingClientRect();
-    nextLayer.classList.add("is-visible");
-
-    if (activeLayer) {
-      retire(activeLayer);
-    }
-
-    activeLayer = nextLayer;
-    activeUrl = url;
-  }
-
-  function retire(layer) {
-    layer.classList.remove("is-visible");
-    setTimeout(function () {
-      if (layer.parentNode === backdrop) layer.remove();
-    }, 700);
-  }
-
-  function hide() {
-    if (activeLayer) retire(activeLayer);
-    activeLayer = null;
-    activeUrl = "";
-  }
-
-  function refresh() {
-    var focusedCard = cardFrom(document.activeElement);
-    var card = focusedCard || hoveredCard;
-    if (card) show(card);
-    else hide();
-  }
-
-  document.addEventListener("pointerover", function (event) {
-    if (event.pointerType && event.pointerType !== "mouse" && event.pointerType !== "pen") return;
-
-    var card = cardFrom(event.target);
-    if (!card || card === cardFrom(event.relatedTarget)) return;
-    hoveredCard = card;
-    show(card);
-  });
-
-  document.addEventListener("pointerout", function (event) {
-    if (event.pointerType && event.pointerType !== "mouse" && event.pointerType !== "pen") return;
-
-    var card = cardFrom(event.target);
-    if (!card || card === cardFrom(event.relatedTarget)) return;
-    hoveredCard = cardFrom(event.relatedTarget);
-    refresh();
-  });
-
-  document.addEventListener("focusin", function (event) {
-    var card = cardFrom(event.target);
-    if (card) show(card);
-  });
-
-  document.addEventListener("focusout", function () {
-    setTimeout(refresh, 0);
-  });
-
-  document.addEventListener("visibilitychange", function () {
-    if (document.hidden) {
-      hoveredCard = null;
-      hide();
-    }
-  });
-
-  document.addEventListener("worldchange", function () {
-    hoveredCard = null;
-    hide();
-  });
-})();
-
-/* --- Hover-to-play local song previews --------------------------------- */
-
-(function () {
-  "use strict";
-
-  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-
-  var VOLUME = 0.1;
-  var FADE_MS = 160;
-  var cache = Object.create(null);
-  var audioContext = null;
-  var current = null;
-  var currentSrc = "";
-  var fadeTimer = 0;
-  var fadeFrom = 0;
-  var fadeTo = 0;
-  var fadeStart = 0;
-
-  function protectPeaks(audio) {
-    var Context = window.AudioContext || window.webkitAudioContext;
-    if (!Context || audio._peakProtected) return;
-    try {
-      audioContext = audioContext || new Context();
-      var source = audioContext.createMediaElementSource(audio);
-      var compressor = audioContext.createDynamicsCompressor();
-      compressor.threshold.value = -18;
-      compressor.knee.value = 12;
-      compressor.ratio.value = 8;
-      compressor.attack.value = 0.003;
-      compressor.release.value = 0.25;
-      source.connect(compressor);
-      compressor.connect(audioContext.destination);
-      audio._peakProtected = true;
-    } catch (err) {}
-  }
-
-  function audioSrc(node) {
-    if (!node || !node.closest) return "";
-    var host = node.closest("[data-preview]");
-    if (!host || host === document.body || host === document.documentElement) return "";
-    var src = host.getAttribute("data-preview") || "";
-    if (!/\.(mp3|ogg|wav|m4a)(\?|#|$)/i.test(src)) return "";
-    return src;
-  }
-
-  function stopFade() {
-    if (fadeTimer) {
-      cancelAnimationFrame(fadeTimer);
-      fadeTimer = 0;
-    }
-  }
-
-  function fade(audio, to, then) {
-    stopFade();
-    fadeFrom = audio.volume;
-    fadeTo = to;
-    fadeStart = performance.now();
-    function tick(now) {
-      var t = Math.min(1, (now - fadeStart) / FADE_MS);
-      audio.volume = fadeFrom + (fadeTo - fadeFrom) * t;
-      if (t < 1) {
-        fadeTimer = requestAnimationFrame(tick);
-        return;
-      }
-      fadeTimer = 0;
-      if (then) then();
-    }
-    fadeTimer = requestAnimationFrame(tick);
-  }
-
-  function halt(audio) {
-    audio.pause();
-    try { audio.currentTime = 0; } catch (err) {}
-    audio.volume = 0;
-  }
-
-  function stop(fadeOut, keepHold) {
-    var audio = current;
-    current = null;
-    currentSrc = "";
-    if (!audio) {
-      if (!keepHold) document.dispatchEvent(new Event("catalogpreviewend"));
-      return;
-    }
-    if (fadeOut && !audio.paused) {
-      fade(audio, 0, function () {
-        halt(audio);
-        if (!keepHold) document.dispatchEvent(new Event("catalogpreviewend"));
+      var next = value === "dark" ? "light" : "dark";
+      buttons.forEach(function (button) {
+        button.querySelector(".mode__val").textContent = next;
+        button.setAttribute("aria-label", "Switch to " + next + " mode");
       });
-    } else {
-      stopFade();
-      halt(audio);
-      if (!keepHold) document.dispatchEvent(new Event("catalogpreviewend"));
-    }
-  }
-
-  function play(src) {
-    if (!src || document.body.classList.contains("is-playing")) {
-      stop(true);
-      return;
-    }
-    if (src === currentSrc && current && !current.paused) return;
-
-    stop(false, true);
-
-    var audio = cache[src];
-    if (!audio) {
-      audio = new Audio();
-      audio.preload = "auto";
-      audio.loop = true;
-      audio.src = src;
-      protectPeaks(audio);
-      cache[src] = audio;
+      // itarin-mark.js repaints the wordmark on this event.
+      document.dispatchEvent(new CustomEvent("themechange", { detail: value }));
     }
 
-    audio.volume = 0;
-    try { audio.currentTime = 0; } catch (err) {}
-    current = audio;
-    currentSrc = src;
-
-    document.dispatchEvent(new Event("catalogpreview"));
-
-    var started = audio.play();
-    if (started && started.then) {
-      started.then(function () {
-        if (current !== audio) return;
-        if (audioContext && audioContext.state === "suspended") audioContext.resume();
-        fade(audio, VOLUME);
-      }).catch(function () {
-        if (current === audio) {
-          current = null;
-          currentSrc = "";
-        }
-        document.dispatchEvent(new Event("catalogpreviewend"));
+    buttons.forEach(function (button) {
+      button.addEventListener("click", function () {
+        paint(document.documentElement.dataset.theme === "dark" ? "light" : "dark", true);
       });
-    }
-  }
-
-  document.addEventListener("pointerover", function (event) {
-    if (event.pointerType && event.pointerType !== "mouse" && event.pointerType !== "pen") return;
-    if (document.body.classList.contains("is-playing")) return;
-    var src = audioSrc(event.target);
-    if (!src || src === audioSrc(event.relatedTarget)) return;
-    play(src);
-  });
-
-  document.addEventListener("pointerout", function (event) {
-    if (event.pointerType && event.pointerType !== "mouse" && event.pointerType !== "pen") return;
-    var src = audioSrc(event.target);
-    if (!src || src === audioSrc(event.relatedTarget)) return;
-    stop(true);
-  });
-
-  document.addEventListener("worldchange", function () { stop(false); });
-  document.addEventListener("visibilitychange", function () {
-    if (document.hidden) stop(false);
-  });
-
-  new MutationObserver(function () {
-    if (document.body.classList.contains("is-playing")) stop(false);
-  }).observe(document.body, { attributes: true, attributeFilter: ["class"] });
-})();
-
-/* ==========================================================================
-   Album Invaders easter egg
-
-   Open by clicking the spinning logo five times quickly or typing "invaders".
-   The soundtrack is the site's shuffle deck (deck.js), which stays on screen
-   under the play field while the game is open.
-   ========================================================================== */
-
-(function () {
-  "use strict";
-
-  var game = document.getElementById("invaders-game");
-  var canvas = game && game.querySelector(".invaders-game__canvas");
-  var closeButton = game && game.querySelector(".invaders-game__close");
-  var scoreNode = document.getElementById("invaders-score");
-  var livesNode = document.getElementById("invaders-lives");
-  var overlay = document.getElementById("invaders-overlay");
-  var messageNode = document.getElementById("invaders-message");
-  var finalScoreNode = document.getElementById("invaders-final-score");
-  var boardNode = document.getElementById("invaders-board");
-  var nameForm = document.getElementById("invaders-form");
-  var nameInput = document.getElementById("invaders-name");
-  var afterActions = document.getElementById("invaders-after");
-  var exitButton = document.getElementById("invaders-exit");
-  var againButton = document.getElementById("invaders-again");
-  var leaveButton = document.getElementById("invaders-leave");
-  var mark = document.querySelector(".mark");
-  var deck = document.querySelector(".deck");
-  if (!game || !canvas || !closeButton || !overlay || !nameForm || !mark) return;
-
-  var context = canvas.getContext("2d");
-  if (!context) return;
-
-  var covers = [];
-  var active = false;
-  var frame = 0;
-  var lastTime = 0;
-  var width = 0;
-  var height = 0;
-  var ratio = 1;
-  var previousFocus = null;
-
-  var ship = { x: 0, y: 0, width: 34, height: 24, speed: 390, invulnerableUntil: 0 };
-  var enemies = [];
-  var bullets = [];
-  var enemyBullets = [];
-  var keys = Object.create(null);
-  var direction = 1;
-  var shotAt = 0;
-  var enemyShotIn = 0;
-  var score = 0;
-  var lives = 3;
-  var wave = 1;
-  var elapsed = 0;
-  var gameOver = false;
-  var scoreSaved = false;
-
-  var BOARD_KEY = "album-invaders-board";
-  var BOARD_SIZE = 8;
-
-  /* --- setup ------------------------------------------------------------ */
-
-  function clamp(value, min, max) {
-    return Math.max(min, Math.min(max, value));
-  }
-
-  function overlayOpen() {
-    return overlay && !overlay.hidden;
-  }
-
-  function censorName(name) {
-    return name.split(" ").map(function (word) {
-      var text = word.toUpperCase();
-      if (text.length <= 2) return text;
-      return text.charAt(0) + "*".repeat(text.length - 2) + text.charAt(text.length - 1);
-    }).join(" ");
-  }
-
-  function loadBoard() {
-    try {
-      var data = JSON.parse(localStorage.getItem(BOARD_KEY) || "[]");
-      return Array.isArray(data) ? data : [];
-    } catch (error) {
-      return [];
-    }
-  }
-
-  function saveBoard(entries) {
-    try {
-      localStorage.setItem(BOARD_KEY, JSON.stringify(entries));
-    } catch (error) { /* private mode / quota */ }
-  }
-
-  function addScore(name, value) {
-    var entry = { name: censorName(name), score: value, at: Date.now() };
-    var entries = loadBoard().concat(entry);
-    entries.sort(function (a, b) {
-      return b.score - a.score || a.at - b.at;
-    });
-    entries = entries.slice(0, BOARD_SIZE);
-    saveBoard(entries);
-    return entry;
-  }
-
-  function renderBoard(highlightAt) {
-    var entries = loadBoard();
-    boardNode.replaceChildren();
-
-    if (!entries.length) {
-      var empty = document.createElement("li");
-      empty.className = "is-empty";
-      empty.innerHTML = "<em>no scores yet</em>";
-      boardNode.appendChild(empty);
-      return;
-    }
-
-    entries.forEach(function (entry, index) {
-      var row = document.createElement("li");
-      if (highlightAt && entry.at === highlightAt) row.className = "is-you";
-      row.innerHTML = "<b>" + String(index + 1).padStart(2, "0") + "</b>" +
-                      "<span></span><strong></strong>";
-      row.querySelector("span").textContent = entry.name;
-      row.querySelector("strong").textContent = String(entry.score).padStart(5, "0");
-      boardNode.appendChild(row);
-    });
-  }
-
-  function hideOverlay() {
-    overlay.hidden = true;
-    nameForm.hidden = false;
-    afterActions.hidden = true;
-    nameInput.value = "";
-  }
-
-  function loadCovers() {
-    var seen = Object.create(null);
-    document.querySelectorAll(".unit img, .index__list img, .gallery .frame img").forEach(function (source) {
-      var url = (source.currentSrc || source.src).replace("-400.webp", "-800.webp");
-      if (seen[url]) return;
-      seen[url] = true;
-
-      var image = new Image();
-      image.src = url;
-      covers.push(image);
-    });
-  }
-
-  // Keep the ship clear of the music deck docked along the bottom edge.
-  function shipLine() {
-    var line = height - 58;
-    if (deck && active) {
-      var box = deck.getBoundingClientRect();
-      if (box.height && box.top > height / 2) line = Math.min(line, box.top - 30);
-    }
-    return line;
-  }
-
-  function resize() {
-    width = window.innerWidth;
-    height = window.innerHeight;
-    ratio = Math.min(window.devicePixelRatio || 1, 2);
-    canvas.width = Math.round(width * ratio);
-    canvas.height = Math.round(height * ratio);
-    context.setTransform(ratio, 0, 0, ratio, 0, 0);
-
-    ship.y = shipLine();
-    ship.x = clamp(ship.x, ship.width, width - ship.width);
-  }
-
-  function spawnWave() {
-    enemies = [];
-    direction = 1;
-    enemyShotIn = 0.7;
-
-    var size = clamp(Math.floor((width - 100) / 8), 48, 72);
-    var gap = clamp(Math.floor(size * 0.26), 10, 18);
-    var columns = Math.min(covers.length, Math.max(3, Math.floor((width - 50) / (size + gap))));
-    var rows = height < 520 ? 1 : 2;
-    var formationWidth = columns * size + (columns - 1) * gap;
-    var startX = (width - formationWidth) / 2;
-    var startY = height < 520 ? 70 : 92;
-
-    for (var row = 0; row < rows; row++) {
-      for (var column = 0; column < columns; column++) {
-        enemies.push({
-          x: startX + column * (size + gap),
-          y: startY + row * (size + gap),
-          width: size,
-          height: size,
-          image: covers[(column + row) % covers.length]
-        });
-      }
-    }
-  }
-
-  function resetGame() {
-    score = 0;
-    lives = 3;
-    wave = 1;
-    elapsed = 0;
-    bullets = [];
-    enemyBullets = [];
-    gameOver = false;
-    scoreSaved = false;
-    ship.x = width / 2;
-    ship.y = shipLine();
-    ship.invulnerableUntil = 0;
-    hideOverlay();
-    updateHud();
-    spawnWave();
-  }
-
-  function updateHud() {
-    scoreNode.textContent = String(score).padStart(5, "0");
-    livesNode.textContent = lives;
-  }
-
-  /* --- controls --------------------------------------------------------- */
-
-  function fire(now) {
-    if (gameOver) return;
-    if (now - shotAt < 170) return;
-
-    shotAt = now;
-    bullets.push({
-      x: ship.x,
-      y: ship.y - ship.height / 2,
-      width: 3,
-      height: 13
-    });
-  }
-
-  function openGame() {
-    if (active) return;
-    active = true;
-    previousFocus = document.activeElement;
-    game.hidden = false;
-    document.body.classList.add("is-playing");
-    resize();
-    resetGame();
-    game.focus();
-
-    var marquee = document.querySelector(".marquee");
-    if (marquee && marquee.marquee) marquee.marquee.pause();
-
-    lastTime = 0;
-    frame = requestAnimationFrame(tick);
-  }
-
-  function closeGame() {
-    if (!active) return;
-    active = false;
-    cancelAnimationFrame(frame);
-    frame = 0;
-    keys = Object.create(null);
-    hideOverlay();
-    game.hidden = true;
-    document.body.classList.remove("is-playing");
-
-    var marquee = document.querySelector(".marquee");
-    if (marquee && marquee.marquee) marquee.marquee.resume();
-    if (previousFocus && previousFocus.focus) previousFocus.focus();
-  }
-
-  document.addEventListener("keydown", function (event) {
-    if (!active) return;
-
-    if (event.key === "Escape") {
-      event.preventDefault();
-      closeGame();
-      return;
-    }
-
-    if (overlayOpen()) return;
-
-    if (event.key === "ArrowLeft" || event.key === "ArrowRight" ||
-        event.key === "a" || event.key === "A" || event.key === "d" || event.key === "D" ||
-        event.code === "Space") {
-      event.preventDefault();
-      keys[event.key.toLowerCase()] = true;
-    }
-
-    if (event.code === "Space") fire(performance.now());
-  });
-
-  document.addEventListener("keyup", function (event) {
-    if (!active) return;
-    keys[event.key.toLowerCase()] = false;
-  });
-
-  canvas.addEventListener("pointermove", function (event) {
-    if (!active || gameOver) return;
-    ship.x = clamp(event.clientX, ship.width, width - ship.width);
-  });
-
-  canvas.addEventListener("pointerdown", function (event) {
-    if (!active || gameOver) return;
-    ship.x = clamp(event.clientX, ship.width, width - ship.width);
-    fire(performance.now());
-  });
-
-  nameForm.addEventListener("submit", function (event) {
-    event.preventDefault();
-    if (!gameOver || scoreSaved) return;
-
-    var raw = nameInput.value.replace(/[^a-zA-Z0-9\s\-]/g, "").replace(/\s+/g, " ").trim();
-    if (!raw) {
-      nameInput.focus();
-      return;
-    }
-
-    scoreSaved = true;
-    var entry = addScore(raw, score);
-    renderBoard(entry.at);
-    nameForm.hidden = true;
-    afterActions.hidden = false;
-    againButton.focus();
-  });
-
-  exitButton.addEventListener("click", closeGame);
-  leaveButton.addEventListener("click", closeGame);
-  againButton.addEventListener("click", function () {
-    resetGame();
-    game.focus();
-  });
-  closeButton.addEventListener("click", closeGame);
-
-  if (deck) {
-    if (typeof ResizeObserver === "function") {
-      new ResizeObserver(function () {
-        if (active) ship.y = shipLine();
-      }).observe(deck);
-    }
-    deck.addEventListener("click", function (event) {
-      if (!active || event.target.closest("a")) return;
-      game.focus({ preventScroll: true });
-    });
-  }
-
-  window.addEventListener("resize", function () {
-    if (active) {
-      resize();
-      spawnWave();
-    }
-  });
-
-  /* --- game ------------------------------------------------------------- */
-
-  function overlaps(a, b) {
-    return a.x - a.width / 2 < b.x + b.width / 2 &&
-           a.x + a.width / 2 > b.x - b.width / 2 &&
-           a.y - a.height / 2 < b.y + b.height / 2 &&
-           a.y + a.height / 2 > b.y - b.height / 2;
-  }
-
-  function endGame() {
-    gameOver = true;
-    keys = Object.create(null);
-    bullets = [];
-    enemyBullets = [];
-    scoreSaved = false;
-    messageNode.textContent = "game over";
-    finalScoreNode.textContent = String(score).padStart(5, "0");
-    nameForm.hidden = false;
-    afterActions.hidden = true;
-    nameInput.value = "";
-    renderBoard();
-    overlay.hidden = false;
-    nameInput.focus();
-  }
-
-  function shotDirections() {
-    return Math.min(9, 1 + Math.floor(elapsed / 14));
-  }
-
-  function enemySpeed() {
-    return 32 + wave * 8 + elapsed * 2.35;
-  }
-
-  function enemyBulletSpeed() {
-    return 290 + elapsed * 5.2 + wave * 8;
-  }
-
-  function fireInterval() {
-    return Math.max(0.26, 1.18 - elapsed * 0.012 - wave * 0.045) + Math.random() * 0.28;
-  }
-
-  function fireEnemyVolley(shooter) {
-    var count = shotDirections();
-    var speed = enemyBulletSpeed();
-    var originX = shooter.x;
-    var originY = shooter.y + shooter.height / 2;
-
-    if (count === 1) {
-      enemyBullets.push({ x: originX, y: originY, vx: 0, vy: speed, width: 5, height: 5 });
-      return;
-    }
-
-    var spread = Math.min(Math.PI * 0.92, 0.4 + (count - 1) * 0.155);
-    var start = Math.PI / 2 - spread / 2;
-    var step = spread / (count - 1);
-    for (var i = 0; i < count; i++) {
-      var angle = start + i * step;
-      enemyBullets.push({
-        x: originX,
-        y: originY,
-        vx: Math.cos(angle) * speed,
-        vy: Math.sin(angle) * speed,
-        width: 5,
-        height: 5
-      });
-    }
-  }
-
-  function update(dt, now) {
-    if (gameOver) return;
-
-    elapsed += dt;
-
-    var movement = 0;
-    if (keys.arrowleft || keys.a) movement -= 1;
-    if (keys.arrowright || keys.d) movement += 1;
-    ship.x = clamp(ship.x + movement * ship.speed * dt, ship.width, width - ship.width);
-
-    bullets.forEach(function (bullet) { bullet.y -= 650 * dt; });
-    enemyBullets.forEach(function (bullet) {
-      bullet.x += bullet.vx * dt;
-      bullet.y += bullet.vy * dt;
-    });
-    bullets = bullets.filter(function (bullet) { return bullet.y > -20; });
-    enemyBullets = enemyBullets.filter(function (bullet) {
-      return bullet.y < height + 24 && bullet.y > -24 &&
-             bullet.x > -24 && bullet.x < width + 24;
     });
 
-    var left = Infinity;
-    var right = -Infinity;
-    enemies.forEach(function (enemy) {
-      left = Math.min(left, enemy.x - enemy.width / 2);
-      right = Math.max(right, enemy.x + enemy.width / 2);
+    media.addEventListener("change", function (event) {
+      if (!stored()) paint(event.matches ? "dark" : "light", false);
     });
 
-    var speed = enemySpeed();
-    var horizontal = direction * speed * dt;
-    var drop = 18 + Math.min(24, elapsed * 0.12);
-    if (left + horizontal < 14 || right + horizontal > width - 14) {
-      direction *= -1;
-      enemies.forEach(function (enemy) { enemy.y += drop; });
-    } else {
-      enemies.forEach(function (enemy) { enemy.x += horizontal; });
+    paint(document.documentElement.dataset.theme === "dark" ? "dark" : "light", false);
+  })();
+
+  /* --- LCD clock -------------------------------------------------------------- */
+
+  (function clock() {
+    var node = document.querySelector(".lcd__time");
+    if (!node) return;
+    function tick() {
+      var now = new Date();
+      node.textContent = pad(now.getHours()) + ":" + pad(now.getMinutes());
     }
+    tick();
+    window.setInterval(tick, 15000);
+  })();
 
-    for (var bulletIndex = bullets.length - 1; bulletIndex >= 0; bulletIndex--) {
-      for (var enemyIndex = enemies.length - 1; enemyIndex >= 0; enemyIndex--) {
-        if (!overlaps(bullets[bulletIndex], enemies[enemyIndex])) continue;
-        bullets.splice(bulletIndex, 1);
-        enemies.splice(enemyIndex, 1);
-        score += 100;
-        updateHud();
-        break;
-      }
-    }
+  /* --- Japanese banner lines show English on hover ------------------------------ */
 
-    enemyShotIn -= dt;
-    if (enemyShotIn <= 0 && enemies.length) {
-      var volleys = elapsed >= 52 && enemies.length > 1 ? 2 : 1;
-      for (var shot = 0; shot < volleys; shot++) {
-        fireEnemyVolley(enemies[Math.floor(Math.random() * enemies.length)]);
-      }
-      enemyShotIn = fireInterval();
-    }
-
-    if (now >= ship.invulnerableUntil) {
-      for (var shotIndex = enemyBullets.length - 1; shotIndex >= 0; shotIndex--) {
-        if (!overlaps(enemyBullets[shotIndex], ship)) continue;
-        enemyBullets.splice(shotIndex, 1);
-        lives -= 1;
-        ship.invulnerableUntil = now + 1300;
-        updateHud();
-        if (lives <= 0) endGame();
-        break;
-      }
-    }
-
-    if (enemies.some(function (enemy) {
-      return enemy.y + enemy.height / 2 >= ship.y - ship.height;
-    })) {
-      endGame();
-    } else if (!enemies.length) {
-      wave += 1;
-      bullets = [];
-      enemyBullets = [];
-      spawnWave();
-    }
-  }
-
-  function drawGrid() {
-    context.strokeStyle = "rgba(247, 168, 204, 0.035)";
-    context.lineWidth = 1;
-    context.beginPath();
-
-    for (var x = 0; x < width; x += 36) {
-      context.moveTo(x, 0);
-      context.lineTo(x, height);
-    }
-    for (var y = 0; y < height; y += 36) {
-      context.moveTo(0, y);
-      context.lineTo(width, y);
-    }
-    context.stroke();
-  }
-
-  function draw() {
-    context.clearRect(0, 0, width, height);
-    context.fillStyle = "#030509";
-    context.fillRect(0, 0, width, height);
-    drawGrid();
-
-    enemies.forEach(function (enemy) {
-      context.save();
-      context.shadowColor = "rgba(247, 168, 204, 0.42)";
-      context.shadowBlur = 10;
-      if (enemy.image.complete && enemy.image.naturalWidth) {
-        context.drawImage(
-          enemy.image,
-          enemy.x - enemy.width / 2,
-          enemy.y - enemy.height / 2,
-          enemy.width,
-          enemy.height
-        );
-      } else {
-        context.fillStyle = "#f7a8cc";
-        context.fillRect(
-          enemy.x - enemy.width / 2,
-          enemy.y - enemy.height / 2,
-          enemy.width,
-          enemy.height
-        );
-      }
-      context.strokeStyle = "rgba(238, 242, 247, 0.52)";
-      context.strokeRect(
-        enemy.x - enemy.width / 2,
-        enemy.y - enemy.height / 2,
-        enemy.width,
-        enemy.height
-      );
-      context.restore();
-    });
-
-    context.save();
-    context.fillStyle = "#f7a8cc";
-    context.shadowColor = "#f7a8cc";
-    context.shadowBlur = 12;
-    bullets.forEach(function (bullet) {
-      context.fillRect(
-        bullet.x - bullet.width / 2,
-        bullet.y - bullet.height / 2,
-        bullet.width,
-        bullet.height
-      );
-    });
-    context.fillStyle = "#eef2f7";
-    enemyBullets.forEach(function (bullet) {
-      context.fillRect(
-        bullet.x - bullet.width / 2,
-        bullet.y - bullet.height / 2,
-        bullet.width,
-        bullet.height
-      );
-    });
-    context.restore();
-
-    if (!gameOver && (performance.now() >= ship.invulnerableUntil ||
-        Math.floor(performance.now() / 90) % 2 === 0)) {
-      context.save();
-      context.translate(ship.x, ship.y);
-      context.fillStyle = "#f7a8cc";
-      context.strokeStyle = "#eef2f7";
-      context.lineWidth = 1.5;
-      context.shadowColor = "#f7a8cc";
-      context.shadowBlur = 15;
-      context.beginPath();
-      context.moveTo(0, -ship.height / 2);
-      context.lineTo(ship.width / 2, ship.height / 2);
-      context.lineTo(0, ship.height / 3);
-      context.lineTo(-ship.width / 2, ship.height / 2);
-      context.closePath();
-      context.fill();
-      context.stroke();
-      context.restore();
-    }
-  }
-
-  function tick(now) {
-    if (!active) return;
-    var dt = lastTime ? Math.min((now - lastTime) / 1000, 0.04) : 0;
-    lastTime = now;
-    update(dt, now);
-    draw();
-    frame = requestAnimationFrame(tick);
-  }
-
-  /* --- secret entrances ------------------------------------------------- */
-
-  var logoClicks = 0;
-  var lastLogoClick = 0;
-  mark.addEventListener("click", function () {
-    var now = Date.now();
-    if (now - lastLogoClick > 1500) logoClicks = 0;
-    lastLogoClick = now;
-    logoClicks += 1;
-
-    if (logoClicks >= 5) {
-      logoClicks = 0;
-      openGame();
-    }
-  });
-
-  var typed = "";
-  document.addEventListener("keydown", function (event) {
-    if (active || event.ctrlKey || event.metaKey || event.altKey || event.key.length !== 1) return;
-    if (/^(input|textarea|select)$/i.test(event.target.tagName)) return;
-
-    typed = (typed + event.key.toLowerCase()).slice(-8);
-    if (typed === "invaders") {
-      typed = "";
-      openGame();
-    }
-  });
-
-  loadCovers();
-})();
-
-/* --- Hover Japanese copy for the English reading ----------------------- */
-
-(function () {
-  "use strict";
-
-  function bindGloss(el) {
-    var ja = el.innerHTML;
-    var en = el.getAttribute("data-en");
-    if (!en) return;
-
-    function showEn() {
-      if (document.documentElement.classList.contains("is-assembling")) return;
-      el.innerHTML = en;
-      el.setAttribute("lang", "en");
-      el.classList.add("is-en");
-    }
-
-    function showJa() {
-      el.innerHTML = ja;
-      el.setAttribute("lang", "ja");
-      el.classList.remove("is-en");
-    }
-
-    el.addEventListener("pointerenter", function (event) {
+  document.querySelectorAll("[data-en]").forEach(function (node) {
+    var ja = node.textContent;
+    var en = node.getAttribute("data-en");
+    node.addEventListener("pointerenter", function (event) {
       if (event.pointerType && event.pointerType !== "mouse") return;
-      showEn();
+      node.textContent = en;
+      node.setAttribute("lang", "en");
+      node.classList.add("is-en");
     });
-    el.addEventListener("pointerleave", showJa);
-  }
+    node.addEventListener("pointerleave", function () {
+      node.textContent = ja;
+      node.setAttribute("lang", "ja");
+      node.classList.remove("is-en");
+    });
+  });
 
-  document.querySelectorAll("[data-en]").forEach(bindGloss);
+  /* --- Release slideshow + disc changer ------------------------------------------ */
+
+  (function hero() {
+    var root = document.querySelector(".hero");
+    var track = document.getElementById("hero-track");
+    var changer = document.getElementById("changer");
+    if (!root || !track || !changer) return;
+
+    var pause = changer.querySelector(".changer__pause");
+    var paused = reduceMotion;
+    pause.hidden = reduceMotion;
+    var slides = [];
+    var discs = [];
+
+    RELEASES.forEach(function (release, i) {
+      var slide = el("div", "slide", {
+        role: "group",
+        "aria-roledescription": "slide",
+        "aria-label": pad(i + 1) + " of " + pad(RELEASES.length)
+      });
+      var link = outLink(release.url);
+      var blur = el("img", "slide__blur", { src: img(release.art, 400), alt: "", draggable: "false" });
+      var art = el("img", "slide__art", {
+        src: img(release.art, 800),
+        alt: release.title + " cover art",
+        width: "800",
+        height: "800",
+        draggable: "false"
+      });
+      if (i > 0) {
+        blur.loading = "lazy";
+        art.loading = "lazy";
+      }
+      var file = el("span", "tag slide__file", null, i === 0 ? "latest release" : "file " + pad(i + 1));
+      var caption = el("span", "slide__caption");
+      caption.append(
+        el("span", "slide__title", null, release.title),
+        el("span", "slide__meta", null, release.with + " · " + release.date)
+      );
+      link.append(blur, art, file, caption);
+      slide.appendChild(link);
+      track.appendChild(slide);
+      slides.push(slide);
+
+      var disc = el("button", "", { type: "button", "aria-label": "Show " + release.title }, pad(i + 1));
+      disc.addEventListener("click", function () { show(i); });
+      changer.appendChild(disc);
+      discs.push(disc);
+    });
+
+    var index = 0;
+
+    function show(next) {
+      index = (next + slides.length) % slides.length;
+      slides.forEach(function (slide, i) {
+        var on = i === index;
+        slide.classList.toggle("is-active", on);
+        slide.setAttribute("aria-hidden", on ? "false" : "true");
+        setFocusable(slide, on);
+      });
+      discs.forEach(function (disc, i) {
+        if (i === index) disc.setAttribute("aria-current", "true");
+        else disc.removeAttribute("aria-current");
+      });
+    }
+
+    // The timer bar under the current disc is a 6s CSS animation; when it
+    // fills, the next release loads. Pausing the bar pauses the slideshow.
+    changer.addEventListener("animationend", function (event) {
+      if (event.animationName === "disc-timer" && !paused && !document.hidden) show(index + 1);
+    });
+
+    function hold() {
+      var focused = root.contains(document.activeElement) || changer.contains(document.activeElement);
+      changer.classList.toggle("is-paused", paused || document.hidden || focused || root.matches(":hover") || changer.matches(":hover"));
+    }
+    function paintPause() {
+      pause.textContent = paused ? "resume" : "pause";
+      pause.setAttribute("aria-pressed", String(paused));
+      pause.setAttribute("aria-label", (paused ? "Resume" : "Pause") + " release slideshow");
+      changer.classList.toggle("is-still", reduceMotion && paused);
+      hold();
+    }
+    pause.addEventListener("click", function () { paused = !paused; paintPause(); });
+    document.addEventListener("visibilitychange", hold);
+    paintPause();
+
+    [root, changer].forEach(function (area) {
+      area.addEventListener("pointerenter", hold);
+      area.addEventListener("pointerleave", function () { requestAnimationFrame(hold); });
+      area.addEventListener("focusin", hold);
+      area.addEventListener("focusout", function () { requestAnimationFrame(hold); });
+    });
+
+
+
+    root.querySelector(".hero__arrow--prev").addEventListener("click", function () { show(index - 1); });
+    root.querySelector(".hero__arrow--next").addEventListener("click", function () { show(index + 1); });
+
+    var startX = null;
+    root.addEventListener("touchstart", function (event) {
+      startX = event.touches[0].clientX;
+    }, { passive: true });
+    root.addEventListener("touchend", function (event) {
+      if (startX === null) return;
+      var dx = event.changedTouches[0].clientX - startX;
+      startX = null;
+      if (Math.abs(dx) >= 40) show(index + (dx < 0 ? 1 : -1));
+    });
+
+    show(0);
+  })();
+
+  /* --- Music carousel ------------------------------------------------------------- */
+
+  (function music() {
+    var root = document.querySelector(".disc");
+    var track = document.getElementById("disc-track");
+    if (!root || !track) return;
+
+    var items = RELEASES.map(function (release, i) {
+      var item = el("li", "disc__item");
+      var link = outLink(release.url);
+      var num = el("span", "disc__num");
+      num.append(el("b", "", null, pad(i + 1)), document.createTextNode(" / " + pad(RELEASES.length) + " · " + release.date));
+      link.append(
+        el("img", "", {
+          src: img(release.art, 800),
+          alt: release.title + " cover art",
+          width: "800",
+          height: "800",
+          loading: "lazy",
+          draggable: "false"
+        }),
+        num,
+        el("span", "disc__title", null, release.title),
+        el("span", "disc__with", null, release.with)
+      );
+      item.appendChild(link);
+      track.appendChild(item);
+      return item;
+    });
+
+    var index = 0;
+
+    function show(next) {
+      index = (next + items.length) % items.length;
+      track.style.transform = "translateX(" + (-100 * index) + "%)";
+      items.forEach(function (item, i) {
+        var on = i === index;
+        item.setAttribute("aria-hidden", on ? "false" : "true");
+        setFocusable(item, on);
+      });
+    }
+
+    root.querySelector(".disc__arrow--prev").addEventListener("click", function () { show(index - 1); });
+    root.querySelector(".disc__arrow--next").addEventListener("click", function () { show(index + 1); });
+    show(0);
+  })();
+
+  /* --- Art grid --------------------------------------------------------------------- */
+
+  (function art() {
+    var list = document.getElementById("gallery");
+    if (!list) return;
+    RELEASES.forEach(function (release) {
+      var item = el("li");
+      var link = outLink(release.url);
+      link.append(
+        el("img", "", {
+          src: img(release.art, 400),
+          srcset: img(release.art, 400) + " 400w, " + img(release.art, 800) + " 800w",
+          sizes: "(max-width: 600px) 44vw, 220px",
+          alt: release.title + " cover art",
+          width: "400",
+          height: "400",
+          loading: "lazy",
+          draggable: "false"
+        }),
+        el("span", "", null, release.title)
+      );
+      item.appendChild(link);
+      list.appendChild(item);
+    });
+  })();
+
+  /* --- News tabs --------------------------------------------------------------------- */
+
+  (function tabs() {
+    var buttons = Array.prototype.slice.call(document.querySelectorAll('.tabs [role="tab"]'));
+    if (!buttons.length) return;
+
+    function select(button, focus) {
+      buttons.forEach(function (other) {
+        var on = other === button;
+        other.setAttribute("aria-selected", on ? "true" : "false");
+        other.tabIndex = on ? 0 : -1;
+        var panel = document.getElementById(other.getAttribute("aria-controls"));
+        if (panel) panel.hidden = !on;
+      });
+      if (focus) button.focus();
+    }
+
+    buttons.forEach(function (button, i) {
+      button.addEventListener("click", function () { select(button, false); });
+      button.addEventListener("keydown", function (event) {
+        var next = null;
+        if (event.key === "ArrowRight") next = buttons[(i + 1) % buttons.length];
+        if (event.key === "ArrowLeft") next = buttons[(i - 1 + buttons.length) % buttons.length];
+        if (event.key === "Home") next = buttons[0];
+        if (event.key === "End") next = buttons[buttons.length - 1];
+        if (!next) return;
+        event.preventDefault();
+        select(next, true);
+      });
+    });
+  })();
+
+  /* --- Header pins after scrolling past it; nav marks the section in view ------------- */
+
+  (function header() {
+    var head = document.querySelector(".masthead");
+    if (!head) return;
+    var pinned = false;
+
+    function limit() {
+      return parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--head-h")) || 288;
+    }
+
+    function update() {
+      var past = window.scrollY > limit();
+      if (past === pinned) return;
+      pinned = past;
+      if (past) {
+        head.classList.add("is-fixed");
+        requestAnimationFrame(function () {
+          requestAnimationFrame(function () { head.classList.add("is-shown"); });
+        });
+      } else {
+        head.classList.remove("is-fixed", "is-shown");
+      }
+    }
+
+    window.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("resize", update);
+    update();
+
+    if (!("IntersectionObserver" in window)) return;
+    var links = head.querySelectorAll(".nav a");
+    var watch = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        var id = "#" + entry.target.id;
+        links.forEach(function (link) {
+          link.classList.toggle("is-current", link.getAttribute("href") === id);
+        });
+      });
+    }, { rootMargin: "-45% 0px -50% 0px" });
+    links.forEach(function (link) {
+      var target = document.querySelector(link.getAttribute("href"));
+      if (target) watch.observe(target);
+    });
+  })();
+
+  /* --- Phone menu ----------------------------------------------------------------------- */
+
+  (function menu() {
+    var drawer = document.getElementById("drawer");
+    var open = document.querySelector(".menu-open");
+    if (!drawer || !open) return;
+    var close = drawer.querySelector(".drawer__close");
+
+    var background = Array.from(document.body.children).filter(function (node) {
+      return node !== drawer && node.tagName !== "SCRIPT";
+    });
+    var previousInert = [];
+    function setOpen(on, refocus) {
+      if (on === !drawer.hidden) return;
+      if (on) {
+        previousInert = background.map(function (node) { return node.inert; });
+        background.forEach(function (node) { node.inert = true; });
+      } else {
+        background.forEach(function (node, i) { node.inert = previousInert[i]; });
+      }
+      drawer.hidden = !on;
+      open.setAttribute("aria-expanded", on ? "true" : "false");
+      document.body.style.overflow = on ? "hidden" : "";
+      if (on) close.focus();
+      else if (refocus) open.focus({ preventScroll: true });
+    }
+
+    window.matchMedia("(min-width: 1001px)").addEventListener("change", function (event) {
+      if (event.matches && !drawer.hidden) { setOpen(false, false); document.querySelector(".nav a").focus(); }
+    });
+    open.addEventListener("click", function () { setOpen(true); });
+    close.addEventListener("click", function () { setOpen(false, true); });
+    drawer.querySelectorAll("a").forEach(function (link) {
+      link.addEventListener("click", function () {
+        setOpen(false, false);
+        var target = document.querySelector(link.getAttribute("href"));
+        if (target) { target.tabIndex = -1; target.focus({ preventScroll: true }); }
+      });
+    });
+    document.addEventListener("keydown", function (event) {
+      if (drawer.hidden) return;
+      if (event.key === "Escape") setOpen(false, true);
+      if (event.key === "Tab") {
+        var controls = Array.from(drawer.querySelectorAll("a, button"));
+        var first = controls[0], last = controls[controls.length - 1];
+        if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+        else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+      }
+    });
+  })();
+
+  /* --- Footer strip of covers ------------------------------------------------------------ */
+
+  document.querySelectorAll(".strip__row").forEach(function (row, r) {
+    var reel = el("div", "strip__reel");
+    // Offset the second row so the same cover never stacks vertically.
+    var order = RELEASES.map(function (_, i) { return RELEASES[(i + r * 2) % RELEASES.length]; });
+    // Each half has to be wider than the widest screen for a seamless loop.
+    var perHalf = Math.ceil(2800 / 145 / order.length) * order.length;
+    for (var i = 0; i < perHalf * 2; i++) {
+      reel.appendChild(el("img", "", {
+        src: img(order[i % order.length].art, 400),
+        alt: "",
+        width: "400",
+        height: "400",
+        loading: "lazy",
+        draggable: "false"
+      }));
+    }
+    row.appendChild(reel);
+  });
+
+  // A fixed header is no longer at the document origin for fragment scrolling.
+  document.querySelectorAll('a[href="#top"]').forEach(function (link) {
+    link.addEventListener("click", function (event) {
+      event.preventDefault();
+      window.scrollTo({ top: 0, behavior: reduceMotion ? "instant" : "smooth" });
+      var top = document.querySelector(".mark a");
+      if (top) top.focus({ preventScroll: true });
+    });
+  });
+
+  var year = document.getElementById("year");
+  if (year) year.textContent = String(new Date().getFullYear());
+
+  // Starts the wordmark intro in itarin-mark.js (the main site fires this
+  // from its page-assemble animation).
+  document.dispatchEvent(new Event("assemble"));
 })();

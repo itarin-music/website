@@ -10,6 +10,10 @@
 (function () {
   "use strict";
 
+  // Resolve the playlist next to this script, so pages in subfolders
+  // (like redesign/) can load ../deck.js and still find data/playlist.json.
+  var SCRIPT_URL = document.currentScript ? document.currentScript.src : location.href;
+
   var root = document.querySelector(".deck");
   if (!root) return;
 
@@ -543,7 +547,7 @@
 
   applyVolume(DEFAULT_VOL);
 
-  fetch("data/playlist.json?v=4")
+  fetch(new URL("data/playlist.json?v=4", SCRIPT_URL).href)
     .then(function (res) { return res.ok ? res.json() : []; })
     .then(function (list) {
       if (!Array.isArray(list) || !list.length) {
