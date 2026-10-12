@@ -43,6 +43,9 @@
   var hoverAmt = 0;
   var started = 0;
   var frame = 0;
+  var visible = true;
+  var lastPaint = -Infinity;
+  var reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
   var fontReady = false;
   var pace = 1.35;
   var particles = [];
@@ -194,10 +197,13 @@
   }
 
   function draw() {
-    if (!fontReady) return;
+    frame = 0;
+    if (!fontReady || document.hidden || !visible) return;
     var now = performance.now();
+    if (!reduce.matches && now - lastPaint < 1000 / 30) { frame = requestAnimationFrame(draw); return; }
+    lastPaint = now;
     if (!started) started = now;
-    var elapsed = ((now - started) / 1000) * pace;
+    var elapsed = reduce.matches ? 3 : ((now - started) / 1000) * pace;
     hoverAmt += ((hovering ? 1 : 0) - hoverAmt) * 0.08;
 
     ctx.clearRect(0, 0, width, height);
@@ -270,7 +276,7 @@
     });
     ctx.globalAlpha = 1;
 
-    frame = requestAnimationFrame(draw);
+    if (!reduce.matches) frame = requestAnimationFrame(draw);
   }
 
   function start(event) {
@@ -295,12 +301,28 @@
   mark.addEventListener("pointerleave", function () { hovering = false; });
 
   window.addEventListener("resize", layout);
-  document.addEventListener("themechange", syncColors);
+  function resume() {
+    if (fontReady && visible && !document.hidden && !frame) frame = requestAnimationFrame(draw);
+  }
+  document.addEventListener("themechange", function () { syncColors(); resume(); });
+  document.addEventListener("visibilitychange", function () {
+    if (document.hidden) { cancelAnimationFrame(frame); frame = 0; }
+    else resume();
+  });
+  reduce.addEventListener("change", resume);
+  if ("IntersectionObserver" in window) {
+    new IntersectionObserver(function (entries) {
+      visible = entries[0].isIntersecting;
+      if (!visible) { cancelAnimationFrame(frame); frame = 0; }
+      else resume();
+    }).observe(mark);
+  }
   document.addEventListener("assemble", start);
 
   var wantStart = false;
 
   function onFont() {
+    if (fontReady) return;
     fontReady = true;
     layout();
     if (wantStart) start();

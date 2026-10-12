@@ -2,9 +2,9 @@
    Catalog atmosphere
 
    Home: a rotating globe with GeoNames cities over 25,000 people.
-   Major capitals are labeled. Other pages: paper dust only.
+   City positions are cached; decorative animation is capped at 20 fps.
    Phones get a zoomed-in globe. A page can ask for that view at every size
-   with <div class="paper" data-globe="zoom"> (the redesign/ concept does).
+   with <div class="paper" data-globe="zoom">.
    ========================================================================== */
 
 (function () {
@@ -39,7 +39,8 @@
   var world = "home";
   var motes = [];
   var cities = [];
-  var labels = [];
+  var lastPaint = -Infinity;
+  var FRAME_MS = 50;
 
   function hexRgb(value, fallback) {
     var hex = (value || "").trim().replace("#", "");
@@ -98,7 +99,8 @@
 
   function layout() {
     var size = viewportSize();
-    dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+    if (size.width === width && size.height === height) return;
+    dpr = Math.min(window.devicePixelRatio || 1, 1);
     width = size.width;
     height = size.height;
     canvas.style.width = width + "px";
@@ -208,6 +210,8 @@
     var glow = (dark ? 0.9 : 1) * (globe.phone ? 0.86 : 1);
     var speed = 2.6;
     var rot = reduce.matches ? 18 : now * speed;
+    var angle = rot * Math.PI / 180;
+    var sin = Math.sin(angle), cos = Math.cos(angle);
     var i;
     var lat;
     var lon;
@@ -227,12 +231,14 @@
     var cityR = globe.phone ? globe.dot : 1.15;
     ctx.fillStyle = tint(accent, (dark ? 0.78 : 0.64) * glow);
     ctx.beginPath();
-    for (i = 0; i < cities.length; i += 2) {
-      var v = xyz(cities[i], cities[i + 1], rot);
-      if (v.z < 0.04) continue;
-      var s = screenOf(v, globe);
-      ctx.moveTo(s.x + cityR, s.y);
-      ctx.arc(s.x, s.y, cityR, 0, Math.PI * 2);
+    for (i = 0; i < cities.length; i += 3) {
+      var z = cities[i + 2] * cos - cities[i] * sin;
+      if (z < 0.04) continue;
+      var x = globe.cx + (cities[i] * cos + cities[i + 2] * sin) * globe.r;
+      var y = globe.cy - cities[i + 1] * globe.r;
+      if (x < -cityR || x > width + cityR || y < -cityR || y > height + cityR) continue;
+      ctx.moveTo(x + cityR, y);
+      ctx.arc(x, y, cityR, 0, Math.PI * 2);
     }
     ctx.fill();
 
@@ -245,51 +251,14 @@
     ctx.stroke();
   }
 
-  function drawCityLabels(rot, globe, glow) {
-    if (!labels.length || globe.phone) return;
-    var size = Math.max(8, Math.min(11, globe.r * 0.026));
-    var markR = Math.max(1.8, globe.r * 0.006);
-    var pad = markR + 4;
-    var edge = globe.cx + globe.r + 8;
-    var i;
-
-    ctx.font = size + "px ui-monospace, \"Lucida Console\", \"Courier New\", monospace";
-    ctx.textBaseline = "middle";
-    ctx.textAlign = "left";
-    ctx.lineJoin = "round";
-
-    for (i = 0; i < labels.length; i++) {
-      var city = labels[i];
-      var v = xyz(city.lat, city.lon, rot);
-      if (v.z < 0.08) continue;
-      var fade = Math.min(1, Math.max(0, (v.z - 0.08) / 0.22));
-      var s = screenOf(v, globe);
-      var text = city.name;
-      var tw = ctx.measureText(text).width;
-      var sx = Math.round(s.x);
-      var sy = Math.round(s.y);
-      var lx = sx + pad;
-      var ly = sy - 0.4;
-      if (lx + tw > Math.min(width - 8, edge)) lx = sx - pad - tw;
-
-      ctx.beginPath();
-      ctx.arc(sx, sy, markR, 0, Math.PI * 2);
-      ctx.fillStyle = tint(accent, (dark ? 0.95 : 0.88) * glow * fade);
-      ctx.fill();
-
-      ctx.lineWidth = 2.6;
-      ctx.strokeStyle = dark ? "rgba(12,14,20," + (0.7 * fade) + ")" : "rgba(228,224,212," + (0.86 * fade) + ")";
-      ctx.strokeText(text, Math.round(lx), Math.round(ly));
-      ctx.fillStyle = tint(accent, (dark ? 0.94 : 0.82) * glow * fade);
-      ctx.fillText(text, Math.round(lx), Math.round(ly));
-    }
-  }
-
   function draw(ts) {
-    if (document.hidden || document.body.classList.contains("is-playing")) {
-      if (!reduce.matches) frame = requestAnimationFrame(draw);
+    frame = 0;
+    if (document.hidden) return;
+    if (!reduce.matches && ts - lastPaint < FRAME_MS) {
+      frame = requestAnimationFrame(draw);
       return;
     }
+    lastPaint = ts;
 
     var now = ts / 1000;
     var dt = last ? Math.min(0.05, now - last) : 0.016;
@@ -326,9 +295,10 @@
     for (i = 0; i < list.length; i++) {
       var pair = list[i];
       if (!pair || pair.length < 2) continue;
-      out.push(+pair[0], +pair[1]);
+      var v = xyz(+pair[0], +pair[1], 0);
+      out.push(v.x, v.y, v.z);
     }
-    return out;
+    return new Float32Array(out);
   }
 
   function loadMap() {
@@ -366,9 +336,16 @@
     syncWorld();
     if (reduce.matches) draw(0);
   });
-  reduce.addEventListener("change", function () { location.reload(); });
+  reduce.addEventListener("change", function () {
+    cancelAnimationFrame(frame);
+    frame = 0;
+    lastPaint = -Infinity;
+    if (reduce.matches) draw(0);
+    else frame = requestAnimationFrame(draw);
+  });
   document.addEventListener("visibilitychange", function () {
-    if (!document.hidden && !reduce.matches && !frame) frame = requestAnimationFrame(draw);
+    if (document.hidden) { cancelAnimationFrame(frame); frame = 0; }
+    else if (!reduce.matches && !frame) { last = 0; frame = requestAnimationFrame(draw); }
   });
   if (reduce.matches) draw(0);
   else frame = requestAnimationFrame(draw);

@@ -4,7 +4,7 @@
    Plays official YouTube embeds so listens can count as views.
    Volume starts at 3% on a power curve so quiet settings stay quiet.
    Tells the user when an ad is on instead of the song.
-   Also the soundtrack for Album Invaders (see the bottom of this file).
+   Loads the YouTube player only after a playback control is used.
    ========================================================================== */
 
 (function () {
@@ -254,6 +254,7 @@
     loadGen += 1;
     if (!playerReady || !player) {
       pendingPlay = !!autoplay;
+      if (autoplay) requestPlayer();
       return;
     }
     try {
@@ -272,7 +273,7 @@
     userPaused = false;
     pendingPlay = true;
     applyVolume(Number(vol.value));
-    if (!playerReady || !player) return;
+    if (!playerReady || !player) { requestPlayer(); return; }
     try {
       player.playVideo();
     } catch (err) {}
@@ -310,20 +311,6 @@
       return;
     }
     load(index > 0 ? index - 1 : order.length - 1, autoplay);
-  }
-
-  function afterAssemble(fn) {
-    if (!document.documentElement.classList.contains("is-assembling")) {
-      fn();
-      return;
-    }
-    var watch = new MutationObserver(function () {
-      if (!document.documentElement.classList.contains("is-assembling")) {
-        watch.disconnect();
-        fn();
-      }
-    });
-    watch.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
   }
 
   function onPlayerState(event) {
@@ -415,7 +402,9 @@
       events: {
         onReady: function () {
           playerReady = true;
-          expectedId = first && first.youtube ? first.youtube : expectedId;
+          var selected = currentTrack();
+          expectedId = selected && selected.youtube ? selected.youtube : expectedId;
+          if (selected && first && selected.youtube !== first.youtube) player.cueVideoById(selected.youtube);
           applyVolume(Number(vol.value));
           paintMeta();
           paintTime();
@@ -429,6 +418,13 @@
       player.addEventListener("onAdStart", function () { setAd(true); });
       player.addEventListener("onAdEnd", function () { setAd(false); });
     } catch (err) {}
+  }
+
+  var playerRequested = false;
+  function requestPlayer() {
+    if (playerRequested) return;
+    playerRequested = true;
+    whenYouTubeReady(createPlayer);
   }
 
   function whenYouTubeReady(fn) {
@@ -450,18 +446,15 @@
   }
 
   playBtn.addEventListener("click", function () {
-    gameStartedDeck = false;
     if (isPlaying()) pause(true);
     else start();
   });
 
   prevBtn.addEventListener("click", function () {
-    gameStartedDeck = false;
     prev(true);
   });
 
   nextBtn.addEventListener("click", function () {
-    gameStartedDeck = false;
     next(true);
   });
 
@@ -516,35 +509,6 @@
     if (info.videoData && info.videoData.video_id) inspectAd();
   });
 
-  /* --- Album Invaders soundtrack ----------------------------------------
-     site.js adds body.is-playing while the game is open. Opening the game
-     starts the deck if it was idle; closing the game puts it back the way it
-     was, unless the player used the deck buttons in the meantime. */
-
-  var gameOpen = false;
-  var gameStartedDeck = false;
-  var userPausedBeforeGame = false;
-
-  new MutationObserver(function () {
-    var open = document.body.classList.contains("is-playing");
-    if (open === gameOpen) return;
-    gameOpen = open;
-
-    if (open) {
-      var state = playerState();
-      userPausedBeforeGame = userPaused;
-      gameStartedDeck = state !== YT_PLAYING && state !== YT_BUFFERING;
-      if (gameStartedDeck) start();
-      return;
-    }
-
-    if (gameStartedDeck) {
-      pause(false);
-      userPaused = userPausedBeforeGame;
-    }
-    gameStartedDeck = false;
-  }).observe(document.body, { attributes: true, attributeFilter: ["class"] });
-
   applyVolume(DEFAULT_VOL);
 
   fetch(new URL("data/playlist.json?v=4", SCRIPT_URL).href)
@@ -564,10 +528,7 @@
       shuffleOrder(-1);
       expectedId = currentTrack().youtube;
       paintMeta();
-      whenYouTubeReady(createPlayer);
-      afterAssemble(function () {
-        if (!userPaused) start();
-      });
+
     })
     .catch(function () {
       titleNode.textContent = "playlist unavailable";

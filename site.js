@@ -466,6 +466,11 @@
       }));
     }
     row.appendChild(reel);
+    if ("IntersectionObserver" in window) {
+      new IntersectionObserver(function (entries) {
+        reel.style.animationPlayState = entries[0].isIntersecting && !document.hidden ? "running" : "paused";
+      }).observe(row);
+    }
   });
 
   // A fixed header is no longer at the document origin for fragment scrolling.
