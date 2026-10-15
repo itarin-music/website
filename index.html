@@ -43,7 +43,7 @@
     <link rel="manifest" href="/site.webmanifest">
 
     <link rel="preload" href="fonts/vaio-con-dios.woff2" as="font" type="font/woff2" crossorigin>
-    <link rel="stylesheet" href="style.css?v=108">
+    <link rel="stylesheet" href="style.css?v=110">
 </head>
 
 <body>
@@ -247,7 +247,17 @@
         <section class="band" id="art" aria-labelledby="art-heading">
             <p class="block__id">04</p>
             <h2 class="block__title" id="art-heading">art</h2>
-            <ul class="gallery" id="gallery"></ul>
+            <details class="art-folder">
+                <summary>
+                    <span class="art-folder__icon" aria-hidden="true"></span>
+                    <span class="art-folder__label">Cover art<small>5 covers · click a cover to download</small></span>
+                    <span class="art-folder__action" aria-hidden="true"></span>
+                </summary>
+                <div class="art-folder__contents">
+                    <p class="art-folder__note">Download cover artwork · 800 × 800 WebP</p>
+                    <ul class="gallery" id="gallery"></ul>
+                </div>
+            </details>
         </section>
 
         <section class="band" id="goods" aria-labelledby="goods-heading">
@@ -329,9 +339,6 @@
                 <a href="https://www.twitch.tv/itarinmp3" target="_blank" rel="noopener" aria-label="Twitch">
                     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.2 2.9h15.6v10.4l-3.9 3.9h-3.2l-2.6 2.6H7.5v-2.6H4.2z"/><path d="M10.4 7.1v4.3M14.9 7.1v4.3"/></svg>
                 </a>
-                <a href="mailto:itarin@itarin.online" aria-label="Email">
-                    <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2.6" y="4.6" width="18.8" height="14.8" rx="2.6"/><path d="M3.6 6.6 12 12.9l8.4-6.3"/></svg>
-                </a>
             </nav>
 
             <div class="footer__base">
@@ -378,6 +385,6 @@
 
     <script src="itarin-mark.js?v=55" defer></script>
     <script src="deck.js?v=17" defer></script>
-    <script src="site.js?v=109" defer></script>
+    <script src="site.js?v=110" defer></script>
 </body>
 </html>

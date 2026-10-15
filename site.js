@@ -299,7 +299,11 @@
     if (!list) return;
     RELEASES.forEach(function (release) {
       var item = el("li");
-      var link = outLink(release.url);
+      var link = el("a", "", {
+        href: img(release.art, 800),
+        download: release.art + "-cover.webp",
+        "aria-label": "Download " + release.title + " cover art (WebP)"
+      });
       link.append(
         el("img", "", {
           src: img(release.art, 400),

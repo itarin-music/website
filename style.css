@@ -200,17 +200,6 @@ h1, h2, p { margin: 0; font-weight: 400; }
     linear-gradient(180deg, var(--paper-top) 0%, var(--paper) 52%, var(--paper-bottom) 100%);
 }
 
-.paper::before {
-  content: "";
-  position: absolute;
-  left: -16%;
-  top: 2%;
-  width: min(70vw, 760px);
-  height: min(70vw, 760px);
-  border-radius: 50%;
-  background: var(--paper-glow);
-  filter: blur(80px);
-}
 
 /* Static scan-line texture above the background. */
 .paper__scan {
@@ -1655,19 +1644,6 @@ html[data-theme="dark"] .paper {
   background: radial-gradient(ellipse at 80% 5%, #f7a8cc18, transparent 55%),
     linear-gradient(180deg, var(--paper-top), var(--paper) 57%, var(--paper-bottom));
 }
-.paper::before {
-  inset: auto -12% -28% auto; width: 95vw; height: 62vh;
-  border: 2px solid var(--glass-shine); border-radius: 50%;
-  background: radial-gradient(ellipse at 30% 0%, #b0e88040, transparent 65%);
-  filter: none; transform: rotate(-14deg);
-}
-.paper::after {
-  content: ""; position: absolute; width: clamp(140px, 22vw, 330px); aspect-ratio: 1;
-  right: 8%; top: 12%; border: 1px solid var(--glass-shine); border-radius: 50%;
-  background: radial-gradient(ellipse at 30% 18%, #ffffffa6, #ffffff0a 32%, transparent 62%),
-    radial-gradient(ellipse at 70% 88%, #8bdfef40, transparent 60%);
-  box-shadow: inset 0 0 25px #ffffff38;
-}
 .frame { display: none; }
 .masthead { border-bottom: 1px solid var(--glass-border); }
 .masthead.is-fixed { background: var(--glass); box-shadow: 0 4px 16px var(--shadow); }
@@ -1740,22 +1716,13 @@ html[data-theme="dark"] .block__title { color: var(--ink); }
   .slide__caption { right: 1rem; left: 1rem; bottom: 1rem; padding: 0.5rem 0.75rem; }
   .slide__title { font-size: 1.15rem; }
   .contact a { padding-inline: 0.75rem; }
-  .paper::after { right: -10%; }
-}
+  }
 
 /* Release labels sit on artwork and need a consistently dark backing. */
 .slide__file.tag { background: #064667e6; color: #fff; border-color: #ffffff9e; }
 .hero :focus-visible { outline-color: #fff; }
 
 /* Pink and charcoal are exclusive to dark mode; artwork retains its colors. */
-html[data-theme="dark"] .paper::before {
-  background: radial-gradient(ellipse at 30% 0%, #f7a8cc20, transparent 65%);
-}
-html[data-theme="dark"] .paper::after {
-  background: radial-gradient(ellipse at 30% 18%, #fdd4e54d, #ffffff05 32%, transparent 62%),
-    radial-gradient(ellipse at 70% 88%, #f7a8cc20, transparent 60%);
-  box-shadow: inset 0 0 25px #fdd4e518;
-}
 html[data-theme="dark"] .hero::after {
   background: linear-gradient(174deg, #fdd4e518, transparent 38%, transparent 62%, #08090d66);
 }
@@ -1777,3 +1744,80 @@ html[data-theme="dark"] .hero__arrow {
 html[data-theme="dark"] .changer button[aria-current="true"],
 html[data-theme="dark"] .deck__keys .deck__play { color: #21151d; }
 html[data-theme="dark"] .changer button[aria-current="true"]::after { background: #482335; }
+
+/* A native disclosure keeps the artwork folder keyboard accessible. */
+.art-folder {
+  border: 1px solid var(--glass-border);
+  border-radius: 18px;
+  background: var(--panel);
+  box-shadow: var(--glass-shadow);
+  text-align: left;
+}
+.art-folder summary {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  padding: 1.5rem;
+  cursor: pointer;
+  list-style: none;
+  border-radius: 18px;
+  background: var(--glass);
+}
+.art-folder summary::-webkit-details-marker { display: none; }
+.art-folder summary:hover { color: var(--accent); }
+.art-folder__icon {
+  position: relative;
+  flex: 0 0 64px;
+  height: 44px;
+  margin-top: 8px;
+  border: 1px solid var(--accent-deep);
+  border-radius: 0 7px 7px 7px;
+  background: var(--glass-blue);
+  box-shadow: inset 0 1px 0 var(--glass-shine), 0 4px 8px var(--shadow);
+}
+.art-folder__icon::before {
+  content: "";
+  position: absolute;
+  width: 30px;
+  height: 9px;
+  left: -1px;
+  top: -9px;
+  border: 1px solid var(--accent-deep);
+  border-bottom: 0;
+  border-radius: 7px 7px 0 0;
+  background: var(--accent);
+}
+.art-folder__icon::after {
+  content: "";
+  position: absolute;
+  inset: 8px -1px -1px;
+  border: 1px solid var(--accent-deep);
+  border-radius: 5px;
+  background: var(--glass-blue);
+  transform-origin: bottom;
+  transition: transform 180ms ease;
+}
+.art-folder[open] .art-folder__icon::after { transform: skewX(-12deg) scaleY(.85); }
+.art-folder__label { font-size: 1.1rem; font-weight: 600; }
+.art-folder__label small {
+  display: block;
+  margin-top: .35rem;
+  font-size: .75rem;
+  font-weight: 400;
+  color: var(--ink-dim);
+}
+.art-folder__action { margin-left: auto; color: var(--accent); font-size: .8rem; }
+.art-folder__action::after { content: "Open +"; white-space: nowrap; }
+.art-folder[open] .art-folder__action::after { content: "Close −"; }
+.art-folder__contents { padding: 1.5rem; }
+.art-folder__note { margin: 0 0 1.5rem; color: var(--ink-dim); font-size: .75rem; }
+.art-folder .gallery a:focus-visible img { outline: 2px solid var(--accent); outline-offset: 4px; }
+@media (max-width: 600px) {
+  .art-folder summary { gap: .8rem; padding: 1rem; }
+  .art-folder__contents { padding: 1rem; }
+  .art-folder__icon { flex-basis: 48px; height: 36px; }
+  .art-folder__label { font-size: 1rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .art-folder__icon::after { transition: none; }
+}
