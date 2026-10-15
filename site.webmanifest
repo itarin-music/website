@@ -3,8 +3,8 @@
   "short_name": "itarin",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#f1ecdf",
-  "theme_color": "#f1ecdf",
+  "background_color": "#e9f7fc",
+  "theme_color": "#e9f7fc",
   "icons": [
     {
       "src": "/favicon/icon-192.png",

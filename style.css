@@ -5,10 +5,8 @@
    blurred-artwork slideshow, news and music side by side, a moving strip of
    covers in the footer.
 
-   Everything else is itarin's own system from the main site: the pastel pink
-   accent in light and dark, VAIO CON DIOS wordmark, narrow display type with
-   monospace catalog labels, CD objects, the LCD status, faint scanlines and
-   corner brackets over the zoomed-in globe, and the shuffle deck.
+   Frutiger Aero surfaces: sky and water colors, glossy controls, clear glass
+   panels, and soft organic highlights. The original layout is preserved.
    ========================================================================== */
 
 @font-face {
@@ -21,32 +19,32 @@
   unicode-range: U+0041, U+0049, U+004E, U+0052, U+0054, U+0061, U+0069, U+006E, U+0072, U+0074;
 }
 
-/* --- Tokens (same values as the main site) ------------------------------- */
+/* --- Sky, water, and glass palette --------------------------------------- */
 
 :root {
-  --ink:         #171d2d;
-  --ink-dim:     rgba(23, 29, 45, 0.72);
-  --ink-faint:   rgba(23, 29, 45, 0.68);
-  --accent:      #d94b7b;
-  --accent-lit:  #f08bb0;
-  --accent-deep: #b3325f;
-  --paper:       #f1ecdf;
-  --paper-top:   #f8f4eb;
-  --paper-bottom:#e0d8ca;
-  --deck:        #d5cebe;
-  --paper-glow:  rgba(226, 176, 192, 0.06);
-  --paper-mist:  rgba(222, 170, 186, 0.025);
-  --surface:     #f7f3ed;
-  --line:        rgba(23, 29, 45, 0.12);
-  --line-strong: rgba(23, 29, 45, 0.2);
-  --shadow:      rgba(24, 34, 58, 0.16);
-  --silver:      #6f7a8f;
-  --pop:         #f07aa6;
-  --magenta:     #d94a8c;
-  --scan:        rgba(22, 24, 31, 0.035);
+  --ink:         #123c56;
+  --ink-dim:     #315c70;
+  --ink-faint:   #476b7b;
+  --accent:      #006fa9;
+  --accent-lit:  #77e6ff;
+  --accent-deep: #005685;
+  --paper:       #e9f7fc;
+  --paper-top:   #a9dff5;
+  --paper-bottom:#edf8ed;
+  --deck:        #b4def0;
+  --paper-glow:  rgba(255,255,255,0.65);
+  --paper-mist:  rgba(163,234,255,0.35);
+  --surface:     #f5fcff;
+  --line:        rgba(44,120,155,0.18);
+  --line-strong: rgba(30,113,151,0.35);
+  --shadow:      rgba(24,100,139,0.17);
+  --silver:      #6eafc1;
+  --pop:         #0078b4;
+  --magenta:     #167f64;
+  --scan:        transparent;
 
   --mark:    "VAIO CON DIOS", "Arial Narrow", "Helvetica Neue", sans-serif;
-  --display: "Arial Narrow", "Helvetica Neue", "Hiragino Sans", sans-serif;
+  --display: "Segoe UI", "Trebuchet MS", "Helvetica Neue", sans-serif;
   --body:    "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Yu Gothic",
              "Yu Gothic UI", Meiryo, ui-sans-serif, system-ui, sans-serif;
   --mono:    ui-monospace, "Lucida Console", "Courier New", monospace;
@@ -58,8 +56,8 @@
 
 html[data-theme="dark"] {
   --ink:         #e8ebf3;
-  --ink-dim:     rgba(232, 235, 243, 0.6);
-  --ink-faint:   rgba(232, 235, 243, 0.62);
+  --ink-dim:     #bbc0ce;
+  --ink-faint:   #a1a7b8;
   --accent:      #f7a8cc;
   --accent-lit:  #fdd4e5;
   --accent-deep: #d9709f;
@@ -67,16 +65,16 @@ html[data-theme="dark"] {
   --paper-top:   #12151d;
   --paper-bottom:#08090d;
   --deck:        #05060a;
-  --paper-glow:  rgba(168, 104, 132, 0.02);
-  --paper-mist:  rgba(200, 150, 172, 0.012);
+  --paper-glow:  rgba(247,168,204,0.12);
+  --paper-mist:  rgba(247,168,204,0.06);
   --surface:     #161a24;
-  --line:        rgba(232, 235, 243, 0.1);
-  --line-strong: rgba(232, 235, 243, 0.2);
-  --shadow:      rgba(0, 0, 0, 0.5);
+  --line:        rgba(232,235,243,0.1);
+  --line-strong: rgba(232,235,243,0.2);
+  --shadow:      rgba(0,0,0,0.5);
   --silver:      #9aa3b8;
   --pop:         #ff86b4;
   --magenta:     #ff7ab6;
-  --scan:        rgba(255, 255, 255, 0.035);
+  --scan:        transparent;
 }
 
 /* --- Base -------------------------------------------------------------------- */
@@ -1635,3 +1633,158 @@ html[data-theme="dark"] { color-scheme: dark; }
 @media (max-width: 600px) { .goods { padding-inline: 2rem; } }
 
 .changer__pause[hidden] { display: none; }
+
+/* --- Frutiger Aero: glass, sky, water, and soft green highlights ----------------
+   Gradients create the glass effect without live backdrop blurring. */
+:root {
+  --glass: linear-gradient(180deg, #ffffffed 0%, #effaffed 49%, #d7f0f8eb 50%, #f2fcffed 100%);
+  --glass-blue: linear-gradient(180deg, #8edff6 0%, #48b7e5 48%, #0c8ac2 50%, #0572ab 100%);
+  --glass-border: #ffffffcf;
+  --glass-shine: #ffffffc7;
+  --glass-shadow: inset 0 1px 0 #ffffffd9, inset 0 -1px 0 #89bcd24d, 0 5px 15px var(--shadow);
+  --panel: linear-gradient(155deg, #ffffffd9, #edfaffb8 55%, #e0f3f2cc);
+  --green: #397a25;
+}
+html[data-theme="dark"] {
+  --glass: linear-gradient(180deg, #343640f5 0%, #242630f5 49%, #191b24f5 50%, #252732f5 100%);
+  --glass-blue: linear-gradient(180deg, #f9bdd8 0%, #ee9fc1 48%, #d9709f 50%, #c65d8d 100%);
+  --glass-border: #f7a8cc45;
+  --glass-shine: #fdd4e533;
+  --glass-shadow: inset 0 1px 0 #fdd4e530, inset 0 -1px 0 #00000059, 0 5px 15px var(--shadow);
+  --panel: linear-gradient(155deg, #252630e6, #161820e8 55%, #211b25e6);
+  --green: #f7a8cc;
+}
+body { font-family: "Segoe UI", "Trebuchet MS", var(--body); }
+.paper {
+  background:
+    radial-gradient(ellipse 54% 15% at 12% 7%, #ffffffa6 0%, transparent 75%),
+    radial-gradient(ellipse 50% 19% at 94% 20%, #ffffff73 0%, transparent 75%),
+    linear-gradient(180deg, var(--paper-top), var(--paper) 57%, var(--paper-bottom));
+}
+html[data-theme="dark"] .paper {
+  background: radial-gradient(ellipse at 80% 5%, #f7a8cc18, transparent 55%),
+    linear-gradient(180deg, var(--paper-top), var(--paper) 57%, var(--paper-bottom));
+}
+.paper::before {
+  inset: auto -12% -28% auto; width: 95vw; height: 62vh;
+  border: 2px solid var(--glass-shine); border-radius: 50%;
+  background: radial-gradient(ellipse at 30% 0%, #b0e88040, transparent 65%);
+  filter: none; transform: rotate(-14deg);
+}
+.paper::after {
+  content: ""; position: absolute; width: clamp(140px, 22vw, 330px); aspect-ratio: 1;
+  right: 8%; top: 12%; border: 1px solid var(--glass-shine); border-radius: 50%;
+  background: radial-gradient(ellipse at 30% 18%, #ffffffa6, #ffffff0a 32%, transparent 62%),
+    radial-gradient(ellipse at 70% 88%, #8bdfef40, transparent 60%);
+  box-shadow: inset 0 0 25px #ffffff38;
+}
+.paper__scan, .frame { display: none; }
+.atmosphere { opacity: 0.2; }
+.masthead { border-bottom: 1px solid var(--glass-border); }
+.masthead.is-fixed { background: var(--glass); box-shadow: 0 4px 16px var(--shadow); }
+.mark__text, .footer__mark, .bar-mark { text-shadow: 0 2px 0 var(--glass-shine), 0 4px 15px var(--shadow); }
+.whisper { color: var(--ink); }
+.stamp { letter-spacing: 0.1em; }
+.lcd { border-radius: 7px; background: var(--glass); box-shadow: var(--glass-shadow); border-color: var(--glass-border); }
+.lcd em { color: var(--green); animation: none; opacity: 1; }
+.mode { padding: 0.2rem 0.7rem; font-size: 0.65rem; letter-spacing: 0.08em; }
+.mode, .menu-open, .drawer__close { background: var(--glass); border: 1px solid var(--glass-border); border-radius: 999px; box-shadow: var(--glass-shadow); }
+.nav__list { padding: 0.15rem 1.1rem; border: 1px solid var(--glass-border); border-radius: 999px; background: var(--glass); box-shadow: var(--glass-shadow); }
+.nav a { font-weight: 600; text-shadow: 0 1px 0 var(--glass-shine); }
+.nav a small { letter-spacing: 0.08em; }
+.drawer { background: linear-gradient(155deg, var(--paper-top), var(--paper) 55%, var(--paper-bottom)); }
+.drawer nav { width: min(100%, 320px); padding: 1.5rem; background: var(--panel); border: 1px solid var(--glass-border); border-radius: 24px; box-shadow: var(--glass-shadow); }
+.drawer a { font-size: 1.5rem; }
+.hero { border-top: 1px solid var(--glass-border); border-bottom: 4px solid var(--glass-border); box-shadow: 0 8px 24px var(--shadow); background: var(--deck); }
+.hero::after { content: ""; position: absolute; inset: 0; pointer-events: none; z-index: 2; background: linear-gradient(174deg, #ffffff2e, transparent 38%, transparent 62%, #00345352); }
+.slide__blur { filter: blur(12px); opacity: 0.24; object-fit: cover; }
+.slide a { background: linear-gradient(125deg, #1273a2, #74cce2 52%, #309392); }
+html[data-theme="dark"] .slide a { background: linear-gradient(125deg, #14151d, #3e2c3a 52%, #211e29); }
+.slide__art { border: 6px solid #ffffffd9; border-radius: 9px; box-shadow: 0 1px 0 #ffffff, 0 16px 35px #00375059; }
+.slide__file { border-radius: 999px; background: #064667c9; border-color: #ffffff9e; padding: 0.35rem 0.8rem; }
+.slide__caption { padding: 0.65rem 1rem; border: 1px solid #ffffff5e; border-radius: 12px; background: #053d5dd9; box-shadow: inset 0 1px 0 #ffffff24; }
+.slide__title { font-weight: 600; }
+.slide__meta { opacity: 1; color: #e1f7ff; }
+.hero__arrow { width: 44px; height: 44px; margin-top: -22px; border-radius: 50%; border: 1px solid #ffffff99; background: linear-gradient(#ffffff66, #ffffff12 49%, #003e655e 50%); box-shadow: inset 0 1px 0 #ffffffa6, 0 3px 12px #00395833; opacity: 1; }
+.changer button, .disc__arrow, .sns a, .pagetop { border-radius: 999px; border: 1px solid var(--glass-border); background: var(--glass); box-shadow: var(--glass-shadow); color: var(--accent); }
+.changer button::after { left: 12%; bottom: 5px; height: 2px; max-width: 76%; border-radius: 2px; }
+.changer button[aria-current="true"] { background: var(--glass-blue); color: #fff; border-color: #ffffffcc; }
+.changer button[aria-current="true"]::after { background: #d8ffb1; }
+.tag { border-radius: 999px; background: var(--glass); box-shadow: inset 0 1px 0 var(--glass-shine); letter-spacing: 0.12em; }
+.lead { color: var(--accent-deep); letter-spacing: -0.04em; font-weight: 400; }
+html[data-theme="dark"] .lead { color: var(--accent); }
+.block { border: 1px solid var(--glass-border); border-radius: 22px; background: var(--panel); box-shadow: var(--glass-shadow); padding: 1.8rem 1.3rem; min-width: 0; }
+.block__id { display: table; margin: 0 auto 0.65rem; min-width: 2.2rem; padding: 0.05rem 0.5rem; border: 1px solid var(--glass-border); border-radius: 999px; background: var(--glass); box-shadow: var(--glass-shadow); color: var(--green); }
+.block__title { color: var(--accent-deep); font-weight: 400; letter-spacing: -0.025em; }
+html[data-theme="dark"] .block__title { color: var(--ink); }
+.tabs { gap: 3px; padding: 4px; border: 1px solid var(--line); border-radius: 999px; background: var(--deck); box-shadow: inset 0 2px 4px var(--shadow); }
+.tabs button { border-radius: 999px; letter-spacing: 0.08em; }
+.tabs button + button::before { display: none; }
+.tabs button[aria-selected="true"] { background: var(--glass); box-shadow: var(--glass-shadow); color: var(--accent); }
+.flag { color: var(--green); }
+.repo { padding: 1.3rem; border: 1px solid var(--glass-border); border-radius: 18px; background: var(--panel); box-shadow: var(--glass-shadow); }
+.repo__kind { color: var(--green); }
+.source__name { color: var(--accent); }
+.gallery img, .disc__item img { border: 4px solid var(--glass-border); border-radius: 8px; }
+.gallery span { font-family: var(--display); }
+.disk__sleeve { border-radius: 4px; }
+.contact a { display: inline-block; padding: 0.7rem 1.3rem; border: 1px solid var(--glass-border); border-radius: 999px; background: var(--glass); box-shadow: var(--glass-shadow); }
+.footer { border-top: 1px solid var(--glass-border); background: linear-gradient(180deg, var(--deck), var(--paper)); }
+.strip { border-bottom: 1px solid var(--glass-border); }
+.deck { border: 1px solid var(--glass-border); border-radius: 13px; background: var(--glass); box-shadow: var(--glass-shadow); }
+.deck::before, .deck::after { display: none; }
+.deck__keys button { border-radius: 50%; color: var(--accent); }
+.deck__play { background: var(--glass-blue); box-shadow: inset 0 1px 0 #ffffff99, 0 2px 5px var(--shadow); }
+.deck__keys .deck__play { color: white; }
+.deck__seek::-webkit-slider-thumb, .deck__vol::-webkit-slider-thumb { background: var(--glass-blue); border: 1px solid var(--accent-deep); width: 12px; height: 12px; }
+.deck__seek::-moz-range-thumb, .deck__vol::-moz-range-thumb { background: var(--glass-blue); border: 1px solid var(--accent-deep); width: 10px; height: 10px; }
+@media (min-width: 1001px) and (max-width: 1180px) {
+  .masthead.is-fixed { gap: 1rem; }
+  .masthead.is-fixed .nav__list { gap: 1.2rem; }
+  .masthead.is-fixed .nav__sep { padding-left: 1.2rem; }
+  .columns { gap: 30px; }
+  .disc { --cover: min(338px, calc(42vw - 90px)); }
+}
+@media (max-width: 600px) {
+  .block { padding: 1.5rem 0.75rem; border-radius: 18px; }
+  .slide__art { border-width: 4px; }
+  .slide__caption { right: 1rem; left: 1rem; bottom: 1rem; padding: 0.5rem 0.75rem; }
+  .slide__title { font-size: 1.15rem; }
+  .contact a { padding-inline: 0.75rem; }
+  .paper::after { right: -10%; }
+}
+
+/* Release labels sit on artwork and need a consistently dark backing. */
+.slide__file.tag { background: #064667e6; color: #fff; border-color: #ffffff9e; }
+.hero :focus-visible { outline-color: #fff; }
+
+/* Pink and charcoal are exclusive to dark mode; artwork retains its colors. */
+html[data-theme="dark"] .paper::before {
+  background: radial-gradient(ellipse at 30% 0%, #f7a8cc20, transparent 65%);
+}
+html[data-theme="dark"] .paper::after {
+  background: radial-gradient(ellipse at 30% 18%, #fdd4e54d, #ffffff05 32%, transparent 62%),
+    radial-gradient(ellipse at 70% 88%, #f7a8cc20, transparent 60%);
+  box-shadow: inset 0 0 25px #fdd4e518;
+}
+html[data-theme="dark"] .hero::after {
+  background: linear-gradient(174deg, #fdd4e518, transparent 38%, transparent 62%, #08090d66);
+}
+html[data-theme="dark"] .slide__art {
+  border-color: #fdd4e5b3;
+  box-shadow: 0 1px 0 #fdd4e5, 0 16px 35px #00000059;
+}
+html[data-theme="dark"] .slide__file.tag,
+html[data-theme="dark"] .slide__caption {
+  background: #161820ed;
+  border-color: #f7a8cc70;
+}
+html[data-theme="dark"] .slide__meta { color: #fdd4e5; }
+html[data-theme="dark"] .hero__arrow {
+  background: var(--glass);
+  border-color: var(--glass-border);
+  box-shadow: var(--glass-shadow);
+}
+html[data-theme="dark"] .changer button[aria-current="true"],
+html[data-theme="dark"] .deck__keys .deck__play { color: #21151d; }
+html[data-theme="dark"] .changer button[aria-current="true"]::after { background: #482335; }

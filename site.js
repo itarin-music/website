@@ -75,7 +75,7 @@
 
     function paint(value, persist) {
       document.documentElement.dataset.theme = value;
-      if (meta) meta.setAttribute("content", value === "dark" ? "#0c0e14" : "#f1ecdf");
+      if (meta) meta.setAttribute("content", value === "dark" ? "#0c0e14" : "#e9f7fc");
       if (persist) {
         try { localStorage.setItem(KEY, value); } catch (err) {}
       }
@@ -98,7 +98,7 @@
       if (!stored()) paint(event.matches ? "dark" : "light", false);
     });
 
-    paint(document.documentElement.dataset.theme === "dark" ? "dark" : "light", false);
+    paint(stored() || (media.matches ? "dark" : "light"), false);
   })();
 
   /* --- LCD clock -------------------------------------------------------------- */
