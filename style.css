@@ -41,7 +41,7 @@
   --silver:      #6eafc1;
   --pop:         #0078b4;
   --magenta:     #167f64;
-  --scan:        transparent;
+  --scan:        rgba(18,60,86,0.12);
 
   --mark:    "VAIO CON DIOS", "Arial Narrow", "Helvetica Neue", sans-serif;
   --display: "Segoe UI", "Trebuchet MS", "Helvetica Neue", sans-serif;
@@ -74,7 +74,7 @@ html[data-theme="dark"] {
   --silver:      #9aa3b8;
   --pop:         #ff86b4;
   --magenta:     #ff7ab6;
-  --scan:        transparent;
+  --scan:        rgba(247,168,204,0.12);
 }
 
 /* --- Base -------------------------------------------------------------------- */
@@ -187,7 +187,7 @@ h1, h2, p { margin: 0; font-weight: 400; }
   color: var(--accent);
 }
 
-/* --- Background: faint glow, globe, scanlines on top, corner brackets ----------- */
+/* --- Background: faint glow, scanlines on top, corner brackets ----------- */
 
 .paper {
   position: fixed;
@@ -212,16 +212,7 @@ h1, h2, p { margin: 0; font-weight: 400; }
   filter: blur(80px);
 }
 
-/* The globe canvas from atmosphere.js */
-.atmosphere {
-  position: absolute;
-  inset: 0;
-  display: block;
-  width: 100%;
-  height: 100%;
-}
-
-/* Scan lines sit above the globe */
+/* Static scan-line texture above the background. */
 .paper__scan {
   position: absolute;
   inset: 0;
@@ -1628,7 +1619,6 @@ html[data-theme="dark"] { color-scheme: dark; }
 }
 
 /* Keep the moving globe behind readable foreground content. */
-.atmosphere { opacity: 0.32; }
 
 @media (max-width: 600px) { .goods { padding-inline: 2rem; } }
 
@@ -1678,8 +1668,7 @@ html[data-theme="dark"] .paper {
     radial-gradient(ellipse at 70% 88%, #8bdfef40, transparent 60%);
   box-shadow: inset 0 0 25px #ffffff38;
 }
-.paper__scan, .frame { display: none; }
-.atmosphere { opacity: 0.2; }
+.frame { display: none; }
 .masthead { border-bottom: 1px solid var(--glass-border); }
 .masthead.is-fixed { background: var(--glass); box-shadow: 0 4px 16px var(--shadow); }
 .mark__text, .footer__mark, .bar-mark { text-shadow: 0 2px 0 var(--glass-shine), 0 4px 15px var(--shadow); }

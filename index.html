@@ -43,13 +43,12 @@
     <link rel="manifest" href="/site.webmanifest">
 
     <link rel="preload" href="fonts/vaio-con-dios.woff2" as="font" type="font/woff2" crossorigin>
-    <link rel="stylesheet" href="style.css?v=107">
+    <link rel="stylesheet" href="style.css?v=108">
 </head>
 
 <body>
-    <!-- atmosphere.js draws the globe into .paper, under the scan lines.
-         data-globe="zoom" asks for the zoomed-in phone view at every size. -->
-    <div class="paper" data-globe="zoom" aria-hidden="true">
+    <!-- Static background with scan-line texture. -->
+    <div class="paper" aria-hidden="true">
         <span class="paper__scan"></span>
     </div>
     <div class="frame" aria-hidden="true">
@@ -377,7 +376,6 @@
         </div>
     </aside>
 
-    <script src="atmosphere.js?v=81" defer></script>
     <script src="itarin-mark.js?v=55" defer></script>
     <script src="deck.js?v=17" defer></script>
     <script src="site.js?v=109" defer></script>
